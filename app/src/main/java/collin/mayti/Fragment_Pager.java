@@ -18,6 +18,10 @@ public class Fragment_Pager extends FragmentStatePagerAdapter {
         switch (i) {
             case 0:
                 return new WatchlistFragment();
+//            case 1:
+//                return new DailyWatchlistFragment();
+//            case 2:
+//                return new WeeklyWatchlistFragment();
         }
         return null;
 
@@ -26,6 +30,7 @@ public class Fragment_Pager extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
+        // return 3;
         return 1; //No of Tabs
     }
 

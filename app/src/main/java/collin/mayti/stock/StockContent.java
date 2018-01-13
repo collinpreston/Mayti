@@ -3,6 +3,7 @@ package collin.mayti.stock;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -55,11 +56,23 @@ public class StockContent {
         public final String id;
         public final String content;
         public final String details;
+//        public final String price;
+//        public final String change;
+//        public final String percent;
+//        public final String exchange;
+//        public final String volume;
+//        public final String name;
 
         public StockItem(String id, String content, String details) {
             this.id = id;
             this.content = content;
             this.details = details;
+//            this.price = price;
+//            this.change = change;
+//            this.percent = percent;
+//            this.exchange = exchange;
+//            this.volume = volume;
+//            this.name = name;
         }
 
         @Override

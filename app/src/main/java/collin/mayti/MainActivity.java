@@ -1,5 +1,6 @@
 package collin.mayti;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -9,7 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
     ViewPager pager;
 
 
@@ -17,6 +18,10 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Here I set my custom app theme for the action bar.
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.abs_layout);
 
         pager = (ViewPager) findViewById(R.id.pager);
 

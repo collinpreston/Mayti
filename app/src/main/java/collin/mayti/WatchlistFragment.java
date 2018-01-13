@@ -24,7 +24,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 
 import collin.mayti.stock.StockContent;
 
@@ -36,8 +35,9 @@ public class WatchlistFragment extends Fragment {
 
     private static final String TAG = "RecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
-    private static final int SPAN_COUNT = 2;
-    private static final int DATASET_COUNT = 60;
+    private static final int SPAN_COUNT = 1;
+    private static final int DATASET_COUNT = 10;
+
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -45,9 +45,6 @@ public class WatchlistFragment extends Fragment {
     }
 
     protected LayoutManagerType mCurrentLayoutManagerType;
-
-    protected RadioButton mLinearLayoutRadioButton;
-    protected RadioButton mGridLayoutRadioButton;
 
     protected RecyclerView mRecyclerView;
     protected MyWatchlistRecyclerViewAdapter mAdapter;

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 /**
@@ -19,7 +20,7 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        //private final TextView textView;
+        private final TextView textView;
 
         public ViewHolder(View v) {
             super(v);
@@ -30,12 +31,12 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
                     Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
                 }
             });
-            //textView = (TextView) v.findViewById(R.id.textView);
+            textView = (TextView) v.findViewById(R.id.content);
         }
 
-//        public TextView getTextView() {
-//            return textView;
-//        }
+        public TextView getTextView() {
+            return textView;
+        }
     }
 
     /**
@@ -64,7 +65,7 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
 
         // Get element from your dataset at this position and replace the contents of the view
         // with that element
-        //viewHolder.getTextView().setText(mDataSet[position]);
+        viewHolder.getTextView().setText(mDataSet[position]);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
