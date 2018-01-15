@@ -16,6 +16,7 @@
 
 package collin.mayti;
 
+import android.arch.persistence.room.Room;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -25,7 +26,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import collin.mayti.stock.StockContent;
+import collin.mayti.watchlist.AppDatabase;
+
 
 /**
  * Demonstrates the use of {@link RecyclerView} with a {@link LinearLayoutManager} and a
@@ -36,7 +38,8 @@ public class WatchlistFragment extends Fragment {
     private static final String TAG = "RecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 1;
-    private static final int DATASET_COUNT = 10;
+
+    private static AppDatabase db;
 
 
     private enum LayoutManagerType {
@@ -49,15 +52,14 @@ public class WatchlistFragment extends Fragment {
     protected RecyclerView mRecyclerView;
     protected MyWatchlistRecyclerViewAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-    protected String[] mDataset;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db = Room.databaseBuilder(this.getContext(),
+                AppDatabase.class, "watchlist").build();
 
-        // Initialize dataset, this data would usually come from a local content provider or
-        // remote server.
-        initDataset();
+
     }
 
     @Override
@@ -66,7 +68,7 @@ public class WatchlistFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_watchlist_list, container, false);
         rootView.setTag(TAG);
 
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        mRecyclerView = rootView.findViewById(R.id.recyclerView);
 
         // LinearLayoutManager is used here, this will layout the elements in a similar fashion
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
@@ -82,7 +84,8 @@ public class WatchlistFragment extends Fragment {
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
-        mAdapter = new MyWatchlistRecyclerViewAdapter(mDataset);
+        // TODO: Replace this with a hashmap.
+        //mAdapter = new MyWatchlistRecyclerViewAdapter(mDataset);
         // Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
 
@@ -128,14 +131,4 @@ public class WatchlistFragment extends Fragment {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    /**
-     * Generates Strings for RecyclerView's adapter. This data would usually come
-     * from a local content provider or remote server.
-     */
-    private void initDataset() {
-        mDataset = new String[DATASET_COUNT];
-        for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset[i] = "This is element #" + i;
-        }
-    }
 }
