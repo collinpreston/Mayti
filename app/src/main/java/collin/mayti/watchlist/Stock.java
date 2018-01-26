@@ -2,6 +2,7 @@ package collin.mayti.watchlist;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.provider.BaseColumns;
 
@@ -10,22 +11,52 @@ import android.provider.BaseColumns;
  */
 
 
-@Entity
-public class Stock {
-    @PrimaryKey
-    private int positionID;
+@Entity(tableName = "watchlist", indices = {@Index(value = "symbol", unique = true)})
+    public class Stock {
+        public int getPositionID() {
+            return positionID;
+        }
 
-    @ColumnInfo(name = "symbol")
-    private String symbol;
+        public void setPositionID(int positionID) {
+            this.positionID = positionID;
+        }
 
-    @ColumnInfo(name = "price")
-    private String price;
+        public String getSymbol() {
+            return symbol;
+        }
 
-    @ColumnInfo(name = "volume")
-    private String volume;
+        public void setSymbol(String symbol) {
+            this.symbol = symbol;
+        }
 
-    // Getters and setters are ignored for brevity,
-    // but they're required for Room to work.
+        public String getPrice() {
+            return price;
+        }
+
+        public void setPrice(String price) {
+            this.price = price;
+        }
+
+        public String getVolume() {
+            return volume;
+        }
+
+        public void setVolume(String volume) {
+            this.volume = volume;
+        }
+
+        @PrimaryKey
+        private int positionID;
+
+        @ColumnInfo(name = "symbol")
+        private String symbol;
+
+        @ColumnInfo(name = "price")
+        private String price;
+
+        @ColumnInfo(name = "volume")
+        private String volume;
+
 }
 
 

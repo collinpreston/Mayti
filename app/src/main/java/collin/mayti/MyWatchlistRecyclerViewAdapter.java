@@ -14,6 +14,7 @@ import android.widget.TextView;
 public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatchlistRecyclerViewAdapter.ViewHolder> {
     private static final String TAG = "CustomAdapter";
 
+    // TODO: Change data type
     private String[] mDataSet;
 
     /**
@@ -28,10 +29,11 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // Here I will open up the details activity for the stock selected.
                     Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
                 }
             });
-            textView = (TextView) v.findViewById(R.id.content);
+            textView = v.findViewById(R.id.content);
         }
 
         public TextView getTextView() {

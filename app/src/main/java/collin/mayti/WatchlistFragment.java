@@ -39,7 +39,7 @@ public class WatchlistFragment extends Fragment {
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 1;
 
-    private static AppDatabase db;
+    //private static AppDatabase db;
 
 
     private enum LayoutManagerType {
@@ -56,8 +56,8 @@ public class WatchlistFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        db = Room.databaseBuilder(this.getContext(),
-                AppDatabase.class, "watchlist").build();
+        //db = Room.databaseBuilder(this.getContext(),
+                //AppDatabase.class, "watchlist").build();
 
 
     }

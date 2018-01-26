@@ -13,10 +13,10 @@ import java.util.List;
 
 @Dao
 public interface WatchlistDao {
-    @Query("SELECT * FROM stock")
+    @Query("SELECT * FROM watchlist")
     List<Stock> getAll();
 
-    @Query("SELECT * FROM stock WHERE symbol LIKE :symbol LIMIT 1")
+    @Query("SELECT * FROM watchlist WHERE symbol LIKE :symbol LIMIT 1")
     Stock findBySymbol(String symbol);
 
     @Insert
