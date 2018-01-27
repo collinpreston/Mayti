@@ -17,7 +17,9 @@
 package collin.mayti;
 
 import android.arch.persistence.room.Room;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import collin.mayti.datacapture.DataRetriever;
 import collin.mayti.watchlist.AppDatabase;
 
 
@@ -39,8 +42,7 @@ public class WatchlistFragment extends Fragment {
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 1;
 
-    //private static AppDatabase db;
-
+    private static AppDatabase db;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -56,10 +58,15 @@ public class WatchlistFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //db = Room.databaseBuilder(this.getContext(),
-                //AppDatabase.class, "watchlist").build();
+        db = MainActivity.db;
 
+        String[] myStocks = new String[1];
+        myStocks[0] = "DVAX";
 
+        // Start the stock updating service
+        Intent dataRetrieverIntent = new Intent(getContext(), DataRetriever.class);
+        dataRetrieverIntent.putExtra("symbols", myStocks);
+        getActivity().startService(dataRetrieverIntent);
     }
 
     @Override

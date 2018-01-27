@@ -13,8 +13,6 @@ import java.util.Map;
 
 public class StockContent {
 
-    public static final HashMap<String, StockItem> WATCHLIST = new HashMap<String, StockItem>();
-
     public static class StockItem {
         public final int position;
         public final String symbol;

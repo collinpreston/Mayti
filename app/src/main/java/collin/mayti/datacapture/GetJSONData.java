@@ -1,37 +1,67 @@
 package collin.mayti.datacapture;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-
-import collin.mayti.urlUtil.AsyncResponse;
+import collin.mayti.urlUtil.UrlUtil;
 
 /**
  * Created by Collin on 1/13/2018.
  */
 
-public class GetJSONData extends AsyncTask <URL, Integer, InputStream> {
-    public AsyncResponse response = null;
+public class GetJSONData extends AsyncTask <URL, Integer, String> {
+    private StringBuffer buffer;
+
+    public GetJSONData(AsyncResponse taskComplete) {
+        this.taskResponse = taskComplete;
+    }
+
+    public interface AsyncResponse {
+        void processFinish(String output);
+    }
+
+    private final AsyncResponse taskResponse;
 
     @Override
-    protected InputStream doInBackground(URL... urls) {
-
+    protected String doInBackground(URL... urls) {
 
         try {
             URLConnection connection = urls[0].openConnection();
+            BufferedReader reader = null;
             connection.setConnectTimeout(30000);
             connection.setReadTimeout(60000);
-            return connection.getInputStream();
+            connection.connect();
+            InputStream stream = connection.getInputStream();
+
+            reader = new BufferedReader(new InputStreamReader(stream));
+
+             buffer = new StringBuffer();
+            String line = "";
+
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line+"\n");
+            }
+
+            return buffer.toString();
+
         } catch (IOException ignored) {
         }
         return null;
     }
 
     @Override
-    protected void onPostExecute(InputStream inputStream) {
-        response.processFinish(inputStream.toString());
+    protected void onPostExecute(String s) {
+        // In onPostExecute we check if the listener is valid
+        if(this.taskResponse != null) {
+
+            // And if it is we call the callback function on it.
+            this.taskResponse.processFinish(s);
+        }
     }
 }

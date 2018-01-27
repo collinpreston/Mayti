@@ -2,6 +2,8 @@ package collin.mayti;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.arch.persistence.room.Room;
+import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -10,8 +12,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 
+import collin.mayti.watchlist.AppDatabase;
+
 public class MainActivity extends AppCompatActivity {
     ViewPager pager;
+    public static AppDatabase db;
 
 
     @Override
@@ -22,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
         // Here I set my custom app theme for the action bar.
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.abs_layout);
+
+        // Initialize database
+        db = Room.databaseBuilder(this,
+                AppDatabase.class, "watchlist").build();
 
         pager = (ViewPager) findViewById(R.id.pager);
 
