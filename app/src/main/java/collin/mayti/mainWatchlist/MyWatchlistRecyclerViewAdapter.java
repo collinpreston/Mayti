@@ -1,4 +1,4 @@
-package collin.mayti;
+package collin.mayti.mainWatchlist;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -7,6 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
+import collin.mayti.R;
+import collin.mayti.stock.StockContent;
+import collin.mayti.watchlistDB.Stock;
+
 
 /**
  * Provide views to RecyclerView with data from mDataSet.
@@ -14,14 +20,15 @@ import android.widget.TextView;
 public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatchlistRecyclerViewAdapter.ViewHolder> {
     private static final String TAG = "CustomAdapter";
 
-    // TODO: Change data type
-    private String[] mDataSet;
+    private List<Stock> watchlistItems;
 
     /**
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
+        private final TextView symbolTextView;
+        private final TextView priceTextView;
+        private final TextView volumeTextView;
 
         public ViewHolder(View v) {
             super(v);
@@ -33,21 +40,30 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
                     Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
                 }
             });
-            textView = v.findViewById(R.id.content);
+            symbolTextView = v.findViewById(R.id.symbol);
+            priceTextView = v.findViewById(R.id.price);
+            volumeTextView = v.findViewById(R.id.volume);
         }
 
-        public TextView getTextView() {
-            return textView;
+        public TextView getVolumeTextView() {
+            return volumeTextView;
         }
+        public TextView getPriceTextView() {
+            return priceTextView;
+        }
+        public TextView getSymbolTextView() {
+            return symbolTextView;
+        }
+
     }
 
     /**
      * Initialize the dataset of the Adapter.
      *
-     * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
+     * @param dataSet List</StockContent.StockItem> containing all of the database items
      */
-    public MyWatchlistRecyclerViewAdapter(String[] dataSet) {
-        mDataSet = dataSet;
+    public MyWatchlistRecyclerViewAdapter(List<Stock> dataSet) {
+        watchlistItems = dataSet;
     }
 
     // Create new views (invoked by the layout manager)
@@ -67,12 +83,19 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
 
         // Get element from your dataset at this position and replace the contents of the view
         // with that element
-        viewHolder.getTextView().setText(mDataSet[position]);
+        viewHolder.getSymbolTextView().setText(watchlistItems.get(position).getSymbol());
+        viewHolder.getPriceTextView().setText(watchlistItems.get(position).getPrice());
+        viewHolder.getVolumeTextView().setText(watchlistItems.get(position).getVolume());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataSet.length;
+        return watchlistItems.size();
+    }
+
+    public void addItems(List<Stock> stockList) {
+        this.watchlistItems = stockList;
+        notifyDataSetChanged();
     }
 }

@@ -1,10 +1,7 @@
 package collin.mayti;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.arch.persistence.room.Room;
-import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 
-import collin.mayti.watchlist.AppDatabase;
+import collin.mayti.watchlistDB.AppDatabase;
 
 public class MainActivity extends AppCompatActivity {
     ViewPager pager;
@@ -29,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.abs_layout);
 
         // Initialize database
-        db = Room.databaseBuilder(this,
-                AppDatabase.class, "watchlist").build();
+        Room.databaseBuilder(this.getApplicationContext(), AppDatabase.class, "watchlist")
+                .build();
 
         pager = (ViewPager) findViewById(R.id.pager);
 

@@ -13,7 +13,7 @@ import collin.mayti.datacapture.GetJSONData;
  */
 
 public class UrlUtil{
-    protected String PRICE_URL = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=STOCK&apikey=5M3Y2HWYLNAXUA12";
+    protected String PRICE_URL = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=REPLACE&apikey=5M3Y2HWYLNAXUA12";
 
     private String dataStream;
 
@@ -26,13 +26,11 @@ public class UrlUtil{
                 dataStream = output;
             }
         });
-        getJSONData.execute();
-        //new GetJSONData(response).execute(requestURL).get();
+        getJSONData.execute(requestURL).get();
         return dataStream;
     }
     private URL buildURLForStockPrice(List<String> symbols) throws MalformedURLException {
-        // TODO: Create string builder to build URL string of symbol names to replace in the URL.
-        String replacedString = PRICE_URL.replace("STOCK", symbols.get(0));
+        String replacedString = PRICE_URL.replace("REPLACE", symbols.get(0));
         URL requestURL = new URL(replacedString);
         return requestURL;
     }

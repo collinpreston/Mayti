@@ -31,28 +31,25 @@ public class GetJSONData extends AsyncTask <URL, Integer, String> {
     @Override
     protected String doInBackground(URL... urls) {
 
+        buffer = new StringBuffer();
         try {
             URLConnection connection = urls[0].openConnection();
-            BufferedReader reader = null;
             connection.setConnectTimeout(30000);
             connection.setReadTimeout(60000);
             connection.connect();
             InputStream stream = connection.getInputStream();
 
-            reader = new BufferedReader(new InputStreamReader(stream));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
-             buffer = new StringBuffer();
             String line = "";
 
             while ((line = reader.readLine()) != null) {
-                buffer.append(line+"\n");
+                buffer.append(line).append('\n');
             }
-
-            return buffer.toString();
 
         } catch (IOException ignored) {
         }
-        return null;
+        return buffer.toString();
     }
 
     @Override

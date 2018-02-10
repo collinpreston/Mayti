@@ -13,6 +13,6 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context="collin.mayti.WatchlistFragment"
+        tools:context="collin.mayti.mainWatchlist.WatchlistFragment"
         tools:listitem="@layout/fragment_watchlist_stock" />
 </LinearLayout>

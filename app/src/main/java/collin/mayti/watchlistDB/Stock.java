@@ -1,10 +1,9 @@
-package collin.mayti.watchlist;
+package collin.mayti.watchlistDB;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
-import android.provider.BaseColumns;
 
 /**
  * Created by Collin on 1/14/2018.

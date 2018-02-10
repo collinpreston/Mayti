@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
@@ -19,7 +20,7 @@ import java.util.concurrent.ExecutionException;
 import collin.mayti.MainActivity;
 import collin.mayti.stock.StockContent;
 import collin.mayti.urlUtil.UrlUtil;
-import collin.mayti.watchlist.AppDatabase;
+import collin.mayti.watchlistDB.AppDatabase;
 
 /**
  * Created by Collin on 1/13/2018.
@@ -27,7 +28,7 @@ import collin.mayti.watchlist.AppDatabase;
 
 public class DataRetriever extends Service {
     Timer timer = new Timer();
-    private String[] stockSymbols;
+    public List<String> stockSymbols = new ArrayList<>();
     private String dataRetrievedString;
     public DataRetriever() {
 
@@ -39,11 +40,20 @@ public class DataRetriever extends Service {
         return null;
     }
 
-    private void isJSONDataValid() {
+    private boolean isJSONDataValid(String dataFromConnection) {
         // TODO: test if the file comes back blank or with an error.
+        if (dataFromConnection == null) {
+            return false;
+        }
+        return true;
     }
     private JSONArray getQuotesAsJSON(List<String> symbols) throws MalformedURLException, JSONException, ExecutionException, InterruptedException {
-            dataRetrievedString = new UrlUtil().getStockData(symbols);
+
+            do {
+                dataRetrievedString = new UrlUtil().getStockData(symbols);
+                System.out.println("CP: " + dataRetrievedString);
+            } while (!isJSONDataValid(dataRetrievedString));
+
             JSONObject dataObj = new JSONObject(dataRetrievedString);
             JSONArray stockData;
             // TODO: Make this a private static variable.
@@ -53,14 +63,14 @@ public class DataRetriever extends Service {
     public List<StockContent.StockItem> getQuotesAsList(List<String> symbols)
             throws MalformedURLException, JSONException, ExecutionException, InterruptedException {
         JSONArray quotesJSON = getQuotesAsJSON(symbols);
-        List <StockContent.StockItem> watchlistData = null;
+        List <StockContent.StockItem> watchlistData = new ArrayList<>();
         for (int i=0; i < quotesJSON.length(); i++) {
 
             JSONObject quoteJSON = quotesJSON.getJSONObject(i);
             StockContent.StockItem stockItem = new StockContent.StockItem(
-            quoteJSON.getString("symbol"),
-            quoteJSON.getString("price"),
-            quoteJSON.getString("volume"));
+            quoteJSON.getString("1. symbol"),
+            quoteJSON.getString("2. price"),
+            quoteJSON.getString("3. volume"));
 
             watchlistData.add(stockItem);
         }
@@ -76,9 +86,8 @@ public class DataRetriever extends Service {
     private class DelayedTask extends TimerTask {
         @Override
         public void run() {
-            List<String> symbolList = Arrays.asList(stockSymbols);
             try {
-                updateDatabaseWithData(getQuotesAsList(symbolList));
+                updateDatabaseWithData(getQuotesAsList(stockSymbols));
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -98,8 +107,8 @@ public class DataRetriever extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        stockSymbols = intent.getStringArrayExtra("symbols");
-        timer.schedule(new DelayedTask(),300, 3000);
+        stockSymbols = Arrays.asList(intent.getStringArrayExtra("symbols"));
+        timer.schedule(new DelayedTask(),300, 5000);
         return super.onStartCommand(intent, flags, startId);
     }
 }
