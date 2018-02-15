@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#172a3c</color>
-    <color name="colorPrimaryHighlight">#b1d9d3</color>
-    <color name="colorAccent">#d95c5c</color>
-    <color name="cardview_initial_background">#f7f9e9</color>
+    <color name="darkBlue">#15283B</color>
+    <color name="lightBlue">#b1d9d3</color>
+    <color name="redHighlight">#F2937E</color>
+    <color name="darkRed">#D95B5B</color>
+    <color name="background">#F9F7EA</color>
+    <color name="cardViewBackground">#F7F9E9</color>
+    <color name="blue">#35505E</color>
+    <color name="green">#37CC70</color>
 </resources>

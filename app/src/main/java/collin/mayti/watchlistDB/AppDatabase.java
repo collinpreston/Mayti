@@ -9,7 +9,7 @@ import android.content.Context;
  * Created by Collin on 1/15/2018.
  */
 
-@Database(entities = {Stock.class}, version = 1)
+@Database(entities = {Stock.class}, version = 7)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase INSTANCE;
@@ -17,7 +17,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public static AppDatabase getDatabase(Context context) {
         if (INSTANCE == null) {
             INSTANCE =
-                    Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "borrow_db")
+                    Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "watchlist").fallbackToDestructiveMigration()
                             .build();
         }
         return INSTANCE;

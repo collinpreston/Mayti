@@ -79,7 +79,8 @@ public class DataRetriever extends Service {
     private void updateDatabaseWithData(List <StockContent.StockItem> stockDataList) {
         AppDatabase db = MainActivity.db;
         for (StockContent.StockItem item : stockDataList) {
-            db.watchlistDao().updateBySymbol(item.price, item.price, item.symbol);
+            db.watchlistDao().updateBySymbol(item.price.toString(), item.volume.toString(), item.symbol);
+            System.out.println(db.watchlistDao().findBySymbol(item.symbol));
         }
 
     }

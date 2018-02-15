@@ -20,7 +20,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -35,9 +34,7 @@ import java.util.List;
 
 import collin.mayti.MainActivity;
 import collin.mayti.R;
-import collin.mayti.databaseDealer.DatabaseDataDealer;
 import collin.mayti.datacapture.DataRetriever;
-import collin.mayti.stock.StockContent;
 import collin.mayti.watchlistDB.AppDatabase;
 import collin.mayti.watchlistDB.Stock;
 
@@ -73,38 +70,31 @@ public class WatchlistFragment extends Fragment {
         super.onCreate(savedInstanceState);
         db = MainActivity.db;
 
+        // Adding a stock to watchlist database START
         String[] myStocks = new String[1];
         myStocks[0] = "DVAX";
         Stock item1 = new Stock();
         item1.setSymbol("DVAX");
-        item1.setPrice("4");
-        item1.setVolume("4");
+        item1.setPositionID(0);
         watchlistItems.add(item1);
 
-        // Start the stock updating service
+        // Initialize the viewModel for LiveData
+        viewModel = ViewModelProviders.of(this).get(mainWatchlistViewModel.class);
+        // add each watchlist item to the database.
+        //viewModel.addItem(item1);
+        // END
+
+        // Start the stock updating service which grabs data from the external web
         Intent dataRetrieverIntent = new Intent(getContext(), DataRetriever.class);
         dataRetrieverIntent.putExtra("symbols", myStocks);
         getActivity().startService(dataRetrieverIntent);
 
-        final Handler timerHandler = new Handler();
-        Runnable timerRunnable = new Runnable() {
-            @Override
-            public void run() {
-                DatabaseDataDealer databaseDataDealer1 = new DatabaseDataDealer();
-                //watchlistItems = databaseDataDealer1.getAllWatchlistData(watchlistItems);
-                mAdapter.notifyItemChanged(0);
-                timerHandler.postDelayed(this, 1000);
-            }
-        };
-
-        timerHandler.postDelayed(timerRunnable, 1000);
-
-        viewModel = ViewModelProviders.of(this).get(mainWatchlistViewModel.class);
+        //timerHandler.postDelayed(timerRunnable, 1000);
 
         viewModel.getStockList().observe(WatchlistFragment.this, new Observer<List<Stock>>() {
             @Override
             public void onChanged(@Nullable List<Stock> stocks) {
-                mAdapter.addItems(stocks);
+                mAdapter.updateItems(stocks);
             }
         });
 
@@ -135,7 +125,6 @@ public class WatchlistFragment extends Fragment {
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
-        // TODO: Replace this with a hashmap.
         mAdapter = new MyWatchlistRecyclerViewAdapter(watchlistItems);
         // Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);

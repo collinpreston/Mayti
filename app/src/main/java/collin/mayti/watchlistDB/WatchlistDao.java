@@ -1,6 +1,7 @@
 package collin.mayti.watchlistDB;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -18,7 +19,7 @@ public interface WatchlistDao {
     LiveData<List<Stock>> getAll();
 
     @Query("SELECT * FROM watchlist WHERE symbol LIKE :symbol LIMIT 1")
-    Stock findBySymbol(String symbol);
+    LiveData<Stock> findBySymbol(String symbol);
 
     @Insert
     void insertAll(Stock... stocks);

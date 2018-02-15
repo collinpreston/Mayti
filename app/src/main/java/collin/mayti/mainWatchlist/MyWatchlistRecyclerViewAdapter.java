@@ -82,10 +82,18 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
         Log.d(TAG, "Element " + position + " set.");
 
         // Get element from your dataset at this position and replace the contents of the view
-        // with that element
-        viewHolder.getSymbolTextView().setText(watchlistItems.get(position).getSymbol());
-        viewHolder.getPriceTextView().setText(watchlistItems.get(position).getPrice());
-        viewHolder.getVolumeTextView().setText(watchlistItems.get(position).getVolume());
+        // with that element.
+        viewHolder.getSymbolTextView().setText(watchlistItems.get(position).getSymbol().toString());
+        try {
+            // Try to get the price and volume if they've been populated.
+            viewHolder.getPriceTextView().setText(watchlistItems.get(position).getPrice().toString());
+            viewHolder.getVolumeTextView().setText(watchlistItems.get(position).getVolume().toString());
+        } catch (Exception e) {
+            // Otherwise the data hasn't been collected and we need to display hashmarks indicating
+            // the data isn't here.
+            viewHolder.getPriceTextView().setText("--");
+            viewHolder.getVolumeTextView().setText("--");
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -94,8 +102,10 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
         return watchlistItems.size();
     }
 
-    public void addItems(List<Stock> stockList) {
+    public void updateItems(List<Stock> stockList) {
         this.watchlistItems = stockList;
-        notifyDataSetChanged();
+        for (int i=0; i < stockList.size(); i++) {
+            notifyItemChanged(i);
+        }
     }
 }
