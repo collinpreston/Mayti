@@ -1,4 +1,4 @@
-package collin.mayti.mainWatchlist;
+package collin.mayti.watchlist;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,7 +10,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import collin.mayti.R;
-import collin.mayti.stock.StockContent;
 import collin.mayti.watchlistDB.Stock;
 
 

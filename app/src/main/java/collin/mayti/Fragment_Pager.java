@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import collin.mayti.mainWatchlist.WatchlistFragment;
+import collin.mayti.watchlist.WatchlistFragment;
 
 public class Fragment_Pager extends FragmentStatePagerAdapter {
     public Fragment_Pager(FragmentManager fm) {

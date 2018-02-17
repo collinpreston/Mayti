@@ -1,13 +1,11 @@
-package collin.mayti.mainWatchlist;
+package collin.mayti.watchlist;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.os.AsyncTask;
 
 import java.util.List;
-import java.util.Objects;
 
 import collin.mayti.watchlistDB.AppDatabase;
 import collin.mayti.watchlistDB.Stock;
@@ -16,13 +14,13 @@ import collin.mayti.watchlistDB.Stock;
  * Created by collinhpreston on 30/01/2018.
  */
 
-public class mainWatchlistViewModel extends AndroidViewModel {
+public class WatchlistViewModel extends AndroidViewModel {
 
     private final LiveData<List<Stock>> stockList;
 
     private AppDatabase appDatabase;
 
-    public mainWatchlistViewModel(Application application) {
+    public WatchlistViewModel(Application application) {
         super(application);
 
         appDatabase = AppDatabase.getDatabase(this.getApplication());

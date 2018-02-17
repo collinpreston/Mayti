@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package collin.mayti.mainWatchlist;
+package collin.mayti.watchlist;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -60,7 +60,7 @@ public class WatchlistFragment extends Fragment {
 
     protected RecyclerView mRecyclerView;
     protected MyWatchlistRecyclerViewAdapter mAdapter;
-    private mainWatchlistViewModel viewModel;
+    private WatchlistViewModel viewModel;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected List<Stock> watchlistItems = new ArrayList<>();
 
@@ -79,7 +79,7 @@ public class WatchlistFragment extends Fragment {
         watchlistItems.add(item1);
 
         // Initialize the viewModel for LiveData
-        viewModel = ViewModelProviders.of(this).get(mainWatchlistViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(WatchlistViewModel.class);
         // add each watchlist item to the database.
         //viewModel.addItem(item1);
         // END
@@ -88,8 +88,7 @@ public class WatchlistFragment extends Fragment {
         Intent dataRetrieverIntent = new Intent(getContext(), DataRetriever.class);
         dataRetrieverIntent.putExtra("symbols", myStocks);
         getActivity().startService(dataRetrieverIntent);
-
-        //timerHandler.postDelayed(timerRunnable, 1000);
+        
 
         viewModel.getStockList().observe(WatchlistFragment.this, new Observer<List<Stock>>() {
             @Override
