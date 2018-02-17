@@ -16,9 +16,12 @@ import collin.mayti.watchlistDB.Stock;
 
 public class WatchlistViewModel extends AndroidViewModel {
 
+    private static int totalNumberOfRows;
+
     private final LiveData<List<Stock>> stockList;
 
     private AppDatabase appDatabase;
+
 
     public WatchlistViewModel(Application application) {
         super(application);
@@ -69,4 +72,26 @@ public class WatchlistViewModel extends AndroidViewModel {
         }
 
     }
+    public int getTotalNumberOfRows() {
+        new addAsyncTask(appDatabase).execute();
+        return totalNumberOfRows;
+    }
+
+//    private static class getTotalNumberOfRowsAsyncTask extends AsyncTask<Integer, Void, Void> {
+//
+//        private AppDatabase db;
+//
+//        getTotalNumberOfRowsAsyncTask(AppDatabase appDatabase) {
+//            db = appDatabase;
+//        }
+//
+//        @Override
+//        protected void doInBackground(Integer... totalNum) {
+//            try {
+//                totalNumberOfRows = db.watchlistDao().getTotalNumberOfRows();
+//            } catch (Exception e) {
+//                totalNumberOfRows = 0;
+//            }
+//        }
+//    }
 }

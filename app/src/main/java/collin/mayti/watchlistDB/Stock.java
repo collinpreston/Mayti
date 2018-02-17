@@ -2,8 +2,13 @@ package collin.mayti.watchlistDB;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
+import android.support.annotation.NonNull;
+
+import java.sql.Date;
 
 /**
  * Created by Collin on 1/14/2018.
@@ -44,17 +49,41 @@ import android.arch.persistence.room.PrimaryKey;
             this.volume = volume;
         }
 
-        @PrimaryKey
-        private int positionID;
+        public String getWatchlist() {
+            return watchlist;
+        }
 
-        @ColumnInfo(name = "symbol")
+        public void setWatchlist(String watchlist) {
+            this.watchlist = watchlist;
+        }
+
+        public Date getDateAdded() {
+            return dateAdded;
+        }
+
+        public void setDateAdded(Date dateAdded) {
+            this.dateAdded = dateAdded;
+        }
+
+        @PrimaryKey
+        @NonNull
         private String symbol;
+
+        @ColumnInfo(name = "positionID")
+        private int positionID;
 
         @ColumnInfo(name = "price")
         private String price;
 
         @ColumnInfo(name = "volume")
         private String volume;
+
+        @ColumnInfo(name = "watchlist")
+        private String watchlist;
+
+        @ColumnInfo
+        @TypeConverters(DateConverter.class)
+        private Date dateAdded;
 
 }
 

@@ -8,7 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import collin.mayti.watchlist.WatchlistFragment;
+import collin.mayti.watchlist.watchlistFragments.DailyWatchlistFragment;
+import collin.mayti.watchlist.watchlistFragments.WatchlistFragment;
+import collin.mayti.watchlist.watchlistFragments.WeeklyWatchlistFragment;
 
 public class Fragment_Pager extends FragmentStatePagerAdapter {
     public Fragment_Pager(FragmentManager fm) {
@@ -20,10 +22,10 @@ public class Fragment_Pager extends FragmentStatePagerAdapter {
         switch (i) {
             case 0:
                 return new WatchlistFragment();
-//            case 1:
-//                return new DailyWatchlistFragment();
-//            case 2:
-//                return new WeeklyWatchlistFragment();
+            case 1:
+                return new DailyWatchlistFragment();
+            case 2:
+                return new WeeklyWatchlistFragment();
         }
         return null;
 

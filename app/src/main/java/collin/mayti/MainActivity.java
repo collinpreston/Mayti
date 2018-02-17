@@ -2,9 +2,7 @@ package collin.mayti;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,10 +11,15 @@ import android.view.MenuInflater;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 
+import collin.mayti.addRemoveStock.AddStockPage;
+import collin.mayti.notifications.NotificationsPage;
+import collin.mayti.watchlist.WatchlistPage;
 import collin.mayti.watchlistDB.AppDatabase;
 
 public class MainActivity extends AppCompatActivity {
-    NoSwipePager pager;
+    NoSwipePager viewPager;
+    BottomBarAdapter pagerAdapter;
+    AHBottomNavigation bottomNavigation;
     public static AppDatabase db;
 
 
@@ -33,81 +36,36 @@ public class MainActivity extends AppCompatActivity {
         // Initialize database
         db = AppDatabase.getDatabase(getApplicationContext());
 
-        pager = (NoSwipePager) findViewById(R.id.pager);
 
         /** Getting fragment manager */
-        FragmentManager fm = getSupportFragmentManager();
+        //FragmentManager fm = getSupportFragmentManager();
 
         /** Instantiating FragmentPagerAdapter */
-        BottomBarAdapter pagerAdapter = new BottomBarAdapter(getSupportFragmentManager());
 //        final Fragment_Pager pagerAdapter = new Fragment_Pager(fm){
 //
 //        };
 
-        /** Setting the pagerAdapter to the pager object */
-        pager.setAdapter(pagerAdapter);
-        // Restrict the viewpager from swiping
-        pager.setPagingEnabled(false);
-        pager.setCurrentItem(1);
-
+        // Setup the viewpager used for the bottom navigation
+        setupViewPager();
 
         // Custom bottom navigation
-        final AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
-        AHBottomNavigationItem item1 =
-                new AHBottomNavigationItem(R.string.text_watchlist,
-                        R.drawable.ic_menu_black_24dp, R.color.darkBlue);
-        AHBottomNavigationItem item2 =
-                new AHBottomNavigationItem(R.string.text_add_stock,
-                        R.drawable.ic_add_black_24dp, R.color.darkBlue);
-        AHBottomNavigationItem item3 =
-                new AHBottomNavigationItem(R.string.text_notifications,
-                        R.drawable.ic_notifications_black_24dp, R.color.darkBlue);
+        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
+        setupBottomNavigationBar();
 
-        bottomNavigation.addItem(item1);
-        bottomNavigation.addItem(item2);
-        bottomNavigation.addItem(item3);
-        bottomNavigation.setCurrentItem(0);
-        bottomNavigation.setDefaultBackgroundColor(ContextCompat.getColor(this, R.color.darkBlue));
-        bottomNavigation.setAccentColor(ContextCompat.getColor(this, R.color.darkRed));
-        bottomNavigation.setInactiveColor(ContextCompat.getColor(this, R.color.lightBlue));
-        //bottomNavigation.setForceTint(true);
-        //bottomNavigation.setColored(false);
+
 
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
+                if (!wasSelected) {
+                    viewPager.setCurrentItem(position);
+                    bottomNavigation.setCurrentItem(position, false);
+                }
+
                 return wasSelected;
             }
         });
 
-//        final BottomNavigationView bottomNavigationView = (BottomNavigationView)
-//                findViewById(R.id.bottom_navigation);
-//        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
-//
-//
-//        bottomNavigationView.setOnNavigationItemSelectedListener(
-//                new BottomNavigationView.OnNavigationItemSelectedListener() {
-//                    @Override
-//                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//                        switch (item.getItemId()) {
-//                            case R.id.action_watchlist:
-//
-//                                break;
-//
-//                            case R.id.action_add_stock:
-//
-//                                break;
-//
-//                            case R.id.action_all_notifications:
-//
-//                                break;
-//
-//
-//                        }
-//                        return true;
-//
-//                    }
-//                });
     }
 
     @Override
@@ -121,5 +79,46 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
+    }
+
+    private void setupViewPager() {
+        viewPager = (NoSwipePager) findViewById(R.id.pager);
+        // Restrict the viewpager from swiping
+        viewPager.setPagingEnabled(false);
+
+        pagerAdapter = new BottomBarAdapter(getSupportFragmentManager());
+
+        // Initialize the three bottom navigation page Fragments and add them to the viewPager
+        // TODO: Once working, replace WatchlistFragment with the viewpager: WatchlistPage
+        pagerAdapter.addFragments(new WatchlistPage());
+        pagerAdapter.addFragments(new AddStockPage());
+        pagerAdapter.addFragments(new NotificationsPage());
+
+        /** Setting the pagerAdapter to the pager object */
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.setCurrentItem(0);
+    }
+    private void setupBottomNavigationBar() {
+        AHBottomNavigationItem item1 =
+                new AHBottomNavigationItem(R.string.text_watchlist,
+                        R.drawable.ic_menu_black_24dp, R.color.darkBlue);
+        AHBottomNavigationItem item2 =
+                new AHBottomNavigationItem(R.string.text_add_stock,
+                        R.drawable.ic_add_black_24dp, R.color.darkBlue);
+        AHBottomNavigationItem item3 =
+                new AHBottomNavigationItem(R.string.text_notifications,
+                        R.drawable.ic_notifications_black_24dp, R.color.darkBlue);
+        bottomNavigation.addItem(item1);
+        bottomNavigation.addItem(item2);
+        bottomNavigation.addItem(item3);
+
+        // Coloring the tabs
+        bottomNavigation.setColored(false);
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
+        bottomNavigation.setDefaultBackgroundColor(ContextCompat.getColor(this, R.color.darkBlue));
+        bottomNavigation.setAccentColor(ContextCompat.getColor(this, R.color.darkRed));
+        bottomNavigation.setInactiveColor(ContextCompat.getColor(this, R.color.lightBlue));
+
+        bottomNavigation.setCurrentItem(0);
     }
 }

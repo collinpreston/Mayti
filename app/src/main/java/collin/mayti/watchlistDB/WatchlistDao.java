@@ -31,5 +31,14 @@ public interface WatchlistDao {
     void delete(Stock stock);
 
     @Query("UPDATE watchlist SET price = :price, volume = :volume WHERE symbol = :symbol")
-    public void updateBySymbol(String price, String volume, String symbol);
+    void updateBySymbol(String price, String volume, String symbol);
+
+    @Query("SELECT COUNT(*) FROM watchlist")
+    int getTotalNumberOfRows();
+
+    @Query("SELECT COUNT(symbol) FROM watchlist WHERE watchlist = :watchlist")
+    int getTotalNumberOfStocksForWatchlist(String watchlist);
+
+    @Query("SELECT * FROM watchlist WHERE watchlist = :watchlist")
+    LiveData<List<Stock>> getAllStocksForWatchlist(String watchlist);
 }

@@ -50,5 +50,5 @@ dependencies {
     compile 'com.android.support:design:26.1.0'
 
     // Custom bottom navigation
-    compile 'com.aurelhubert:ahbottomnavigation:2.0.4'
+    compile 'com.aurelhubert:ahbottomnavigation:2.1.0'
 }

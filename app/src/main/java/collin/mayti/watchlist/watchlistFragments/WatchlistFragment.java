@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package collin.mayti.watchlist;
+package collin.mayti.watchlist.watchlistFragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -35,6 +35,8 @@ import java.util.List;
 import collin.mayti.MainActivity;
 import collin.mayti.R;
 import collin.mayti.datacapture.DataRetriever;
+import collin.mayti.watchlist.MyWatchlistRecyclerViewAdapter;
+import collin.mayti.watchlist.WatchlistViewModel;
 import collin.mayti.watchlistDB.AppDatabase;
 import collin.mayti.watchlistDB.Stock;
 
@@ -70,19 +72,16 @@ public class WatchlistFragment extends Fragment {
         super.onCreate(savedInstanceState);
         db = MainActivity.db;
 
-        // Adding a stock to watchlist database START
+        // TODO: Populate this list of all the watchlist items for the permanent watchlist
+        // Need to get a list from the View Model
+        // TODO: Get the total number of stocks for this watchlist, create a String array of that length,
+        // Add each items symbol to that string array.  This gets passed to the data retriever.
         String[] myStocks = new String[1];
         myStocks[0] = "DVAX";
-        Stock item1 = new Stock();
-        item1.setSymbol("DVAX");
-        item1.setPositionID(0);
-        watchlistItems.add(item1);
+        //watchlistItems.add(item1);
 
         // Initialize the viewModel for LiveData
         viewModel = ViewModelProviders.of(this).get(WatchlistViewModel.class);
-        // add each watchlist item to the database.
-        //viewModel.addItem(item1);
-        // END
 
         // Start the stock updating service which grabs data from the external web
         Intent dataRetrieverIntent = new Intent(getContext(), DataRetriever.class);
@@ -105,7 +104,7 @@ public class WatchlistFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_watchlist_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_watchlist_permanent, container, false);
         rootView.setTag(TAG);
 
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
