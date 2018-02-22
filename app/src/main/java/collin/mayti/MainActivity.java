@@ -2,9 +2,9 @@ package collin.mayti;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -36,20 +36,11 @@ public class MainActivity extends AppCompatActivity {
         // Initialize database
         db = AppDatabase.getDatabase(getApplicationContext());
 
-
-        /** Getting fragment manager */
-        //FragmentManager fm = getSupportFragmentManager();
-
-        /** Instantiating FragmentPagerAdapter */
-//        final Fragment_Pager pagerAdapter = new Fragment_Pager(fm){
-//
-//        };
-
         // Setup the viewpager used for the bottom navigation
         setupViewPager();
 
         // Custom bottom navigation
-        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
+        bottomNavigation = findViewById(R.id.bottom_navigation);
         setupBottomNavigationBar();
 
 
@@ -82,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupViewPager() {
-        viewPager = (NoSwipePager) findViewById(R.id.pager);
+        viewPager = findViewById(R.id.pager);
         // Restrict the viewpager from swiping
         viewPager.setPagingEnabled(false);
 

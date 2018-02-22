@@ -19,6 +19,7 @@ public class AddStockPage extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         // Before adding,
         // Check to see if existing stocks are already in the watchlist
+        // For this I can just use read stock by symbol method, if it crashes - catch and return.
 
         super.onCreate(savedInstanceState);
     }

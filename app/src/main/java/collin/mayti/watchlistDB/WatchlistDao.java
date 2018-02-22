@@ -1,7 +1,6 @@
 package collin.mayti.watchlistDB;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -40,5 +39,6 @@ public interface WatchlistDao {
     int getTotalNumberOfStocksForWatchlist(String watchlist);
 
     @Query("SELECT * FROM watchlist WHERE watchlist = :watchlist")
-    LiveData<List<Stock>> getAllStocksForWatchlist(String watchlist);
+    List<Stock> getAllStocksForWatchlist(String watchlist);
+
 }

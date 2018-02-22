@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import collin.mayti.watchlistDB.AppDatabase;
 import collin.mayti.watchlistDB.Stock;
@@ -16,7 +17,9 @@ import collin.mayti.watchlistDB.Stock;
 
 public class WatchlistViewModel extends AndroidViewModel {
 
-    private static int totalNumberOfRows;
+    private static int totalNumberOfRowsForDB;
+    private static int totalNumberOfRowsForWatchlist;
+    private static List<Stock> stocksForWatchlist;
 
     private final LiveData<List<Stock>> stockList;
 
@@ -73,25 +76,76 @@ public class WatchlistViewModel extends AndroidViewModel {
 
     }
     public int getTotalNumberOfRows() {
-        new addAsyncTask(appDatabase).execute();
-        return totalNumberOfRows;
+        new getTotalNumberOfRowsAsyncTask(appDatabase).execute();
+        return totalNumberOfRowsForDB;
     }
 
-//    private static class getTotalNumberOfRowsAsyncTask extends AsyncTask<Integer, Void, Void> {
-//
-//        private AppDatabase db;
-//
-//        getTotalNumberOfRowsAsyncTask(AppDatabase appDatabase) {
-//            db = appDatabase;
-//        }
-//
-//        @Override
-//        protected void doInBackground(Integer... totalNum) {
-//            try {
-//                totalNumberOfRows = db.watchlistDao().getTotalNumberOfRows();
-//            } catch (Exception e) {
-//                totalNumberOfRows = 0;
-//            }
-//        }
-//    }
+    private static class getTotalNumberOfRowsAsyncTask extends AsyncTask<Integer, Void, Void> {
+
+        private AppDatabase db;
+
+        getTotalNumberOfRowsAsyncTask(AppDatabase appDatabase) {
+            db = appDatabase;
+        }
+
+        @Override
+        protected Void doInBackground(Integer... totalNum) {
+            try {
+                totalNumberOfRowsForDB = db.watchlistDao().getTotalNumberOfRows();
+            } catch (Exception e) {
+                totalNumberOfRowsForDB = 0;
+            }
+            return null;
+        }
+    }
+    public int getTotalNumberOfStocksForWatchlist(String watchlistName) throws ExecutionException, InterruptedException {
+        new getTotalNumberOfStocksForWatchlistAsyncTask(appDatabase, watchlistName).execute().get();
+        return totalNumberOfRowsForWatchlist;
+    }
+
+    private static class getTotalNumberOfStocksForWatchlistAsyncTask extends AsyncTask<String, Void, Void> {
+
+        private AppDatabase db;
+        private String watchlistID;
+
+        getTotalNumberOfStocksForWatchlistAsyncTask(AppDatabase appDatabase, String watchlistName) {
+            db = appDatabase;
+            watchlistID = watchlistName;
+        }
+
+        @Override
+        protected Void doInBackground(String... watchlistName) {
+            try {
+                totalNumberOfRowsForWatchlist = db.watchlistDao().getTotalNumberOfStocksForWatchlist(watchlistID);
+            } catch (Exception e) {
+                totalNumberOfRowsForWatchlist = 0;
+            }
+            return null;
+        }
+    }
+    public List<Stock> getAllStocksForWatchlist(String watchlistName) throws ExecutionException, InterruptedException {
+        new getAllStocksForWatchlistAsyncTask(appDatabase, watchlistName).execute().get();
+        return stocksForWatchlist;
+    }
+
+    private static class getAllStocksForWatchlistAsyncTask extends AsyncTask<String, Void, Void> {
+
+        private AppDatabase db;
+        private String watchlistID;
+
+        getAllStocksForWatchlistAsyncTask(AppDatabase appDatabase, String watchlistName) {
+            db = appDatabase;
+            watchlistID = watchlistName;
+        }
+
+        @Override
+        protected Void doInBackground(String... watchlistName) {
+            try {
+                stocksForWatchlist = db.watchlistDao().getAllStocksForWatchlist(watchlistID);
+            } catch (Exception e) {
+                // This list will have to be validated by the receiving method.
+            }
+            return null;
+        }
+    }
 }

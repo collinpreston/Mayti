@@ -6,12 +6,13 @@
     android:layout_gravity="center">
 
     <TextView
+        android:id="@+id/mytext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Mayti"
+        android:fontFamily="@font/cursivefont"
+        android:text="mayti"
         android:textColor="#ffffff"
-        android:id="@+id/mytext"
-        android:textSize="18sp" />
+        android:textSize="35sp" />
 
 </LinearLayout>

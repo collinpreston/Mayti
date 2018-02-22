@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import collin.mayti.MainActivity;
 import collin.mayti.R;
@@ -50,8 +51,7 @@ public class WatchlistFragment extends Fragment {
     private static final String TAG = "RecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 1;
-
-    private static AppDatabase db;
+    private static final String PERMANENT_WATCHLIST_NAME = "permanent_watchlist";
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -62,7 +62,6 @@ public class WatchlistFragment extends Fragment {
 
     protected RecyclerView mRecyclerView;
     protected MyWatchlistRecyclerViewAdapter mAdapter;
-    private WatchlistViewModel viewModel;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected List<Stock> watchlistItems = new ArrayList<>();
 
@@ -70,24 +69,33 @@ public class WatchlistFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        db = MainActivity.db;
-
-        // TODO: Populate this list of all the watchlist items for the permanent watchlist
-        // Need to get a list from the View Model
-        // TODO: Get the total number of stocks for this watchlist, create a String array of that length,
-        // Add each items symbol to that string array.  This gets passed to the data retriever.
-        String[] myStocks = new String[1];
-        myStocks[0] = "DVAX";
-        //watchlistItems.add(item1);
+        // Initialize a local instance of the database
+        AppDatabase db = MainActivity.db;
 
         // Initialize the viewModel for LiveData
-        viewModel = ViewModelProviders.of(this).get(WatchlistViewModel.class);
+        WatchlistViewModel viewModel = ViewModelProviders.of(this).get(WatchlistViewModel.class);
 
-        // Start the stock updating service which grabs data from the external web
-        Intent dataRetrieverIntent = new Intent(getContext(), DataRetriever.class);
-        dataRetrieverIntent.putExtra("symbols", myStocks);
-        getActivity().startService(dataRetrieverIntent);
-        
+
+        // TODO: Need to clear the watchlistItems arraylist before adding to it again.  Otherwise
+        // I will have duplicate entries in the arraylist.
+        // Add each items symbol to this string array.  This gets passed to the data retriever.
+        final String[] myStocks;
+        try {
+            myStocks = new String[viewModel.getTotalNumberOfStocksForWatchlist(PERMANENT_WATCHLIST_NAME)];
+            watchlistItems.addAll(viewModel.getAllStocksForWatchlist(PERMANENT_WATCHLIST_NAME));
+            for (int i=0; i < watchlistItems.size(); i++) {
+                myStocks[i] = watchlistItems.get(i).getSymbol();
+            }
+
+            // Start the stock updating service which grabs data from the external web
+            Intent dataRetrieverIntent = new Intent(getContext(), DataRetriever.class);
+            dataRetrieverIntent.putExtra("symbols", myStocks);
+            getActivity().startService(dataRetrieverIntent);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         viewModel.getStockList().observe(WatchlistFragment.this, new Observer<List<Stock>>() {
             @Override
@@ -95,9 +103,6 @@ public class WatchlistFragment extends Fragment {
                 mAdapter.updateItems(stocks);
             }
         });
-
-
-
 
     }
 

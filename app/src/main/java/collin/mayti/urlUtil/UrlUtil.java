@@ -31,8 +31,7 @@ public class UrlUtil{
     }
     private URL buildURLForStockPrice(List<String> symbols) throws MalformedURLException {
         String replacedString = PRICE_URL.replace("REPLACE", symbols.get(0));
-        URL requestURL = new URL(replacedString);
-        return requestURL;
+        return new URL(replacedString);
     }
 
 }

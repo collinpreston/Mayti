@@ -44,13 +44,13 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
             volumeTextView = v.findViewById(R.id.volume);
         }
 
-        public TextView getVolumeTextView() {
+        TextView getVolumeTextView() {
             return volumeTextView;
         }
-        public TextView getPriceTextView() {
+        TextView getPriceTextView() {
             return priceTextView;
         }
-        public TextView getSymbolTextView() {
+        TextView getSymbolTextView() {
             return symbolTextView;
         }
 
@@ -82,11 +82,11 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
 
         // Get element from your dataset at this position and replace the contents of the view
         // with that element.
-        viewHolder.getSymbolTextView().setText(watchlistItems.get(position).getSymbol().toString());
+        viewHolder.getSymbolTextView().setText(watchlistItems.get(position).getSymbol());
         try {
             // Try to get the price and volume if they've been populated.
-            viewHolder.getPriceTextView().setText(watchlistItems.get(position).getPrice().toString());
-            viewHolder.getVolumeTextView().setText(watchlistItems.get(position).getVolume().toString());
+            viewHolder.getPriceTextView().setText(watchlistItems.get(position).getPrice());
+            viewHolder.getVolumeTextView().setText(watchlistItems.get(position).getVolume());
         } catch (Exception e) {
             // Otherwise the data hasn't been collected and we need to display hashmarks indicating
             // the data isn't here.

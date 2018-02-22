@@ -1,7 +1,6 @@
 package collin.mayti.datacapture;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,14 +8,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import collin.mayti.urlUtil.UrlUtil;
 
 /**
  * Created by Collin on 1/13/2018.
  */
 
 public class GetJSONData extends AsyncTask <URL, Integer, String> {
-    private StringBuffer buffer;
 
     public GetJSONData(AsyncResponse taskComplete) {
         this.taskResponse = taskComplete;
@@ -31,7 +28,7 @@ public class GetJSONData extends AsyncTask <URL, Integer, String> {
     @Override
     protected String doInBackground(URL... urls) {
 
-        buffer = new StringBuffer();
+        StringBuffer buffer = new StringBuffer();
         try {
             URLConnection connection = urls[0].openConnection();
             connection.setConnectTimeout(30000);
@@ -41,7 +38,7 @@ public class GetJSONData extends AsyncTask <URL, Integer, String> {
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
-            String line = "";
+            String line;
 
             while ((line = reader.readLine()) != null) {
                 buffer.append(line).append('\n');

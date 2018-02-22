@@ -33,8 +33,6 @@ public class DailyWatchlistFragment extends Fragment {
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 1;
 
-    private static AppDatabase db;
-
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
@@ -44,7 +42,6 @@ public class DailyWatchlistFragment extends Fragment {
 
     protected RecyclerView mRecyclerView;
     protected MyWatchlistRecyclerViewAdapter mAdapter;
-    private WatchlistViewModel viewModel;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected List<Stock> watchlistItems = new ArrayList<>();
 
@@ -52,7 +49,7 @@ public class DailyWatchlistFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        db = MainActivity.db;
+        AppDatabase db = MainActivity.db;
 
         // TODO: Populate this list of all the watchlist items for the permanent watchlist
         // Need to get a list from the View Model
@@ -63,7 +60,7 @@ public class DailyWatchlistFragment extends Fragment {
         //watchlistItems.add(item1);
 
         // Initialize the viewModel for LiveData
-        viewModel = ViewModelProviders.of(this).get(WatchlistViewModel.class);
+        WatchlistViewModel viewModel = ViewModelProviders.of(this).get(WatchlistViewModel.class);
 
         // Start the stock updating service which grabs data from the external web
         Intent dataRetrieverIntent = new Intent(getContext(), DataRetriever.class);

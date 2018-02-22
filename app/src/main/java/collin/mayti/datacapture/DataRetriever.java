@@ -29,7 +29,7 @@ import collin.mayti.watchlistDB.AppDatabase;
 public class DataRetriever extends Service {
     Timer timer = new Timer();
     public List<String> stockSymbols = new ArrayList<>();
-    private String dataRetrievedString;
+
     public DataRetriever() {
 
     }
@@ -42,14 +42,12 @@ public class DataRetriever extends Service {
 
     private boolean isJSONDataValid(String dataFromConnection) {
         // TODO: test if the file comes back blank or with an error.
-        if (dataFromConnection == null) {
-            return false;
-        }
-        return true;
+        return dataFromConnection != null;
     }
     private JSONArray getQuotesAsJSON(List<String> symbols) throws MalformedURLException, JSONException, ExecutionException, InterruptedException {
 
-            do {
+        String dataRetrievedString;
+        do {
                 dataRetrievedString = new UrlUtil().getStockData(symbols);
                 System.out.println("CP: " + dataRetrievedString);
             } while (!isJSONDataValid(dataRetrievedString));
@@ -79,7 +77,7 @@ public class DataRetriever extends Service {
     private void updateDatabaseWithData(List <StockContent.StockItem> stockDataList) {
         AppDatabase db = MainActivity.db;
         for (StockContent.StockItem item : stockDataList) {
-            db.watchlistDao().updateBySymbol(item.price.toString(), item.volume.toString(), item.symbol);
+            db.watchlistDao().updateBySymbol(item.price, item.volume, item.symbol);
             System.out.println(db.watchlistDao().findBySymbol(item.symbol));
         }
 

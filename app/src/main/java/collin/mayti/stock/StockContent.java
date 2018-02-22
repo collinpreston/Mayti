@@ -2,12 +2,6 @@ package collin.mayti.stock;
 
 import android.arch.lifecycle.LiveData;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 
 /**
  * Created by Collin on 1/6/2018.
