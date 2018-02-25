@@ -69,28 +69,34 @@ public class WatchlistFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Initialize a local instance of the database
-        AppDatabase db = MainActivity.db;
+
+        // TODO: Think about breaking all of this up into methods
 
         // Initialize the viewModel for LiveData
         WatchlistViewModel viewModel = ViewModelProviders.of(this).get(WatchlistViewModel.class);
 
-
-        // TODO: Need to clear the watchlistItems arraylist before adding to it again.  Otherwise
-        // I will have duplicate entries in the arraylist.
         // Add each items symbol to this string array.  This gets passed to the data retriever.
         final String[] myStocks;
+        watchlistItems.clear();
+
         try {
-            myStocks = new String[viewModel.getTotalNumberOfStocksForWatchlist(PERMANENT_WATCHLIST_NAME)];
+            // Add all of the stocks for the watchlist to the watchlistItems list.
             watchlistItems.addAll(viewModel.getAllStocksForWatchlist(PERMANENT_WATCHLIST_NAME));
+            // Set the size of the myStocks array equal to the total number of stocks in the watchlist.
+            myStocks = new String[watchlistItems.size()];
+
+            // Loop through the watchlistItems list and add each symbol to the myStocks array.
             for (int i=0; i < watchlistItems.size(); i++) {
                 myStocks[i] = watchlistItems.get(i).getSymbol();
+                //viewModel.addItem(watchlistItems.get(i));
             }
 
             // Start the stock updating service which grabs data from the external web
-            Intent dataRetrieverIntent = new Intent(getContext(), DataRetriever.class);
-            dataRetrieverIntent.putExtra("symbols", myStocks);
-            getActivity().startService(dataRetrieverIntent);
+            if (myStocks.length != 0) {
+                Intent dataRetrieverIntent = new Intent(getContext(), DataRetriever.class);
+                dataRetrieverIntent.putExtra("symbols", myStocks);
+                getActivity().startService(dataRetrieverIntent);
+            }
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -103,7 +109,6 @@ public class WatchlistFragment extends Fragment {
                 mAdapter.updateItems(stocks);
             }
         });
-
     }
 
     @Override

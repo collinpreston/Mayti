@@ -6,16 +6,16 @@ package collin.mayti;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import collin.mayti.watchlist.watchlistFragments.DailyWatchlistFragment;
 import collin.mayti.watchlist.watchlistFragments.WatchlistFragment;
 import collin.mayti.watchlist.watchlistFragments.WeeklyWatchlistFragment;
 
-public class Fragment_Pager extends FragmentStatePagerAdapter {
+public class Fragment_Pager extends FragmentPagerAdapter {
     public Fragment_Pager(FragmentManager fm) {
         super(fm);
-        // TODO Auto-generated constructor stub
     }
     @Override
     public Fragment getItem(int i) {
@@ -33,9 +33,7 @@ public class Fragment_Pager extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
-        // return 3;
-        return 1; //No of Tabs
+        return 3; //No of Tabs
     }
 
 }

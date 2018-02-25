@@ -1,6 +1,7 @@
 package collin.mayti.watchlist;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -27,14 +28,36 @@ public class WatchlistPage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.watchlist_viewpager_page, container, false);
-        // ViewPager and its adapters use support library
-        // fragments, so use getSupportFragmentManager.
+        TabLayout tabLayout = rootView.findViewById(R.id.tabLayout);
+        tabLayout.addTab(tabLayout.newTab().setText("Watchlist"));
+        tabLayout.addTab(tabLayout.newTab().setText("Day"));
+        tabLayout.addTab(tabLayout.newTab().setText("Week"));
+
         viewPager = rootView.findViewById(R.id.pager);
         pagerAdapter =
                 new Fragment_Pager(
-                        getFragmentManager());
+                        getChildFragmentManager());
         viewPager = rootView.findViewById(R.id.pager);
         viewPager.setAdapter(pagerAdapter);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
         return rootView;
     }
 

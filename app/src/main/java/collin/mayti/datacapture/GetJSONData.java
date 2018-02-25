@@ -28,7 +28,7 @@ public class GetJSONData extends AsyncTask <URL, Integer, String> {
     @Override
     protected String doInBackground(URL... urls) {
 
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         try {
             URLConnection connection = urls[0].openConnection();
             connection.setConnectTimeout(30000);
