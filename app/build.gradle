@@ -51,4 +51,7 @@ dependencies {
 
     // Custom bottom navigation
     compile 'com.aurelhubert:ahbottomnavigation:2.1.0'
+
+    // Floating Action Button to sheet menu
+    compile 'com.gordonwong:material-sheet-fab:1.2.1'
 }

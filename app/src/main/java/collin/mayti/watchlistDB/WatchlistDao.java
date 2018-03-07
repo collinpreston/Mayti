@@ -41,4 +41,6 @@ public interface WatchlistDao {
     @Query("SELECT * FROM watchlist WHERE watchlist = :watchlist")
     List<Stock> getAllStocksForWatchlist(String watchlist);
 
+    @Query("SELECT * FROM watchlist WHERE watchlist = :watchlist")
+    LiveData<List<Stock>> getLiveDataForWatchlist(String watchlist);
 }

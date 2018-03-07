@@ -22,3 +22,4 @@
 -keepclassmembers class android.support.design.internal.BottomNavigationMenuView {
     boolean mShiftingMode;
 }
+-keep class io.codetail.animation.arcanimator.** { *; }

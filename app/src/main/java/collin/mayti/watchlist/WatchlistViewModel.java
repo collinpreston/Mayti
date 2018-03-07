@@ -21,7 +21,13 @@ public class WatchlistViewModel extends AndroidViewModel {
     private static int totalNumberOfRowsForWatchlist;
     private static List<Stock> stocksForWatchlist;
 
+    private static final String DAILY_WATCHLIST_NAME = "daily_watchlist";
+    private static final String WEEKLY_WATCHLIST_NAME = "weekly_watchlist";
+    private static final String PERMANENT_WATCHLIST_NAME = "permanent_watchlist";
+
     private final LiveData<List<Stock>> stockList;
+    private final LiveData<List<Stock>> dailyStockList;
+    private final LiveData<List<Stock>> weeklyStockList;
 
     private AppDatabase appDatabase;
 
@@ -31,10 +37,24 @@ public class WatchlistViewModel extends AndroidViewModel {
 
         appDatabase = AppDatabase.getDatabase(this.getApplication());
 
-        stockList = appDatabase.watchlistDao().getAll();
+        stockList = appDatabase.watchlistDao().getLiveDataForWatchlist(PERMANENT_WATCHLIST_NAME);
+        dailyStockList = appDatabase.watchlistDao().getLiveDataForWatchlist(DAILY_WATCHLIST_NAME);
+        weeklyStockList = appDatabase.watchlistDao().getLiveDataForWatchlist(WEEKLY_WATCHLIST_NAME);
     }
     public LiveData<List<Stock>> getStockList() {
         return stockList;
+    }
+
+    public LiveData<List<Stock>> getStockListForWatchlist(String watchlistID) {
+        switch (watchlistID) {
+            case PERMANENT_WATCHLIST_NAME:
+                return stockList;
+            case DAILY_WATCHLIST_NAME:
+                return dailyStockList;
+            case WEEKLY_WATCHLIST_NAME:
+                return weeklyStockList;
+        }
+        return null;
     }
 
     public void deleteItem(Stock stock) {

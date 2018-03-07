@@ -7,7 +7,6 @@ package collin.mayti;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 
 import collin.mayti.watchlist.watchlistFragments.DailyWatchlistFragment;
 import collin.mayti.watchlist.watchlistFragments.WatchlistFragment;

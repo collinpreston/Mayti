@@ -33,12 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import collin.mayti.MainActivity;
 import collin.mayti.R;
 import collin.mayti.datacapture.DataRetriever;
 import collin.mayti.watchlist.MyWatchlistRecyclerViewAdapter;
 import collin.mayti.watchlist.WatchlistViewModel;
-import collin.mayti.watchlistDB.AppDatabase;
 import collin.mayti.watchlistDB.Stock;
 
 
@@ -88,7 +86,6 @@ public class WatchlistFragment extends Fragment {
             // Loop through the watchlistItems list and add each symbol to the myStocks array.
             for (int i=0; i < watchlistItems.size(); i++) {
                 myStocks[i] = watchlistItems.get(i).getSymbol();
-                //viewModel.addItem(watchlistItems.get(i));
             }
 
             // Start the stock updating service which grabs data from the external web
@@ -103,7 +100,7 @@ public class WatchlistFragment extends Fragment {
             e.printStackTrace();
         }
 
-        viewModel.getStockList().observe(WatchlistFragment.this, new Observer<List<Stock>>() {
+        viewModel.getStockListForWatchlist(PERMANENT_WATCHLIST_NAME).observe(WatchlistFragment.this, new Observer<List<Stock>>() {
             @Override
             public void onChanged(@Nullable List<Stock> stocks) {
                 mAdapter.updateItems(stocks);
