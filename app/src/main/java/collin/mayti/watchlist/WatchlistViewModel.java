@@ -20,6 +20,7 @@ public class WatchlistViewModel extends AndroidViewModel {
     private static int totalNumberOfRowsForDB;
     private static int totalNumberOfRowsForWatchlist;
     private static List<Stock> stocksForWatchlist;
+    private static String watchlistsForStock = "";
 
     private static final String DAILY_WATCHLIST_NAME = "daily_watchlist";
     private static final String WEEKLY_WATCHLIST_NAME = "weekly_watchlist";
@@ -144,6 +145,7 @@ public class WatchlistViewModel extends AndroidViewModel {
             return null;
         }
     }
+
     public List<Stock> getAllStocksForWatchlist(String watchlistName) throws ExecutionException, InterruptedException {
         new getAllStocksForWatchlistAsyncTask(appDatabase, watchlistName).execute().get();
         return stocksForWatchlist;
@@ -165,6 +167,32 @@ public class WatchlistViewModel extends AndroidViewModel {
                 stocksForWatchlist = db.watchlistDao().getAllStocksForWatchlist(watchlistID);
             } catch (Exception e) {
                 // This list will have to be validated by the receiving method.
+            }
+            return null;
+        }
+    }
+
+    public String getWatchlistsBySymbol(String symbol) throws ExecutionException, InterruptedException {
+        new getWatchlistsBySymbolAsyncTask(appDatabase, symbol).execute().get();
+        return watchlistsForStock;
+    }
+
+    private static class getWatchlistsBySymbolAsyncTask extends AsyncTask<String, Void, Void> {
+
+        private AppDatabase db;
+        private String mSymbol;
+
+        getWatchlistsBySymbolAsyncTask(AppDatabase appDatabase, String symbol) {
+            db = appDatabase;
+            mSymbol = symbol;
+        }
+
+        @Override
+        protected Void doInBackground(String... string) {
+            try {
+                watchlistsForStock = db.watchlistDao().getWatchlistsForSymbol(mSymbol);
+            } catch (Exception e) {
+                watchlistsForStock = "";
             }
             return null;
         }

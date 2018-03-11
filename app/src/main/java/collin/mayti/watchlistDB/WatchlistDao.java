@@ -20,6 +20,9 @@ public interface WatchlistDao {
     @Query("SELECT * FROM watchlist WHERE symbol LIKE :symbol LIMIT 1")
     LiveData<Stock> findBySymbol(String symbol);
 
+    @Query("SELECT watchlist FROM watchlist WHERE symbol like :symbol LIMIT 1")
+    String getWatchlistsForSymbol(String symbol);
+
     @Insert
     void insertAll(Stock... stocks);
 

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import collin.mayti.MainActivity;
@@ -16,7 +17,9 @@ import collin.mayti.applicationSettingsDB.SettingObject;
 import collin.mayti.applicationSettingsDB.SettingViewModel;
 import collin.mayti.datacapture.DailyUpdateDataRetriever;
 import collin.mayti.stockSymbolDB.SymbolDatabase;
+import collin.mayti.watchlist.WatchlistViewModel;
 import collin.mayti.watchlistDB.AppDatabase;
+import collin.mayti.watchlistDB.Stock;
 
 /**
  * Created by chpreston on 3/10/18.
@@ -27,6 +30,9 @@ import collin.mayti.watchlistDB.AppDatabase;
  * which require database updates and downloading updated data from servers.
  */
 public class SplashScreenActivity extends AppCompatActivity {
+
+    private static final String DAILY_WATCHLIST_NAME = "daily_watchlist";
+    private static final String WEEKLY_WATCHLIST_NAME = "weekly_watchlist";
 
 
     @Override
@@ -107,8 +113,12 @@ public class SplashScreenActivity extends AppCompatActivity {
      * @param viewModel
      */
     private void populateSettingDatabase(SettingViewModel viewModel) {
+        addSettingToSettingDatabase(viewModel, "SYMBOL_DATABASE_LAST_UPDATE");
+    }
+
+    private void addSettingToSettingDatabase(SettingViewModel viewModel, String settingID) {
         SettingObject settingObject = new SettingObject();
-        settingObject.setSettingID("SYMBOL_DATABASE_LAST_UPDATE");
+        settingObject.setSettingID(settingID);
         settingObject.setSettingValue("");
         viewModel.addItem(settingObject);
     }
@@ -118,7 +128,12 @@ public class SplashScreenActivity extends AppCompatActivity {
      * items today.  If the watchlist database has not already been cleaned today, it will clean the
      * watchlist database of expired watchlist items.
      */
-    private void cleanWatchlistDatabase() {
+    private void cleanWatchlistDatabase() throws ExecutionException, InterruptedException {
+        WatchlistViewModel viewModel = ViewModelProviders.of(this).get(WatchlistViewModel.class);
+
+        // First check the daily stocks.
+        List<Stock> stockList = viewModel.getAllStocksForWatchlist("DAILY_WATCHLIST_NAME");
+
         // TODO
 
     }

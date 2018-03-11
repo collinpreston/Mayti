@@ -14,7 +14,7 @@ import java.sql.Date;
  */
 
 
-@Entity(tableName = "watchlist", indices = {@Index(value = "symbol", unique = true)})
+@Entity(tableName = "watchlist", indices = {@Index(value = "symbol")}, primaryKeys = {"symbol", "watchlist"})
     public class Stock {
         public int getPositionID() {
             return positionID;
@@ -64,7 +64,6 @@ import java.sql.Date;
             this.dateToRemove = dateToRemove;
         }
 
-        @PrimaryKey
         @NonNull
         private String symbol;
 
@@ -77,6 +76,7 @@ import java.sql.Date;
         @ColumnInfo(name = "volume")
         private String volume;
 
+        @NonNull
         @ColumnInfo(name = "watchlist")
         private String watchlist;
 
