@@ -27,7 +27,6 @@ import collin.mayti.watchlistDB.AppDatabase;
  */
 
 public class DataRetriever extends Service {
-    Timer timer = new Timer();
     public List<String> stockSymbols = new ArrayList<>();
 
     public DataRetriever() {
@@ -106,6 +105,7 @@ public class DataRetriever extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Timer timer = new Timer();
         stockSymbols = Arrays.asList(intent.getStringArrayExtra("symbols"));
         timer.schedule(new DelayedTask(),300, 5000);
         return super.onStartCommand(intent, flags, startId);

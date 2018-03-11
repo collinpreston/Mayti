@@ -118,6 +118,7 @@ public class WatchlistViewModel extends AndroidViewModel {
             return null;
         }
     }
+
     public int getTotalNumberOfStocksForWatchlist(String watchlistName) throws ExecutionException, InterruptedException {
         new getTotalNumberOfStocksForWatchlistAsyncTask(appDatabase, watchlistName).execute().get();
         return totalNumberOfRowsForWatchlist;

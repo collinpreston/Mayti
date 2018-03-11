@@ -12,7 +12,9 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 
 import collin.mayti.addRemoveStock.AddStockPage;
+import collin.mayti.applicationSettingsDB.SettingDatabase;
 import collin.mayti.notifications.NotificationsPage;
+import collin.mayti.stockSymbolDB.SymbolDatabase;
 import collin.mayti.watchlist.WatchlistPage;
 import collin.mayti.watchlistDB.AppDatabase;
 
@@ -21,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     BottomBarAdapter pagerAdapter;
     AHBottomNavigation bottomNavigation;
     public static AppDatabase db;
+    public static SymbolDatabase symbolDb;
+    public static SettingDatabase settingDatabase;
 
 
     @SuppressLint("ResourceAsColor")
@@ -35,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize database
         db = AppDatabase.getDatabase(getApplicationContext());
+
+        // Initialize symbol database
+        symbolDb = SymbolDatabase.getDatabase(getApplicationContext());
+
+        // Initialize setting database
+        settingDatabase = SettingDatabase.getDatabase(getApplicationContext());
 
         // Setup the viewpager used for the bottom navigation
         setupViewPager();

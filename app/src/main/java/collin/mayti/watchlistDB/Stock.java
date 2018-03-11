@@ -56,12 +56,12 @@ import java.sql.Date;
             this.watchlist = watchlist;
         }
 
-        public Date getDateAdded() {
-            return dateAdded;
+        public Date getDateToRemove() {
+            return dateToRemove;
         }
 
-        public void setDateAdded(Date dateAdded) {
-            this.dateAdded = dateAdded;
+        public void setDateToRemove(Date dateToRemove) {
+            this.dateToRemove = dateToRemove;
         }
 
         @PrimaryKey
@@ -82,7 +82,7 @@ import java.sql.Date;
 
         @ColumnInfo
         @TypeConverters(DateConverter.class)
-        private Date dateAdded;
+        private Date dateToRemove;
 
 }
 

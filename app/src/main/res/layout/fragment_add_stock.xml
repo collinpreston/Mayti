@@ -38,6 +38,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Your FAB implementation -->
+    <LinearLayout
+        android:id="@+id/linearLayoutStockDtlsList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/searchSymbolEditTxt"></LinearLayout>
+
     <collin.mayti.addRemoveStock.Fab
         android:id="@+id/fab"
         style="@style/Widget.MaterialSheetFab.Fab"
@@ -92,7 +100,6 @@
                     android:id="@+id/fab_sheet_item_weekly_watchlist"
                     style="@style/TextAppearance.MaterialSheetFab.Sheet.Item"
                     android:text="Weekly" />
-
 
             </LinearLayout>
 

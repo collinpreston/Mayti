@@ -1,12 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/darkBlue</item>
-        <item name="colorPrimaryDark">@color/darkBlue</item>
-        <item name="colorAccent">@color/redHighlight</item>
-    </style>
     <style name="TextAppearance.MaterialSheetFab.Sheet.Item" parent="">
         <item name="android:layout_width">@dimen/sheet_width</item>
         <item name="android:layout_height">wrap_content</item>
@@ -40,6 +33,20 @@
         <item name="cardElevation">@dimen/fab_sheet_elevation</item>
         <item name="cardMaxElevation">@dimen/fab_sheet_elevation</item>
         <item name="contentPadding">-3dp</item>
+    </style>
+
+    <!-- Splash Screen style -->
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/darkBlue</item>
+        <item name="colorPrimaryDark">@color/darkBlue</item>
+        <item name="colorAccent">@color/redHighlight</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 
 </resources>

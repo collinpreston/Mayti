@@ -43,4 +43,7 @@ public interface WatchlistDao {
 
     @Query("SELECT * FROM watchlist WHERE watchlist = :watchlist")
     LiveData<List<Stock>> getLiveDataForWatchlist(String watchlist);
+
+    @Query("DELETE FROM watchlist WHERE dateToRemove < date('now')")
+    void cleanWatchlistDatabase();
 }

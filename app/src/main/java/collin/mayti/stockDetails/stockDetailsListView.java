@@ -25,7 +25,7 @@ public class stockDetailsListView extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_stock_details, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_stock_details_list, container, false);
         rootView.setTag(TAG);
 
         // TODO: I'll have to get the stock symbol from the search on the add page.  Then I will need to

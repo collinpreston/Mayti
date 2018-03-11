@@ -54,4 +54,7 @@ dependencies {
 
     // Floating Action Button to sheet menu
     compile 'com.gordonwong:material-sheet-fab:1.2.1'
+
+    // Graphing and chart builder
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 }
