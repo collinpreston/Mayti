@@ -5,6 +5,8 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -21,6 +23,7 @@ public class WatchlistViewModel extends AndroidViewModel {
     private static int totalNumberOfRowsForWatchlist;
     private static List<Stock> stocksForWatchlist;
     private static String watchlistsForStock = "";
+    private static Stock stockItem;
 
     private static final String DAILY_WATCHLIST_NAME = "daily_watchlist";
     private static final String WEEKLY_WATCHLIST_NAME = "weekly_watchlist";
@@ -91,6 +94,10 @@ public class WatchlistViewModel extends AndroidViewModel {
 
         @Override
         protected Void doInBackground(final Stock... params) {
+            if (params[0].getWatchlist().equals(DAILY_WATCHLIST_NAME)) {
+                Date dateToRemove = new Date(System.currentTimeMillis());
+                params[0].setDateToRemove(dateToRemove);
+            }
             db.watchlistDao().insertStock(params[0]);
             return null;
         }
@@ -172,27 +179,29 @@ public class WatchlistViewModel extends AndroidViewModel {
         }
     }
 
-    public String getWatchlistsBySymbol(String symbol) throws ExecutionException, InterruptedException {
-        new getWatchlistsBySymbolAsyncTask(appDatabase, symbol).execute().get();
-        return watchlistsForStock;
+    public Stock findBySymbolAndWatchlist(String watchlistName, String symbol) throws ExecutionException, InterruptedException {
+        stockItem = null;
+        new findBySymbolAndWatchlistAsyncTask(appDatabase, watchlistName, symbol).execute().get();
+        return stockItem;
     }
 
-    private static class getWatchlistsBySymbolAsyncTask extends AsyncTask<String, Void, Void> {
+    private static class findBySymbolAndWatchlistAsyncTask extends AsyncTask<String, Void, Void> {
 
         private AppDatabase db;
-        private String mSymbol;
+        private String watchlistID;
+        private String symbolID;
 
-        getWatchlistsBySymbolAsyncTask(AppDatabase appDatabase, String symbol) {
+        findBySymbolAndWatchlistAsyncTask(AppDatabase appDatabase, String watchlistName, String symbol) {
             db = appDatabase;
-            mSymbol = symbol;
+            watchlistID = watchlistName;
+            symbolID = symbol;
         }
 
         @Override
-        protected Void doInBackground(String... string) {
+        protected Void doInBackground(String... watchlistName) {
             try {
-                watchlistsForStock = db.watchlistDao().getWatchlistsForSymbol(mSymbol);
+                stockItem = db.watchlistDao().findBySymbolAndWatchlist(symbolID, watchlistID);
             } catch (Exception e) {
-                watchlistsForStock = "";
             }
             return null;
         }

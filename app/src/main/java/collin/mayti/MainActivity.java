@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
         pagerAdapter = new BottomBarAdapter(getSupportFragmentManager());
 
         // Initialize the three bottom navigation page Fragments and add them to the viewPager
-        // TODO: Once working, replace WatchlistFragment with the viewpager: WatchlistPage
         pagerAdapter.addFragments(new WatchlistPage());
         pagerAdapter.addFragments(new AddStockPage());
         pagerAdapter.addFragments(new NotificationsPage());

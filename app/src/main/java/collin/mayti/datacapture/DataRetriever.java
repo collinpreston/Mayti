@@ -40,24 +40,23 @@ public class DataRetriever extends Service {
     }
 
     private boolean isJSONDataValid(String dataFromConnection) {
-        // TODO: test if the file comes back blank or with an error.
-        return dataFromConnection != null;
+        return dataFromConnection != null && !dataFromConnection.isEmpty();
     }
     private JSONArray getQuotesAsJSON(List<String> symbols) throws MalformedURLException, JSONException, ExecutionException, InterruptedException {
 
         String dataRetrievedString;
         do {
+                // TODO: Test for internet connection instead of spamming the server with requests.
                 dataRetrievedString = new UrlUtil().getStockData(symbols);
                 System.out.println("CP: " + dataRetrievedString);
             } while (!isJSONDataValid(dataRetrievedString));
 
             JSONObject dataObj = new JSONObject(dataRetrievedString);
             JSONArray stockData;
-            // TODO: Make this a private static variable.
             stockData = dataObj.getJSONArray("Stock Quotes");
             return stockData;
     }
-    public List<StockContent.StockItem> getQuotesAsList(List<String> symbols)
+    private List<StockContent.StockItem> getQuotesAsList(List<String> symbols)
             throws MalformedURLException, JSONException, ExecutionException, InterruptedException {
         JSONArray quotesJSON = getQuotesAsJSON(symbols);
         List <StockContent.StockItem> watchlistData = new ArrayList<>();
@@ -77,7 +76,6 @@ public class DataRetriever extends Service {
         AppDatabase db = MainActivity.db;
         for (StockContent.StockItem item : stockDataList) {
             db.watchlistDao().updateBySymbol(item.price, item.volume, item.symbol);
-            System.out.println(db.watchlistDao().findBySymbol(item.symbol));
         }
 
     }

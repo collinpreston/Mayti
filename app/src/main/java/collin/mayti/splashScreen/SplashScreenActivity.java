@@ -42,8 +42,8 @@ public class SplashScreenActivity extends AppCompatActivity {
         initializeAllDatabases();
 
         try {
-            // Need to set a timeout amount for this.
             checkSymbolDatabaseLastUpdate();
+            cleanWatchlistDatabase();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -81,11 +81,12 @@ public class SplashScreenActivity extends AppCompatActivity {
             if (symbolDatabaseLastUpdate.getSettingValue().equals("")) {
                 updateSymbolDatabaseAndSetting(currentDateString, viewModel);
             } else {
+                // If it gets to this point, the app has been opened previously and connected to the
+                // internet in the past.
                 Date settingValue = DateFormat.getDateInstance().parse(symbolDatabaseLastUpdate.getSettingValue());
                 Date currentDate = DateFormat.getDateInstance().parse(currentDateString);
                 if (settingValue.before(currentDate)) {
                     updateSymbolDatabaseAndSetting(currentDateString, viewModel);
-
                 }
             }
         }
@@ -132,10 +133,24 @@ public class SplashScreenActivity extends AppCompatActivity {
         WatchlistViewModel viewModel = ViewModelProviders.of(this).get(WatchlistViewModel.class);
 
         // First check the daily stocks.
-        List<Stock> stockList = viewModel.getAllStocksForWatchlist("DAILY_WATCHLIST_NAME");
+        List<Stock> stockList = viewModel.getAllStocksForWatchlist(DAILY_WATCHLIST_NAME);
+        if (stockList != null && stockList.size() > 0) {
+            for (Stock stockItem : stockList) {
+                if (stockItem.getDateToRemove().before(java.sql.Date.valueOf(String.valueOf(System.currentTimeMillis())))) {
+                    viewModel.deleteItem(stockItem);
+                }
+            }
+        }
 
-        // TODO
-
+        // Then check the weekly watchlist.
+        stockList = viewModel.getAllStocksForWatchlist(WEEKLY_WATCHLIST_NAME);
+        if (stockList != null && stockList.size() > 0) {
+            for (Stock stockItem : stockList) {
+                if (stockItem.getDateToRemove().before(java.sql.Date.valueOf(String.valueOf(System.currentTimeMillis())))) {
+                    viewModel.deleteItem(stockItem);
+                }
+            }
+        }
     }
 
     private void initializeAllDatabases() {

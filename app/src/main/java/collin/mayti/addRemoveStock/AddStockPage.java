@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import collin.mayti.R;
+import collin.mayti.applicationSettingsDB.SettingViewModel;
 import collin.mayti.stockSymbolDB.SymbolViewModel;
 import collin.mayti.watchlist.WatchlistViewModel;
 import collin.mayti.watchlistDB.Stock;
@@ -32,6 +33,7 @@ public class AddStockPage extends Fragment {
     private static final String WEEKLY_WATCHLIST_NAME = "weekly_watchlist";
     private static final String PERMANENT_WATCHLIST_NAME = "permanent_watchlist";
 
+
     private static List<String> symbolList;
     private WatchlistViewModel watchlistDBViewModel;
 
@@ -40,6 +42,20 @@ public class AddStockPage extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        SettingViewModel settingViewModel = ViewModelProviders.of(this).get(SettingViewModel.class);
+        try {
+            if (settingViewModel.readSetting("SYMBOL_DATABASE_LAST_UPDATE").equals("")) {
+                // TODO: The symbol database has not been populated.  Thus, the user can't search for
+                // stock symbols to add to watchlists.  So instead, we should try to download the symbol
+                // list once more.  If it fails, then we should display a "connect to the internet" page.
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         SymbolViewModel symbolDBViewModel = ViewModelProviders.of(this).get(SymbolViewModel.class);
         try {
             symbolList = symbolDBViewModel.readAllSymbols();
@@ -96,6 +112,7 @@ public class AddStockPage extends Fragment {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                materialSheetFab.hideSheet();
             }
         });
 
@@ -112,6 +129,7 @@ public class AddStockPage extends Fragment {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                materialSheetFab.hideSheet();
             }
         });
 
@@ -128,6 +146,7 @@ public class AddStockPage extends Fragment {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                materialSheetFab.hideSheet();
             }
         });
 
@@ -143,6 +162,7 @@ public class AddStockPage extends Fragment {
             if (symbolList.contains(searchSymbolEditTxt.getText().toString().toUpperCase())) {
                 // Show the fab.
                 materialSheetFab.showFab();
+                // TODO: This is where I will also need to show the full data details list.
 
             } else {
                 materialSheetFab.hideSheetThenFab();
@@ -154,7 +174,10 @@ public class AddStockPage extends Fragment {
     };
 
     private boolean isStockAlreadyInDatabaseOnWatchlist(Stock stock) throws ExecutionException, InterruptedException {
-        // TODO
+        if (watchlistDBViewModel.findBySymbolAndWatchlist(stock.getWatchlist(), stock.getSymbol()) == null) {
+            // The symbol and watchlist combination must exist in the database
+            return false;
+        }
         return true;
     }
 
@@ -163,13 +186,12 @@ public class AddStockPage extends Fragment {
         // If the stock is not already in the database for that watchlist, add to the database.
         if (!isStockAlreadyInDatabaseOnWatchlist(stock)) {
             watchlistDBViewModel.addItem(stock);
+            // Return true on successful insert.
             return true;
         }
         else {
             Toast.makeText(getActivity(), stock.getSymbol() + " is already on that watchlist.", Toast.LENGTH_SHORT).show();
         }
-
-        // Return true on successful insert.
         return false;
     }
 
