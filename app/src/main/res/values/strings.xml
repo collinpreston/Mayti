@@ -30,5 +30,7 @@
     <string name="week_52_high">Week 52 High</string>
     <string name="week_52_low">Week 52 Low</string>
     <string name="ytd_change">YTD Change</string>
+
+    <!-- JSON IEX keys -->
     <string name="company_name_key">companyName</string>
 </resources>

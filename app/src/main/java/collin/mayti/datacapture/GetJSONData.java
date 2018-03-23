@@ -15,34 +15,42 @@ import java.net.URLConnection;
 
 public class GetJSONData extends AsyncTask <URL, Integer, String> {
 
-    public GetJSONData(AsyncResponse taskComplete) {
+    public GetJSONData(AsyncResponse taskComplete, AsyncPreExecute preExec) {
         this.taskResponse = taskComplete;
+        this.taskPreExecute = preExec;
     }
 
     public interface AsyncResponse {
         void processFinish(String output);
     }
 
+    public interface AsyncPreExecute {
+        void preExecute();
+    }
+
     private final AsyncResponse taskResponse;
+    private final AsyncPreExecute taskPreExecute;
 
     @Override
     protected String doInBackground(URL... urls) {
 
         StringBuilder buffer = new StringBuilder();
         try {
-            URLConnection connection = urls[0].openConnection();
-            connection.setConnectTimeout(30000);
-            connection.setReadTimeout(60000);
-            connection.connect();
-            InputStream stream = connection.getInputStream();
+//            URLConnection connection = urls[0].openConnection();
+//            connection.setConnectTimeout(3000);
+//            connection.setReadTimeout(6000);
+//            connection.connect();
+//            InputStream stream = connection.getInputStream();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(urls[0].openStream()));
 
             String line;
 
             while ((line = reader.readLine()) != null) {
                 buffer.append(line).append('\n');
             }
+           // stream.close();
+
 
         } catch (IOException ignored) {
         }
@@ -53,9 +61,15 @@ public class GetJSONData extends AsyncTask <URL, Integer, String> {
     protected void onPostExecute(String s) {
         // In onPostExecute we check if the listener is valid
         if(this.taskResponse != null) {
-
             // And if it is we call the callback function on it.
             this.taskResponse.processFinish(s);
+        }
+    }
+
+    @Override
+    protected void onPreExecute() {
+        if (this.taskPreExecute != null) {
+            this.taskPreExecute.preExecute();
         }
     }
 }

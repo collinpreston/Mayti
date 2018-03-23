@@ -1,6 +1,7 @@
 package collin.mayti.addRemoveStock;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -13,12 +14,21 @@ import android.widget.Toast;
 
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import collin.mayti.R;
 import collin.mayti.applicationSettingsDB.SettingViewModel;
+import collin.mayti.datacapture.GetJSONData;
 import collin.mayti.stockSymbolDB.SymbolViewModel;
+import collin.mayti.urlUtil.UrlUtil;
 import collin.mayti.watchlist.WatchlistViewModel;
 import collin.mayti.watchlistDB.Stock;
 
@@ -29,16 +39,20 @@ import static android.content.ContentValues.TAG;
  */
 
 public class AddStockPage extends Fragment {
+    protected String FULL_DATA_URL = "https://api.iextrading.com/1.0/stock/REPLACE/quote";
+    private String fullDataStream;
+
     private static final String DAILY_WATCHLIST_NAME = "daily_watchlist";
     private static final String WEEKLY_WATCHLIST_NAME = "weekly_watchlist";
     private static final String PERMANENT_WATCHLIST_NAME = "permanent_watchlist";
-
 
     private static List<String> symbolList;
     private WatchlistViewModel watchlistDBViewModel;
 
     private MaterialSheetFab materialSheetFab;
     private EditText searchSymbolEditTxt;
+
+    private View rootView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +86,7 @@ public class AddStockPage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_add_stock, container, false);
+        rootView = inflater.inflate(R.layout.fragment_add_stock, container, false);
         rootView.setTag(TAG);
 
         // Initialize the viewModel
@@ -162,7 +176,18 @@ public class AddStockPage extends Fragment {
             if (symbolList.contains(searchSymbolEditTxt.getText().toString().toUpperCase())) {
                 // Show the fab.
                 materialSheetFab.showFab();
-                // TODO: This is where I will also need to show the full data details list.
+
+                // Get the data for the full details list.
+                try {
+                    getFullData(searchSymbolEditTxt.getText().toString());
+                } catch (ExecutionException e) {
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
 
             } else {
                 materialSheetFab.hideSheetThenFab();
@@ -193,6 +218,95 @@ public class AddStockPage extends Fragment {
             Toast.makeText(getActivity(), stock.getSymbol() + " is already on that watchlist.", Toast.LENGTH_SHORT).show();
         }
         return false;
+    }
+
+    private boolean isJSONDataValid(String dataFromConnection) {
+        return dataFromConnection != null && !dataFromConnection.isEmpty();
+    }
+
+    private JSONArray getFullDataAsJSON(String symbol) throws InterruptedException, ExecutionException, MalformedURLException, JSONException {
+        String dataRetrievedString;
+        // TODO: Test for internet connection instead of spamming the server with requests.
+        dataRetrievedString = getFullStockData(symbol);
+        System.out.println("CP: " + dataRetrievedString);
+        JSONArray stockData = null;
+        if (isJSONDataValid(dataRetrievedString)) {
+            JSONObject dataObj = new JSONObject(dataRetrievedString);
+            // TODO: need to change this to conform with IEX JSON format.
+            stockData = dataObj.getJSONArray("");
+        }
+        return stockData;
+    }
+
+    /**
+     * This method is called to retrieve the full data associated with a stock symbol.  It takes the
+     * stock symbol as a parameter and returns a hashmap using the field as the key and the field value
+     * as the value.
+     * @param symbol
+     * @return
+     */
+    private HashMap<String, String> getFullDataAsHashMap(String symbol) throws InterruptedException, ExecutionException, MalformedURLException, JSONException {
+        // Call to private method to get the JSON string of data.
+        JSONArray quotesJSON = getFullDataAsJSON(symbol);
+        if (quotesJSON != null) {
+            HashMap<String, String> fullDataMap = new HashMap<>();
+            for (int i = 0; i < quotesJSON.length(); i++) {
+
+                JSONObject quoteJSON = quotesJSON.getJSONObject(i);
+
+                // TODO: Finish exporting to/importing these strings from strings.xml
+                fullDataMap.put("Symbol", quoteJSON.getString("symbol"));
+                fullDataMap.put("Company Name", quoteJSON.getString("companyName"));
+                fullDataMap.put("Exchange", quoteJSON.getString("primaryExchange"));
+                fullDataMap.put("Calculation Price", quoteJSON.getString("calculationPrice"));
+                fullDataMap.put("open", quoteJSON.getString("open"));
+                fullDataMap.put("openTime", quoteJSON.getString("openTime"));
+                fullDataMap.put("close", quoteJSON.getString("close"));
+                fullDataMap.put("closeTime", quoteJSON.getString("closeTime"));
+                fullDataMap.put("high", quoteJSON.getString("high"));
+                fullDataMap.put("low", quoteJSON.getString("low"));
+                fullDataMap.put("latestPrice", quoteJSON.getString("latestPrice"));
+                fullDataMap.put("latestSource", quoteJSON.getString("latestSource"));
+                fullDataMap.put("latestTime", quoteJSON.getString("latestTime"));
+                fullDataMap.put("latestUpdate", quoteJSON.getString("latestUpdate"));
+                fullDataMap.put("latestVolume", quoteJSON.getString("latestVolume"));
+                fullDataMap.put("previousClose", quoteJSON.getString("previousClose"));
+                fullDataMap.put("change", quoteJSON.getString("changePercent"));
+                fullDataMap.put("marketCap", quoteJSON.getString("marketCap"));
+                fullDataMap.put("peRatio", quoteJSON.getString("peRatio"));
+                fullDataMap.put("week52High", quoteJSON.getString("week52High"));
+                fullDataMap.put("week52Low", quoteJSON.getString("week52Low"));
+                fullDataMap.put("ytdChange", quoteJSON.getString("ytdChange"));
+                return fullDataMap;
+            }
+        }
+        return null;
+    }
+
+    private HashMap<String, String> getFullData(String symbol) throws ExecutionException, InterruptedException, MalformedURLException, JSONException {
+        return getFullDataAsHashMap(symbol);
+    }
+
+    private String getFullStockData (String symbol) throws MalformedURLException, ExecutionException, InterruptedException {
+        UrlUtil urlUtil = new UrlUtil();
+        URL requestURL = urlUtil.buildURLForFullStockData(symbol);
+        GetJSONData getJSONData = new GetJSONData(new GetJSONData.AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                fullDataStream = output;
+                rootView.findViewById(R.id.progressBar).setVisibility(rootView.GONE);
+                // At this point I also want to display the listview.
+
+                System.out.println(fullDataStream);
+            }
+        }, new GetJSONData.AsyncPreExecute() {
+            @Override
+            public void preExecute() {
+                rootView.findViewById(R.id.progressBar).setVisibility(rootView.VISIBLE);
+            }
+        });
+        getJSONData.execute(requestURL);
+        return fullDataStream;
     }
 
 }

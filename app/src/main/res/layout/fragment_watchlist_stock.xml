@@ -35,7 +35,7 @@
                 android:textSize="20sp"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent"
-                tools:text="DVAX"
+                tools:text=""
                 android:layout_marginLeft="16dp" />
 
             <TextView

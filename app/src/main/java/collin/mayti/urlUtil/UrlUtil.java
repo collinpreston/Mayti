@@ -1,5 +1,6 @@
 package collin.mayti.urlUtil;
 
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -17,8 +18,6 @@ public class UrlUtil{
     protected String FULL_DATA_URL = "https://api.iextrading.com/1.0/stock/REPLACE/quote";
 
     private String dataStream;
-    private String fullDataStream;
-
 
     public String getStockData(List<String> symbols) throws MalformedURLException, ExecutionException, InterruptedException {
         URL requestURL = buildURLForStockPrice(symbols);
@@ -27,30 +26,23 @@ public class UrlUtil{
             public void processFinish(String output) {
                 dataStream = output;
             }
+        }, new GetJSONData.AsyncPreExecute() {
+            @Override
+            public void preExecute() {
+                // Intentionally left empty.
+            }
         });
         getJSONData.execute(requestURL).get();
         return dataStream;
     }
     private URL buildURLForStockPrice(List<String> symbols) throws MalformedURLException {
+        // TODO: Should this still be a list?
         String replacedString = PRICE_URL.replace("REPLACE", symbols.get(0));
         return new URL(replacedString);
     }
-
-    private URL buildURLForFullStockData(String symbol) throws MalformedURLException {
+    public URL buildURLForFullStockData(String symbol) throws MalformedURLException {
         String replacedString = FULL_DATA_URL.replace("REPLACE", symbol);
         return new URL(replacedString);
-    }
-    public String getFullStockData (String symbol) throws MalformedURLException, ExecutionException, InterruptedException {
-        URL requestURL = buildURLForFullStockData(symbol);
-        GetJSONData getJSONData = new GetJSONData(new GetJSONData.AsyncResponse() {
-            @Override
-            public void processFinish(String output) {
-                fullDataStream = output;
-            }
-        });
-        getJSONData.execute(requestURL).get();
-
-        return fullDataStream;
     }
 
 }
