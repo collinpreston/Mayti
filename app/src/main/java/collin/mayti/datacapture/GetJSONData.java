@@ -2,12 +2,16 @@ package collin.mayti.datacapture;
 
 import android.os.AsyncTask;
 
+import org.json.JSONException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Collin on 1/13/2018.
@@ -21,7 +25,7 @@ public class GetJSONData extends AsyncTask <URL, Integer, String> {
     }
 
     public interface AsyncResponse {
-        void processFinish(String output);
+        void processFinish(String output) throws InterruptedException, ExecutionException, MalformedURLException, JSONException;
     }
 
     public interface AsyncPreExecute {
@@ -62,7 +66,17 @@ public class GetJSONData extends AsyncTask <URL, Integer, String> {
         // In onPostExecute we check if the listener is valid
         if(this.taskResponse != null) {
             // And if it is we call the callback function on it.
-            this.taskResponse.processFinish(s);
+            try {
+                this.taskResponse.processFinish(s);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

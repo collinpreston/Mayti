@@ -44,9 +44,22 @@
         android:id="@+id/linearLayoutStockDtlsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="60dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/searchSymbolEditTxt"></LinearLayout>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchSymbolEditTxt">
+
+        <ListView
+            android:id="@+id/stockDetailsList"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1" />
+    </LinearLayout>
 
     <collin.mayti.addRemoveStock.Fab
         android:id="@+id/fab"

@@ -94,10 +94,22 @@ public class WatchlistViewModel extends AndroidViewModel {
 
         @Override
         protected Void doInBackground(final Stock... params) {
+            // TODO: Need to specify watchlist names and dates.
             if (params[0].getWatchlist().equals(DAILY_WATCHLIST_NAME)) {
                 Date dateToRemove = new Date(System.currentTimeMillis());
                 params[0].setDateToRemove(dateToRemove);
             }
+//            switch (params[0].getWatchlist()) {
+//                case DAILY_WATCHLIST_NAME:
+//                    Date dateToRemove = new Date(System.currentTimeMillis());
+//                    params[0].setDateToRemove(dateToRemove);
+//                    break;
+//
+//                case PERMANENT_WATCHLIST_NAME:
+//                    break;
+//                case WEEKLY_WATCHLIST_NAME:
+//                    break;
+//            }
             db.watchlistDao().insertStock(params[0]);
             return null;
         }

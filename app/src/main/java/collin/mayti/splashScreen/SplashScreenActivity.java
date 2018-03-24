@@ -136,7 +136,8 @@ public class SplashScreenActivity extends AppCompatActivity {
         List<Stock> stockList = viewModel.getAllStocksForWatchlist(DAILY_WATCHLIST_NAME);
         if (stockList != null && stockList.size() > 0) {
             for (Stock stockItem : stockList) {
-                if (stockItem.getDateToRemove().before(java.sql.Date.valueOf(String.valueOf(System.currentTimeMillis())))) {
+                java.sql.Date currentDate = new java.sql.Date(new java.util.Date().getTime());
+                if (stockItem.getDateToRemove().before(currentDate)) {
                     viewModel.deleteItem(stockItem);
                 }
             }

@@ -36,8 +36,12 @@ public class UrlUtil{
         return dataStream;
     }
     private URL buildURLForStockPrice(List<String> symbols) throws MalformedURLException {
-        // TODO: Should this still be a list?
-        String replacedString = PRICE_URL.replace("REPLACE", symbols.get(0));
+        String insertString = symbols.get(0);
+        // Set i to 1 since we set the first symbol above.
+        for (int i=1; i < symbols.size(); i++) {
+            insertString = insertString.concat("," + symbols.get(i));
+        }
+        String replacedString = PRICE_URL.replace("REPLACE", insertString);
         return new URL(replacedString);
     }
     public URL buildURLForFullStockData(String symbol) throws MalformedURLException {
