@@ -39,10 +39,6 @@ import static android.content.ContentValues.TAG;
  */
 
 public class AddStockPage extends Fragment {
-    private String fullDataStream;
-
-    private static HashMap<Integer, String> detailsListOrder = new HashMap<>();
-    private HashMap<String, String> titleValueMap = new HashMap<>();
 
     private static final String DAILY_WATCHLIST_NAME = "daily_watchlist";
     private static final String WEEKLY_WATCHLIST_NAME = "weekly_watchlist";
@@ -183,6 +179,7 @@ public class AddStockPage extends Fragment {
                 try {
                     getFullStockData(searchSymbolEditTxt.getText().toString());
                 } catch (ExecutionException e) {
+                    e.printStackTrace();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (MalformedURLException e) {
@@ -199,14 +196,10 @@ public class AddStockPage extends Fragment {
     };
 
     private boolean isStockAlreadyInDatabaseOnWatchlist(Stock stock) throws ExecutionException, InterruptedException {
-        if (watchlistDBViewModel.findBySymbolAndWatchlist(stock.getWatchlist(), stock.getSymbol()) == null) {
-            // The symbol and watchlist combination must exist in the database
-            return false;
-        }
-        return true;
+        return watchlistDBViewModel.findBySymbolAndWatchlist(stock.getWatchlist(), stock.getSymbol()) != null;
     }
 
-    private boolean tryToAddStockToWatchlist(Stock stock) throws ExecutionException, InterruptedException {
+    private void tryToAddStockToWatchlist(Stock stock) throws ExecutionException, InterruptedException {
         // Need to set the symbol to uppercase since this is how we link the database updates with the
         // data being retrieved.  The data comes in with uppercase symbols, so when we update the symbol
         // the sql statement looks for is an uppercase symbol.  This is also preferred for display.
@@ -216,12 +209,10 @@ public class AddStockPage extends Fragment {
         if (!isStockAlreadyInDatabaseOnWatchlist(stock)) {
             watchlistDBViewModel.addItem(stock);
             // Return true on successful insert.
-            return true;
         }
         else {
             Toast.makeText(getActivity(), stock.getSymbol() + " is already on that watchlist.", Toast.LENGTH_SHORT).show();
         }
-        return false;
     }
 
     private boolean isJSONDataValid(String dataFromConnection) {
@@ -237,7 +228,6 @@ public class AddStockPage extends Fragment {
      */
     private HashMap<String, String> getFullDataAsHashMap(String dataRetrievedString) throws InterruptedException, ExecutionException, MalformedURLException, JSONException {
         // Call to private method to get the JSON string of data.
-        System.out.println("CP: " + dataRetrievedString);
 
         JSONObject dataObj;
         if (isJSONDataValid(dataRetrievedString)) {
@@ -278,15 +268,12 @@ public class AddStockPage extends Fragment {
         final GetJSONData getJSONData = new GetJSONData(new GetJSONData.AsyncResponse() {
             @Override
             public void processFinish(String output) throws InterruptedException, ExecutionException, MalformedURLException, JSONException {
-                fullDataStream = output;
                 rootView.findViewById(R.id.progressBar).setVisibility(View.GONE);
                 // At this point I also want to display the listview.
                 HashMap<String, String> fullDataMap = getFullDataAsHashMap(output);
                 ListView fullDetailsListView = rootView.findViewById(R.id.stockDetailsList);
                 StockDetailsListViewAdapter stockDetailsListViewAdapter = new StockDetailsListViewAdapter(getContext(), fullDataMap);
                 fullDetailsListView.setAdapter(stockDetailsListViewAdapter);
-
-                System.out.println(fullDataStream);
             }
         }, new GetJSONData.AsyncPreExecute() {
             @Override

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
+import android.text.format.DateUtils;
 
 import java.sql.Date;
 import java.util.Calendar;
@@ -18,6 +19,12 @@ import collin.mayti.watchlistDB.Stock;
  */
 
 public class WatchlistViewModel extends AndroidViewModel {
+
+    private static int DAY_IN_MS = 86400000;
+    // Weekly days used for the length of stocks on the weekly watchlist.  A design change should be
+    // considered as to whether stocks should only remain for the current trading week or if they should
+    // remain for a full week as they do now.
+    private static int WEEKLY_DAYS = 7;
 
     private static int totalNumberOfRowsForDB;
     private static int totalNumberOfRowsForWatchlist;
@@ -95,21 +102,22 @@ public class WatchlistViewModel extends AndroidViewModel {
         @Override
         protected Void doInBackground(final Stock... params) {
             // TODO: Need to specify watchlist names and dates.
-            if (params[0].getWatchlist().equals(DAILY_WATCHLIST_NAME)) {
-                Date dateToRemove = new Date(System.currentTimeMillis());
-                params[0].setDateToRemove(dateToRemove);
+            Date dateToRemove;
+            switch (params[0].getWatchlist()) {
+                case DAILY_WATCHLIST_NAME:
+                    dateToRemove = new Date(System.currentTimeMillis());
+                    params[0].setDateToRemove(dateToRemove);
+                    break;
+
+                case PERMANENT_WATCHLIST_NAME:
+                    params[0].setDateToRemove(null);
+                    break;
+                case WEEKLY_WATCHLIST_NAME:
+
+                    dateToRemove = new Date(System.currentTimeMillis() + (WEEKLY_DAYS * DAY_IN_MS));
+                    params[0].setDateToRemove(dateToRemove);
+                    break;
             }
-//            switch (params[0].getWatchlist()) {
-//                case DAILY_WATCHLIST_NAME:
-//                    Date dateToRemove = new Date(System.currentTimeMillis());
-//                    params[0].setDateToRemove(dateToRemove);
-//                    break;
-//
-//                case PERMANENT_WATCHLIST_NAME:
-//                    break;
-//                case WEEKLY_WATCHLIST_NAME:
-//                    break;
-//            }
             db.watchlistDao().insertStock(params[0]);
             return null;
         }
