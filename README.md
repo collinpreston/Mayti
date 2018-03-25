@@ -29,8 +29,8 @@ $ export ANDROID_SDK_ROOT=$ANDROID_HOME
 ## Technologies Used
 * [Jetbrains IDEA](https://www.jetbrains.com/idea/)
 * [Android Studio](https://developer.android.com/studio/index.html)
-* [Android Room] (https://developer.android.com/topic/libraries/architecture/room.html)
-* [IEX API] (https://iextrading.com/)
+* [Android Room](https://developer.android.com/topic/libraries/architecture/room.html)
+* [IEX API](https://iextrading.com/)
 
 ## Contribution
 
