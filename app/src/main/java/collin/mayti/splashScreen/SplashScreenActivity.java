@@ -132,7 +132,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private void cleanWatchlistDatabase() throws ExecutionException, InterruptedException {
         WatchlistViewModel viewModel = ViewModelProviders.of(this).get(WatchlistViewModel.class);
         java.sql.Date currentDate = new java.sql.Date(new java.util.Date().getTime());
-        
+
         // First check the daily stocks.
         List<Stock> stockList = viewModel.getAllStocksForWatchlist(DAILY_WATCHLIST_NAME);
         if (stockList != null && stockList.size() > 0) {

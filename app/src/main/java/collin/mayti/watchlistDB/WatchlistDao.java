@@ -17,6 +17,9 @@ public interface WatchlistDao {
     @Query("SELECT * FROM watchlist")
     LiveData<List<Stock>> getAll();
 
+    @Query("SELECT symbol FROM watchlist")
+    List<String> getAllSymbols();
+
     @Query("SELECT * FROM watchlist WHERE symbol LIKE :symbol LIMIT 1")
     LiveData<Stock> findBySymbol(String symbol);
 

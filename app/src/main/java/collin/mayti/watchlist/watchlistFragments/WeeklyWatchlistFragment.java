@@ -71,13 +71,6 @@ public class WeeklyWatchlistFragment extends Fragment {
             for (int i=0; i < watchlistItems.size(); i++) {
                 myStocks[i] = watchlistItems.get(i).getSymbol();
             }
-
-            // Start the stock updating service which grabs data from the external web
-            if (myStocks.length != 0) {
-                Intent dataRetrieverIntent = new Intent(getContext(), DataRetriever.class);
-                dataRetrieverIntent.putExtra("symbols", myStocks);
-                getActivity().startService(dataRetrieverIntent);
-            }
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

@@ -72,6 +72,7 @@ public class DataRetriever extends Service {
         }
         return watchlistData;
     }
+
     private void updateDatabaseWithData(List <StockContent.StockItem> stockDataList) {
         AppDatabase db = MainActivity.db;
         for (StockContent.StockItem item : stockDataList) {
@@ -79,11 +80,17 @@ public class DataRetriever extends Service {
         }
 
     }
+
+    private void updateListOfStocksInDB() {
+        AppDatabase db = MainActivity.db;
+        stockSymbols = db.watchlistDao().getAllSymbols();
+    }
     private class DelayedTask extends TimerTask {
         @Override
         public void run() {
             try {
                 updateDatabaseWithData(getQuotesAsList(stockSymbols));
+                updateListOfStocksInDB();
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -106,6 +113,9 @@ public class DataRetriever extends Service {
         Timer timer = new Timer();
         stockSymbols = Arrays.asList(intent.getStringArrayExtra("symbols"));
         timer.schedule(new DelayedTask(),300, 5000);
+        // Setting the flag below will keep the service running after the app is closed.
+        // TODO: Need to configure this in order to provide notifications.
+        //flags = START_STICKY;
         return super.onStartCommand(intent, flags, startId);
     }
 }
