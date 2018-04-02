@@ -1,31 +1,52 @@
 package collin.mayti.addRemoveStock;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.utils.EntryXComparator;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import collin.mayti.R;
+import collin.mayti.applicationSettingsDB.SettingObject;
 import collin.mayti.applicationSettingsDB.SettingViewModel;
+import collin.mayti.datacapture.DailyUpdateDataRetriever;
+import collin.mayti.datacapture.DataRetriever;
 import collin.mayti.datacapture.GetJSONData;
+import collin.mayti.stockDetails.LineChartData;
 import collin.mayti.stockDetails.StockDetailsListViewAdapter;
 import collin.mayti.stockSymbolDB.SymbolViewModel;
 import collin.mayti.urlUtil.UrlUtil;
@@ -38,11 +59,16 @@ import static android.content.ContentValues.TAG;
  * Created by collinhpreston on 15/02/2018.
  */
 
+/**
+ * Class that displays the add Stock page and allows the user to add a new stock to a watchlist.
+ */
 public class AddStockPage extends Fragment {
 
     private static final String DAILY_WATCHLIST_NAME = "daily_watchlist";
     private static final String WEEKLY_WATCHLIST_NAME = "weekly_watchlist";
     private static final String PERMANENT_WATCHLIST_NAME = "permanent_watchlist";
+
+    private static final String SYMBOL_DATABASE_LAST_UPDATE = "SYMBOL_DATABASE_LAST_UPDATE";
 
     private static List<String> symbolList;
     private WatchlistViewModel watchlistDBViewModel;
@@ -52,15 +78,15 @@ public class AddStockPage extends Fragment {
 
     private View rootView;
 
+    private boolean symbolsDBIsEmpty = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         SettingViewModel settingViewModel = ViewModelProviders.of(this).get(SettingViewModel.class);
         try {
-            if (settingViewModel.readSetting("SYMBOL_DATABASE_LAST_UPDATE").equals("")) {
-                // TODO: The symbol database has not been populated.  Thus, the user can't search for
-                // stock symbols to add to watchlists.  So instead, we should try to download the symbol
-                // list once more.  If it fails, then we should display a "connect to the internet" page.
+            if (settingViewModel.readSetting("SYMBOL_DATABASE_LAST_UPDATE").getSettingValue().equals("")) {
+                symbolsDBIsEmpty = true;
             }
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -84,8 +110,30 @@ public class AddStockPage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         rootView = inflater.inflate(R.layout.fragment_add_stock, container, false);
         rootView.setTag(TAG);
+
+        // If true, display a overlay screen showing text saying unable to download symbols.
+        // TODO: Need to customize this view more.  Update font and add graphic.
+        if (symbolsDBIsEmpty) {
+            ConstraintLayout retryDownloadOverlay = rootView.findViewById(R.id.retryDownloadOverlay);
+            retryDownloadOverlay.setVisibility(View.VISIBLE);
+            retryDownloadOverlay.setAlpha(1);
+        }
+        else {
+            ConstraintLayout retryDownloadOverlay = rootView.findViewById(R.id.retryDownloadOverlay);
+            retryDownloadOverlay.setVisibility(View.GONE);
+            retryDownloadOverlay.setAlpha(1);
+        }
+
+        Button retrySymbolDownloadBtn = rootView.findViewById(R.id.retrySymbolBtn);
+        retrySymbolDownloadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateSymbolDatabaseAndSetting();
+            }
+        });
 
         // Initialize the viewModel
         watchlistDBViewModel = ViewModelProviders.of(this).get(WatchlistViewModel.class);
@@ -165,6 +213,11 @@ public class AddStockPage extends Fragment {
         return rootView;
     }
 
+    /**
+     * This method watches the text changes made to the search bar text entry.  When the text entered
+     * by the user matches a stock symbol in the symbol database, getFullStockData is passed the
+     * symbol currently entered.
+     */
     private final TextWatcher mTextEditorWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
@@ -195,26 +248,71 @@ public class AddStockPage extends Fragment {
         }
     };
 
+    /**
+     * Method to check if the stock is already in the watchlist database.  This takes into consideration
+     * the composite key which combines the symbol and watchlist.  If a stock already exists in the database
+     * with the same symbol and watchlist, this method will return true.
+     * @param stock
+     * @return boolean
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     private boolean isStockAlreadyInDatabaseOnWatchlist(Stock stock) throws ExecutionException, InterruptedException {
         return watchlistDBViewModel.findBySymbolAndWatchlist(stock.getWatchlist(), stock.getSymbol()) != null;
     }
 
+    /**
+     * This method takes a Stock object and tries to add it to the watchlist, but first checks if
+     * the stock already exists in the watchlist or else it displays a toast message.  It also checks
+     * whether this is the first stock being added to the app.  If so, then the dataretriever service
+     * is kicked off.  Otherwise, the dataratriever service should already be running since stocks exist.
+     * @param stock
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     private void tryToAddStockToWatchlist(Stock stock) throws ExecutionException, InterruptedException {
         // Need to set the symbol to uppercase since this is how we link the database updates with the
         // data being retrieved.  The data comes in with uppercase symbols, so when we update the symbol
         // the sql statement looks for is an uppercase symbol.  This is also preferred for display.
         stock.setSymbol(stock.getSymbol().toUpperCase());
 
+        // Check if this is the first stock being added to the database.  If so, then we need to kick
+        // off the data retriever service.
+        boolean needToStartDataService = false;
+        // We have to check this prior to the addItem method below since the add item method has an
+        // asyncTask which might not complete by the time we run getTotalNumberOfRows, thus making it
+        // impossible to predict the actual expected number of rows.
+        if (watchlistDBViewModel.getTotalNumberOfRows() == 0) {
+            needToStartDataService = true;
+        }
+
         // If the stock is not already in the database for that watchlist, add to the database.
         if (!isStockAlreadyInDatabaseOnWatchlist(stock)) {
+            // Adding the stock to the watchlist database
             watchlistDBViewModel.addItem(stock);
-            // Return true on successful insert.
+
+            // Here we check the above boolean to see if this is the first stock being added to the DB.
+            if (needToStartDataService) {
+                Intent dataRetrieverIntent = new Intent(getContext(), DataRetriever.class);
+                final String[] myStocks = new String [1];
+                myStocks[0] = stock.getSymbol();
+                dataRetrieverIntent.putExtra("symbols", myStocks);
+                getActivity().startService(dataRetrieverIntent);
+            }
         }
         else {
             Toast.makeText(getActivity(), stock.getSymbol() + " is already on that watchlist.", Toast.LENGTH_SHORT).show();
         }
     }
 
+    /**
+     * This method assures that the JSON data retrieved is not null or empty.  If the string parameter
+     * is valid JSONData, this method returns true.  Otherwise this method returns false if the data
+     * is not valid.  More validations can be
+     * applied in this method.
+     * @param dataFromConnection
+     * @return boolean
+     */
     private boolean isJSONDataValid(String dataFromConnection) {
         return dataFromConnection != null && !dataFromConnection.isEmpty();
     }
@@ -223,8 +321,13 @@ public class AddStockPage extends Fragment {
      * This method is called to retrieve the full data associated with a stock symbol.  It takes the
      * stock symbol as a parameter and returns a hashmap using the field as the key and the field value
      * as the value.
+     *
      * @param dataRetrievedString
-     * @return
+     * @return HashMap
+     * @throws InterruptedException
+     * @throws ExecutionException
+     * @throws MalformedURLException
+     * @throws JSONException
      */
     private HashMap<String, String> getFullDataAsHashMap(String dataRetrievedString) throws InterruptedException, ExecutionException, MalformedURLException, JSONException {
         // Call to private method to get the JSON string of data.
@@ -262,6 +365,15 @@ public class AddStockPage extends Fragment {
         return null;
     }
 
+    /**
+     * This method takes in the stock symbol having been entered in the search bar, and retrieves
+     * the full data quote for the stock.  On process finish, this method populates the StockDetailsListViewAdapter
+     * which creates the listview for the full data quote on the addStockPage.
+     * @param symbol
+     * @throws MalformedURLException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     private void getFullStockData (String symbol) throws MalformedURLException, ExecutionException, InterruptedException {
         UrlUtil urlUtil = new UrlUtil();
         URL requestURL = urlUtil.buildURLForFullStockData(symbol);
@@ -284,4 +396,126 @@ public class AddStockPage extends Fragment {
         getJSONData.execute(requestURL);
     }
 
+    /**
+     * This method updates the symbol database and settings database from the AddStockPage.  Once
+     * the symbol list is downloaded and stored in the symbol database, the settings database
+     * is updated, and the retry download overlay view is made invisible and the user is allowed to
+     * add a new stock to a watchlist.  If unable to connect or download the data from NASDAQ,
+     * this method will continue to display the retry
+     * download overlay view.  This method is similar to the methods in SplashScreenActivity, but must
+     * be contained in the respective class they are used since they interact with the UI of each
+     * fragment/page.
+     */
+    public void updateSymbolDatabaseAndSetting() {
+        // TODO: HOLY SMOKES!  I need to comment all of this mess....
+
+        final UpdateSymbolAndSettingAsyncTask updateSymbolAndSettingAsyncTask = new UpdateSymbolAndSettingAsyncTask(new UpdateSymbolAndSettingAsyncTask.AsyncResponse() {
+            @Override
+            public void processFinish() throws ExecutionException, InterruptedException {
+                SettingViewModel viewModel = ViewModelProviders.of(getActivity()).get(SettingViewModel.class);
+                SymbolViewModel symbolViewModel = ViewModelProviders.of(getActivity()).get(SymbolViewModel.class);
+                // Check if the symbol database length is larger than 0 in order to see if it downloaded.
+                if (symbolViewModel.readAllSymbols().size() > 0) {
+                    // Update the setting value to today's date.
+                    SettingObject settingObject = new SettingObject();
+                    settingObject.setSettingID(SYMBOL_DATABASE_LAST_UPDATE);
+                    // Today's date string.
+                    String currentDateString = DateFormat.getDateInstance().format(new java.util.Date());
+                    settingObject.setSettingValue(currentDateString);
+                    viewModel.updateSetting(settingObject);
+
+                    // Here I need to clear the retryDownloadOverlay view.  The user is now ready
+                    // to add a new stock.
+                    // TODO: Create a method to show and hide the overlay.
+                    ConstraintLayout retryDownloadOverlay = rootView.findViewById(R.id.retryDownloadOverlay);
+                    retryDownloadOverlay.setVisibility(View.GONE);
+                    retryDownloadOverlay.setAlpha(0);
+                } else {
+                    // If it has not been downloaded, display retry/continue page.  If user chooses continue, insert
+                    // empty string for setting value.
+                    SettingObject settingObject = new SettingObject();
+                    settingObject.setSettingID(SYMBOL_DATABASE_LAST_UPDATE);
+                    settingObject.setSettingValue("");
+                    viewModel.updateSetting(settingObject);
+                    // Here I need to continue to display the retryDownloadOverlay view.
+                    rootView.findViewById(R.id.couldNotConnectTxt).setVisibility(View.VISIBLE);
+                    rootView.findViewById(R.id.retrySymbolBtn).setVisibility(View.VISIBLE);
+                }
+                // Hide the progress circle.  Either way, the retry page will be displayed again,
+                // or the symbol database will be populated.
+                rootView.findViewById(R.id.retryDownloadProgressBar).setVisibility(View.GONE);
+            }
+        }, new UpdateSymbolAndSettingAsyncTask.AsyncPreExecute() {
+            @Override
+            public void preExecute() {
+                // Display the progress circle while trying to download the symbol database.
+                rootView.findViewById(R.id.retryDownloadProgressBar).setVisibility(View.VISIBLE);
+
+                // Hide the could not connect text and retry button while trying to download the symbols list again.
+                rootView.findViewById(R.id.couldNotConnectTxt).setVisibility(View.GONE);
+                rootView.findViewById(R.id.retrySymbolBtn).setVisibility(View.GONE);
+            }
+        }, this.getContext());
+        updateSymbolAndSettingAsyncTask.execute();
+    }
+
+    /**
+     * This class is an AsyncTask which works to download symbol data from NASDAQ.
+     */
+    private static class UpdateSymbolAndSettingAsyncTask extends AsyncTask {
+        private Context mContext;
+        private final UpdateSymbolAndSettingAsyncTask.AsyncResponse taskResponse;
+        private final UpdateSymbolAndSettingAsyncTask.AsyncPreExecute taskPreExecute;
+
+        public interface AsyncResponse {
+            void processFinish() throws ExecutionException, InterruptedException;
+        }
+
+        public interface AsyncPreExecute {
+            void preExecute();
+        }
+
+        // Constructor method.
+        UpdateSymbolAndSettingAsyncTask(AsyncResponse taskComplete, AsyncPreExecute preExec, Context context) {
+            this.taskResponse = taskComplete;
+            this.taskPreExecute = preExec;
+            mContext = context;
+        }
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            DailyUpdateDataRetriever dailyUpdateDataRetriever = new DailyUpdateDataRetriever(mContext);
+            try {
+                dailyUpdateDataRetriever.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            // In onPostExecute we check if the listener is valid
+            if(this.taskResponse != null) {
+                // And if it is we call the callback function on it.
+                try {
+                    this.taskResponse.processFinish();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            if (this.taskPreExecute != null) {
+                this.taskPreExecute.preExecute();
+            }
+        }
+
+    }
 }

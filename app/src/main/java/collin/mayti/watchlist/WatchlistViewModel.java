@@ -4,10 +4,8 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
-import android.text.format.DateUtils;
 
 import java.sql.Date;
-import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -123,6 +121,7 @@ public class WatchlistViewModel extends AndroidViewModel {
         }
 
     }
+
     public int getTotalNumberOfRows() {
         new getTotalNumberOfRowsAsyncTask(appDatabase).execute();
         return totalNumberOfRowsForDB;

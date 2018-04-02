@@ -4,4 +4,10 @@
     <item
         android:drawable="@color/darkBlue"/>
 
+    <item
+        android:drawable="@drawable/propeller_layer"
+        android:height="@dimen/propeller_height"
+        android:width="@dimen/propeller_width"
+        android:gravity="center" />
+
 </layer-list>

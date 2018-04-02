@@ -85,6 +85,7 @@ public class DataRetriever extends Service {
         AppDatabase db = MainActivity.db;
         stockSymbols = db.watchlistDao().getAllSymbols();
     }
+
     private class DelayedTask extends TimerTask {
         @Override
         public void run() {
@@ -111,7 +112,10 @@ public class DataRetriever extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Timer timer = new Timer();
-        stockSymbols = Arrays.asList(intent.getStringArrayExtra("symbols"));
+        try {
+            stockSymbols = Arrays.asList(intent.getStringArrayExtra("symbols"));
+        } catch (Exception e) {
+        }
         timer.schedule(new DelayedTask(),300, 5000);
         // Setting the flag below will keep the service running after the app is closed.
         // TODO: Need to configure this in order to provide notifications.

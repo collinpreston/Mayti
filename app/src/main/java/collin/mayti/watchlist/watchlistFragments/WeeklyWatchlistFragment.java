@@ -128,6 +128,7 @@ public class WeeklyWatchlistFragment extends Fragment {
                     .findFirstCompletelyVisibleItemPosition();
         }
 
+        // TODO: Keeps crashing here.  Might need to move this into OnCreate.
         switch (layoutManagerType) {
             case GRID_LAYOUT_MANAGER:
                 mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);

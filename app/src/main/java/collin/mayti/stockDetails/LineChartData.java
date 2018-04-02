@@ -5,27 +5,27 @@ package collin.mayti.stockDetails;
  */
 
 public class LineChartData {
-    public long xCoordinate;
-    public long yCoordinate;
+    public Double xCoordinate;
+    public Double yCoordinate;
 
-    LineChartData(long xValue, long yValue) {
+    public LineChartData(Double xValue, Double yValue) {
         this.xCoordinate = xValue;
         this.yCoordinate = yValue;
     }
 
-    public long getxCoordinate() {
+    public Double getxCoordinate() {
         return xCoordinate;
     }
 
-    public void setxCoordinate(long xCoordinate) {
+    public void setxCoordinate(Double xCoordinate) {
         this.xCoordinate = xCoordinate;
     }
 
-    public long getyCoordinate() {
+    public Double getyCoordinate() {
         return yCoordinate;
     }
 
-    public void setyCoordinate(long yCoordinate) {
+    public void setyCoordinate(Double yCoordinate) {
         this.yCoordinate = yCoordinate;
     }
 }
