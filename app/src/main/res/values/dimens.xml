@@ -20,4 +20,8 @@
     <dimen name="sheet_item_spacing">@dimen/keyline_spacing</dimen>
     <dimen name="sheet_item_image_spacing">24dp</dimen>
     <dimen name="sheet_item_textsize">16sp</dimen>
+
+    <!-- Dimensions for propeller on splash screen -->
+    <dimen name="propeller_width">108dp</dimen>
+    <dimen name="propeller_height">108dp</dimen>
 </resources>

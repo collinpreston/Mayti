@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,9 +66,13 @@ public class DailyUpdateDataRetriever extends AsyncTask {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+        } catch (UnknownHostException e) {
+            // IF we reach this point, that means we were unable to download the stock symbol list
+            // on the first attempt.
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         // As long as the symbols list is not empty, we will update the database.
         if (!symbolsList.isEmpty()) {
             symbolDb.symbolDbDao().insertAll(symbolsList);

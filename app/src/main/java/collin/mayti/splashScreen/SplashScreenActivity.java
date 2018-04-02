@@ -17,6 +17,7 @@ import collin.mayti.applicationSettingsDB.SettingObject;
 import collin.mayti.applicationSettingsDB.SettingViewModel;
 import collin.mayti.datacapture.DailyUpdateDataRetriever;
 import collin.mayti.stockSymbolDB.SymbolDatabase;
+import collin.mayti.stockSymbolDB.SymbolViewModel;
 import collin.mayti.watchlist.WatchlistViewModel;
 import collin.mayti.watchlistDB.AppDatabase;
 import collin.mayti.watchlistDB.Stock;
@@ -33,6 +34,8 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private static final String DAILY_WATCHLIST_NAME = "daily_watchlist";
     private static final String WEEKLY_WATCHLIST_NAME = "weekly_watchlist";
+
+    private static final String SYMBOL_DATABASE_LAST_UPDATE = "SYMBOL_DATABASE_LAST_UPDATE";
 
 
     @Override
@@ -65,6 +68,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private void checkSymbolDatabaseLastUpdate() throws ExecutionException, InterruptedException, ParseException {
 
         SettingViewModel viewModel = ViewModelProviders.of(this).get(SettingViewModel.class);
+        SymbolViewModel symboViewModel = ViewModelProviders.of(this).get(SymbolViewModel.class);
 
         // Today's date
         String currentDateString = DateFormat.getDateInstance().format(new java.util.Date());
@@ -77,35 +81,58 @@ public class SplashScreenActivity extends AppCompatActivity {
         // the symbol database and corresponding setting.
         if (!(totalNumberOfRowsInSettings ==  0)) {
             SettingObject symbolDatabaseLastUpdate =
-                    viewModel.readSetting("SYMBOL_DATABASE_LAST_UPDATE");
+                    viewModel.readSetting(SYMBOL_DATABASE_LAST_UPDATE);
             if (symbolDatabaseLastUpdate.getSettingValue().equals("")) {
-                updateSymbolDatabaseAndSetting(currentDateString, viewModel);
+                updateSymbolDatabaseAndSetting(currentDateString, viewModel, symboViewModel);
             } else {
                 // If it gets to this point, the app has been opened previously and connected to the
                 // internet in the past.
                 Date settingValue = DateFormat.getDateInstance().parse(symbolDatabaseLastUpdate.getSettingValue());
                 Date currentDate = DateFormat.getDateInstance().parse(currentDateString);
                 if (settingValue.before(currentDate)) {
-                    updateSymbolDatabaseAndSetting(currentDateString, viewModel);
+                    updateSymbolDatabaseAndSetting(currentDateString, viewModel, symboViewModel);
                 }
             }
         }
         else {
             populateSettingDatabase(viewModel);
-            updateSymbolDatabaseAndSetting(currentDateString, viewModel);
+            updateSymbolDatabaseAndSetting(currentDateString, viewModel, symboViewModel);
         }
     }
 
-    private void updateSymbolDatabaseAndSetting(String currentDateString, SettingViewModel viewModel)
+    /**
+     * This method will attempt to download the symbols from NASDAQ's website and insert every symbol
+     * in the symbol database.  If the symbols cannot be downloaded, the method will store an empty
+     * string as the settings value in the settings database for the SYMBOL_DATABASE_LAST_UPDATE key.
+     * When the symbols have successfully been downloaded, today's current date will be stored as the
+     * value for that setting ID in the settings database.
+     * @param currentDateString
+     * @param viewModel
+     * @param symbolViewModel
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    private void updateSymbolDatabaseAndSetting(String currentDateString, SettingViewModel viewModel, SymbolViewModel symbolViewModel)
             throws ExecutionException, InterruptedException {
         DailyUpdateDataRetriever dailyUpdateDataRetriever = new DailyUpdateDataRetriever(this.getBaseContext());
         dailyUpdateDataRetriever.execute().get();
 
-        // Update the setting value to today's date.
-        SettingObject settingObject = new SettingObject();
-        settingObject.setSettingID("SYMBOL_DATABASE_LAST_UPDATE");
-        settingObject.setSettingValue(currentDateString);
-        viewModel.updateSetting(settingObject);
+        // Check if the symbol database length is larger than 0 in order to see if it downloaded.
+        if (symbolViewModel.readAllSymbols().size() > 0) {
+            // Update the setting value to today's date.
+            SettingObject settingObject = new SettingObject();
+            settingObject.setSettingID(SYMBOL_DATABASE_LAST_UPDATE);
+            settingObject.setSettingValue(currentDateString);
+            viewModel.updateSetting(settingObject);
+        } else {
+            // If it has not been downloaded, display retry/continue page.  If user chooses continue, insert
+            // empty string for setting value.
+            SettingObject settingObject = new SettingObject();
+            settingObject.setSettingID(SYMBOL_DATABASE_LAST_UPDATE);
+            settingObject.setSettingValue("");
+            viewModel.updateSetting(settingObject);
+
+        }
     }
 
     /**
@@ -114,9 +141,14 @@ public class SplashScreenActivity extends AppCompatActivity {
      * @param viewModel
      */
     private void populateSettingDatabase(SettingViewModel viewModel) {
-        addSettingToSettingDatabase(viewModel, "SYMBOL_DATABASE_LAST_UPDATE");
+        addSettingToSettingDatabase(viewModel, SYMBOL_DATABASE_LAST_UPDATE);
     }
 
+    /**
+     * This method is used to add new, empty, setting ID's to the settings database during initialization.
+     * @param viewModel
+     * @param settingID
+     */
     private void addSettingToSettingDatabase(SettingViewModel viewModel, String settingID) {
         SettingObject settingObject = new SettingObject();
         settingObject.setSettingID(settingID);
