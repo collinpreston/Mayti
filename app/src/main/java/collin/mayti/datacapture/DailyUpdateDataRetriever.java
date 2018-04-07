@@ -41,10 +41,10 @@ public class DailyUpdateDataRetriever extends AsyncTask {
 
         try {
 
-            String URL_PATH = "ftp://ftp.nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt";
-            URL url = new URL(URL_PATH);
+            String SYMBOL_URL_PATH = "ftp://ftp.nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt";
+            URL symbolUrl = new URL(SYMBOL_URL_PATH);
             // Read all the text returned by the server
-            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(symbolUrl.openStream()));
             String str;
             int i = 0;
             // Read in each line into the str variable.  Skip the first line, and read only the
@@ -76,6 +76,15 @@ public class DailyUpdateDataRetriever extends AsyncTask {
         // As long as the symbols list is not empty, we will update the database.
         if (!symbolsList.isEmpty()) {
             symbolDb.symbolDbDao().insertAll(symbolsList);
+        }
+
+        // Check if today is a
+        String OPEN_MARKET_DAY_URL = "https://api.iextrading.com/1.0/stats/recent";
+        try {
+            URL openMarketDayUrl = new URL(OPEN_MARKET_DAY_URL);
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
         return null;
     }

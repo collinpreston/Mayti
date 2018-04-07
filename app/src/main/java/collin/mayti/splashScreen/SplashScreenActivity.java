@@ -45,7 +45,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         initializeAllDatabases();
 
         try {
-            checkSymbolDatabaseLastUpdate();
+            checkLastUpdatesInSettings();
             cleanWatchlistDatabase();
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -65,10 +65,10 @@ public class SplashScreenActivity extends AppCompatActivity {
      * This method checks to the settingdatabase to see if the symboldatabase has been updated today.
      * If the symbol database has not been updated today, this method will update the database.
      */
-    private void checkSymbolDatabaseLastUpdate() throws ExecutionException, InterruptedException, ParseException {
+    private void checkLastUpdatesInSettings() throws ExecutionException, InterruptedException, ParseException {
 
         SettingViewModel viewModel = ViewModelProviders.of(this).get(SettingViewModel.class);
-        SymbolViewModel symboViewModel = ViewModelProviders.of(this).get(SymbolViewModel.class);
+        SymbolViewModel symbolViewModel = ViewModelProviders.of(this).get(SymbolViewModel.class);
 
         // Today's date
         String currentDateString = DateFormat.getDateInstance().format(new java.util.Date());
@@ -83,20 +83,20 @@ public class SplashScreenActivity extends AppCompatActivity {
             SettingObject symbolDatabaseLastUpdate =
                     viewModel.readSetting(SYMBOL_DATABASE_LAST_UPDATE);
             if (symbolDatabaseLastUpdate.getSettingValue().equals("")) {
-                updateSymbolDatabaseAndSetting(currentDateString, viewModel, symboViewModel);
+                updateSymbolDatabaseAndSetting(currentDateString, viewModel, symbolViewModel);
             } else {
                 // If it gets to this point, the app has been opened previously and connected to the
                 // internet in the past.
                 Date settingValue = DateFormat.getDateInstance().parse(symbolDatabaseLastUpdate.getSettingValue());
                 Date currentDate = DateFormat.getDateInstance().parse(currentDateString);
                 if (settingValue.before(currentDate)) {
-                    updateSymbolDatabaseAndSetting(currentDateString, viewModel, symboViewModel);
+                    updateSymbolDatabaseAndSetting(currentDateString, viewModel, symbolViewModel);
                 }
             }
         }
         else {
             populateSettingDatabase(viewModel);
-            updateSymbolDatabaseAndSetting(currentDateString, viewModel, symboViewModel);
+            updateSymbolDatabaseAndSetting(currentDateString, viewModel, symbolViewModel);
         }
     }
 

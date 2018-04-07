@@ -32,7 +32,6 @@ import java.util.concurrent.ExecutionException;
 
 import collin.mayti.R;
 import collin.mayti.datacapture.GetJSONData;
-import collin.mayti.stockSymbolDB.Symbol;
 import collin.mayti.urlUtil.UrlUtil;
 
 /**
@@ -93,7 +92,7 @@ public class StockDetailsListViewAdapter extends BaseAdapter {
                 // Set the row view equal to the chart.
                 row = inflater.inflate(R.layout.fragment_expanded_stock_chart, viewGroup, false);
                 // Initialize the line chart.
-                LineChart chart = row.findViewById(R.id.chart);
+                LineChart chart = row.findViewById(R.id.dialogChart);
                 try {
                     // Populate the line chart with data for one month of close prices from IEX.
                     getChartData(titleValueMap.get(myContext.getString(R.string.symbol)).toString(), "ONE_MONTH_CHART", chart);
@@ -123,7 +122,7 @@ public class StockDetailsListViewAdapter extends BaseAdapter {
         // TODO: There will be more of these once I finish importing all of the strings into the
         // strings.xml file.  There is a TODO tag somewhere else.
         String[] fullDetailTitles = {
-                myContext.getString(R.string.primary_exchange), myContext.getString(R.string.calculation_price), myContext.getString(R.string.open),
+                myContext.getString(R.string.primary_exchange), myContext.getString(R.string.open),
                 myContext.getString(R.string.open_time), myContext.getString(R.string.close), myContext.getString(R.string.close_time),
                 myContext.getString(R.string.high), myContext.getString(R.string.low),
                 myContext.getString(R.string.latest_source), myContext.getString(R.string.latest_time), myContext.getString(R.string.latest_update),

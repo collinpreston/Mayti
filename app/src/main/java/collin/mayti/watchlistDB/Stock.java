@@ -48,6 +48,22 @@ import java.sql.Date;
             this.volume = volume;
         }
 
+        public String getChange() {
+            return change;
+        }
+
+        public void setChange(String change) {
+            this.change = change;
+        }
+
+        public String getChangePercent() {
+            return changePercent;
+        }
+
+        public void setChangePercent(String changePercent) {
+            this.changePercent = changePercent;
+        }
+
         public String getWatchlist() {
             return watchlist;
         }
@@ -75,6 +91,12 @@ import java.sql.Date;
 
         @ColumnInfo(name = "volume")
         private String volume;
+
+        @ColumnInfo(name = "change")
+        private String change;
+
+        @ColumnInfo(name = "changePercent")
+        private String changePercent;
 
         @NonNull
         @ColumnInfo(name = "watchlist")

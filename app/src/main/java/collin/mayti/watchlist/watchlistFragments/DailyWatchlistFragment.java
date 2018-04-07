@@ -105,7 +105,7 @@ public class DailyWatchlistFragment extends Fragment {
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
-        mAdapter = new MyWatchlistRecyclerViewAdapter(watchlistItems);
+        mAdapter = new MyWatchlistRecyclerViewAdapter(watchlistItems, getContext(), getActivity());
         // Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
 

@@ -14,45 +14,56 @@ import collin.mayti.datacapture.GetJSONData;
  */
 
 public class UrlUtil{
-    protected String PRICE_URL = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=REPLACE&apikey=5M3Y2HWYLNAXUA12";
+    protected String BATCH_QUOTE_URL = "https://api.iextrading.com/1.0/stock/market/batch?symbols=REPLACE&types=quote&range=1m";
     protected String FULL_DATA_URL = "https://api.iextrading.com/1.0/stock/REPLACE/quote";
     protected String ONE_DAY_CHART_URL = "https://api.iextrading.com/1.0/stock/REPLACE/chart/1d";
     protected String FIVE_DAY_CHART_URL = "https://api.iextrading.com/1.0/stock/REPLACE/chart/5d";
     protected String ONE_MONTH_CHART_URL = "https://api.iextrading.com/1.0/stock/REPLACE/chart/1m";
-    protected String SIX_MONTH_CHART_URL = "https://api.iextrading.com/1.0/stock/REPLACE/chart/6m";
+    protected String THREE_MONTH_CHART_URL = "https://api.iextrading.com/1.0/stock/REPLACE/chart/3m";
     protected String ONE_YEAR_CHART_URL = "https://api.iextrading.com/1.0/stock/REPLACE/chart/1y";
+    protected String FIVE_YEAR_CHART_URL = "https://api.iextrading.com/1.0/stock/REPLACE/chart/5y";
 
     private final String ONE_DAY_CHART = "ONE_DAY_CHART";
     private final String FIVE_DAY_CHART = "FIVE_DAY_CHART";
     private final String ONE_MONTH_CHART = "ONE_MONTH_CHART";
-    private final String SIX_MONTH_CHART = "SIX_MONTH_CHART";
+    private final String THREE_MONTH_CHART = "THREE_MONTH_CHART";
     private final String ONE_YEAR_CHART = "ONE_YEAR_CHART";
+    private final String FIVE_YEAR_CHART = "FIVE_YEAR_CHART";
 
-    private String dataStream;
+    private String dataStream = "";
 
     public String getStockData(List<String> symbols) throws MalformedURLException, ExecutionException, InterruptedException {
         URL requestURL = buildURLForStockPrice(symbols);
-        GetJSONData getJSONData = new GetJSONData(new GetJSONData.AsyncResponse() {
-            @Override
-            public void processFinish(String output) {
-                dataStream = output;
-            }
-        }, new GetJSONData.AsyncPreExecute() {
-            @Override
-            public void preExecute() {
-                // Intentionally left empty.
-            }
-        });
-        getJSONData.execute(requestURL).get();
+        if (!requestURL.equals("")) {
+            GetJSONData getJSONData = new GetJSONData(new GetJSONData.AsyncResponse() {
+                @Override
+                public void processFinish(String output) {
+                    dataStream = output;
+                }
+            }, new GetJSONData.AsyncPreExecute() {
+                @Override
+                public void preExecute() {
+                    // Intentionally left empty.
+                }
+            });
+            getJSONData.execute(requestURL).get();
+        }
         return dataStream;
     }
     private URL buildURLForStockPrice(List<String> symbols) throws MalformedURLException {
-        String insertString = symbols.get(0);
+        String insertString = "";
+        try {
+            insertString = symbols.get(0);
+        } catch (IndexOutOfBoundsException e) {
+            // If all of the stocks were removed from the application by the user, we will just return an
+            // empty URL.
+            return new URL(insertString);
+        }
         // Set i to 1 since we set the first symbol above.
         for (int i=1; i < symbols.size(); i++) {
             insertString = insertString.concat("," + symbols.get(i));
         }
-        String replacedString = PRICE_URL.replace("REPLACE", insertString);
+        String replacedString = BATCH_QUOTE_URL.replace("REPLACE", insertString);
         return new URL(replacedString);
     }
     public URL buildURLForFullStockData(String symbol) throws MalformedURLException {
@@ -64,6 +75,7 @@ public class UrlUtil{
         String replacedString = null;
         switch (lengthOfTime) {
             case ONE_DAY_CHART:
+                // Check whether today is
                 replacedString = ONE_DAY_CHART_URL.replace("REPLACE", symbol);
                 break;
             case FIVE_DAY_CHART:
@@ -72,11 +84,14 @@ public class UrlUtil{
             case ONE_MONTH_CHART:
                 replacedString = ONE_MONTH_CHART_URL.replace("REPLACE", symbol);
                 break;
-            case SIX_MONTH_CHART:
-                replacedString = SIX_MONTH_CHART_URL.replace("REPLACE", symbol);
+            case THREE_MONTH_CHART:
+                replacedString = THREE_MONTH_CHART_URL.replace("REPLACE", symbol);
                 break;
             case ONE_YEAR_CHART:
                 replacedString = ONE_YEAR_CHART_URL.replace("REPLACE", symbol);
+                break;
+            case FIVE_YEAR_CHART:
+                replacedString = FIVE_YEAR_CHART_URL.replace("REPLACE", symbol);
                 break;
         }
         return new URL(replacedString);
