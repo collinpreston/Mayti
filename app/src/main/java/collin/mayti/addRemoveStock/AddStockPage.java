@@ -17,25 +17,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.EntryXComparator;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -46,7 +35,6 @@ import collin.mayti.applicationSettingsDB.SettingViewModel;
 import collin.mayti.datacapture.DailyUpdateDataRetriever;
 import collin.mayti.datacapture.DataRetriever;
 import collin.mayti.datacapture.GetJSONData;
-import collin.mayti.stockDetails.LineChartData;
 import collin.mayti.stockDetails.StockDetailsListViewAdapter;
 import collin.mayti.stockSymbolDB.SymbolViewModel;
 import collin.mayti.urlUtil.UrlUtil;
@@ -341,7 +329,6 @@ public class AddStockPage extends Fragment {
             fullDataMap.put(getContext().getString(R.string.symbol), dataObj.getString("symbol"));
             fullDataMap.put(getContext().getString(R.string.company_name), dataObj.getString("companyName"));
             fullDataMap.put(getContext().getString(R.string.primary_exchange), dataObj.getString("primaryExchange"));
-            fullDataMap.put(getContext().getString(R.string.calculation_price), dataObj.getString("calculationPrice"));
             fullDataMap.put(getContext().getString(R.string.open), dataObj.getString("open"));
             fullDataMap.put(getContext().getString(R.string.open_time), dataObj.getString("openTime"));
             fullDataMap.put(getContext().getString(R.string.close), dataObj.getString("close"));

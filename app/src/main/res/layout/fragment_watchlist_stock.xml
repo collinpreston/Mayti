@@ -21,6 +21,28 @@
         card_view:cardCornerRadius="2dp"
         card_view:cardElevation="2dp">
 
+        <Button
+            android:id="@+id/deleteBtn"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/ic_delete_black_24dp"
+            android:backgroundTint="@color/darkRed"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:id="@+id/deleteOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background_dim_overlay"
+            android:visibility="gone">
+
+        </FrameLayout>
+
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -29,9 +51,10 @@
                 android:id="@+id/newAlertBtn"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/ic_notifications_black_24dp"
+                android:backgroundTint="@color/blue"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintHorizontal_bias="0.95"
@@ -63,32 +86,66 @@
                 card_view:layout_constraintTop_toBottomOf="@+id/symbol" />
 
             <TextView
+                android:id="@+id/percentChange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="-.04"
+                card_view:layout_constraintBottom_toBottomOf="@+id/price"
+                card_view:layout_constraintStart_toEndOf="@+id/price"
+                card_view:layout_constraintTop_toTopOf="@+id/price"
+                android:layout_marginLeft="4dp" />
+
+            <TextView
+                android:id="@+id/priceChange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="(TextView)"
+                card_view:layout_constraintBottom_toBottomOf="@+id/price"
+                card_view:layout_constraintLeft_toRightOf="@+id/percentChange"
+                card_view:layout_constraintTop_toTopOf="@+id/price" />
+
+            <TextView
                 android:id="@+id/volume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="3dp"
                 android:textAppearance="?attr/textAppearanceListItem"
                 android:textSize="10sp"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@+id/price"
+                android:layout_marginLeft="16dp" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="3dp"
+                android:text="TextView"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toBottomOf="@+id/price" />
+                card_view:layout_constraintTop_toBottomOf="@+id/volume"
+                android:layout_marginLeft="16dp" />
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/watchlistChart"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginStart="100dp"
+                android:layout_marginLeft="175dp"
+                android:layout_marginStart="175dp"
                 android:layout_marginTop="8dp"
                 card_view:layout_constraintBottom_toTopOf="@+id/newAlertBtn"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintLeft_toRightOf="@+id/symbol"
                 card_view:layout_constraintStart_toStartOf="@+id/symbol"
-                card_view:layout_constraintTop_toTopOf="parent" />
+                card_view:layout_constraintTop_toTopOf="parent"
+                android:layout_marginRight="8dp" />
 
         </android.support.constraint.ConstraintLayout>
 

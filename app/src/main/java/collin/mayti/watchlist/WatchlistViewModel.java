@@ -116,6 +116,12 @@ public class WatchlistViewModel extends AndroidViewModel {
                     params[0].setDateToRemove(dateToRemove);
                     break;
             }
+
+            // Need to put filler data in for the price and volume since we perform checks on these values
+            // elsewhere and don't want to throw an exception.
+            params[0].setPrice("");
+            params[0].setVolume("");
+
             db.watchlistDao().insertStock(params[0]);
             return null;
         }

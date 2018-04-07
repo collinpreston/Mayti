@@ -80,7 +80,7 @@ public class WatchlistFragment extends Fragment {
         try {
             // Add all of the stocks for the watchlist to the watchlistItems list.
             watchlistItems.addAll(viewModel.getAllStocksForWatchlist(PERMANENT_WATCHLIST_NAME));
-            mAdapter = new MyWatchlistRecyclerViewAdapter(watchlistItems);
+            mAdapter = new MyWatchlistRecyclerViewAdapter(watchlistItems, getContext(), getActivity());
             // Set the size of the myStocks array equal to the total number of stocks in the watchlist.
             myStocks = new String[watchlistItems.size()];
 

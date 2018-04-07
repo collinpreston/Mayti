@@ -14,13 +14,17 @@ public class StockContent extends LiveData{
         public final String symbol;
         public final String price;
         public final String volume;
+        public final String change;
+        public final String changePercent;
 
 
-        public StockItem(String symbol, String price, String volume) {
+        public StockItem(String symbol, String price, String volume, String change, String changePercent) {
             this.position = -1;
             this.symbol = symbol;
             this.price = price;
             this.volume = volume;
+            this.change = change;
+            this.changePercent = changePercent;
 
         }
 

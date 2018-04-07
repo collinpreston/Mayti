@@ -40,9 +40,9 @@ public class DataRetriever extends Service {
     }
 
     private boolean isJSONDataValid(String dataFromConnection) {
-        return dataFromConnection != null && !dataFromConnection.isEmpty();
+        return dataFromConnection != null && !dataFromConnection.isEmpty() && !dataFromConnection.equals("");
     }
-    private JSONArray getQuotesAsJSON(List<String> symbols) throws MalformedURLException, JSONException, ExecutionException, InterruptedException {
+    private JSONObject getQuotesAsJSON(List<String> symbols) throws MalformedURLException, JSONException, ExecutionException, InterruptedException {
 
         String dataRetrievedString;
         do {
@@ -52,22 +52,22 @@ public class DataRetriever extends Service {
             } while (!isJSONDataValid(dataRetrievedString));
 
             JSONObject dataObj = new JSONObject(dataRetrievedString);
-            JSONArray stockData;
-            stockData = dataObj.getJSONArray("Stock Quotes");
-            return stockData;
+            return dataObj;
     }
     private List<StockContent.StockItem> getQuotesAsList(List<String> symbols)
             throws MalformedURLException, JSONException, ExecutionException, InterruptedException {
-        JSONArray quotesJSON = getQuotesAsJSON(symbols);
+        JSONObject quotesJSON = getQuotesAsJSON(symbols);
         List <StockContent.StockItem> watchlistData = new ArrayList<>();
-        for (int i=0; i < quotesJSON.length(); i++) {
-
-            JSONObject quoteJSON = quotesJSON.getJSONObject(i);
+        for (String symbol : symbols) {
+            JSONObject jsonStock = quotesJSON.getJSONObject(symbol);
+            JSONObject jsonQuote = jsonStock.getJSONObject("quote");
             StockContent.StockItem stockItem = new StockContent.StockItem(
-            quoteJSON.getString("1. symbol"),
-            quoteJSON.getString("2. price"),
-            quoteJSON.getString("3. volume"));
-
+                    jsonQuote.getString("symbol"),
+                    jsonQuote.getString("latestPrice"),
+                    jsonQuote.getString("latestVolume"),
+                    jsonQuote.getString("change"),
+                    jsonQuote.getString("changePercent")
+                    );
             watchlistData.add(stockItem);
         }
         return watchlistData;
@@ -76,7 +76,7 @@ public class DataRetriever extends Service {
     private void updateDatabaseWithData(List <StockContent.StockItem> stockDataList) {
         AppDatabase db = MainActivity.db;
         for (StockContent.StockItem item : stockDataList) {
-            db.watchlistDao().updateBySymbol(item.price, item.volume, item.symbol);
+            db.watchlistDao().updateBySymbol(item.price, item.volume, item.symbol, item.change, item.changePercent);
         }
 
     }
