@@ -26,6 +26,9 @@ public interface WatchlistDao {
     @Query("SELECT * FROM watchlist WHERE symbol LIKE :symbol AND watchlist LIKE :watchlist LIMIT 1")
     Stock findBySymbolAndWatchlist(String symbol, String watchlist);
 
+    @Query("SELECT * FROM watchlist WHERE symbol LIKE :symbol LIMIT 1")
+    Stock findStockItemBySymbol(String symbol);
+
     @Insert
     void insertAll(Stock... stocks);
 
@@ -35,8 +38,9 @@ public interface WatchlistDao {
     @Delete
     void delete(Stock stock);
 
-    @Query("UPDATE watchlist SET price = :price, volume = :volume, change = :change, changePercent = :changePercent WHERE symbol = :symbol")
-    void updateBySymbol(String price, String volume, String symbol, String change, String changePercent);
+    @Query("UPDATE watchlist SET price = :price, volume = :volume, change = :change, changePercent = :changePercent, " +
+            "recordHigh = :recordHigh, recordLow = :recordLow, averageVolume = :avgVolume WHERE symbol = :symbol")
+    void updateBySymbol(String price, String volume, String symbol, String change, String changePercent, String recordHigh, String recordLow, String avgVolume);
 
     @Query("SELECT COUNT(*) FROM watchlist")
     int getTotalNumberOfRows();

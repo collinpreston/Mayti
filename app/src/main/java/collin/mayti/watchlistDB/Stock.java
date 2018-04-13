@@ -15,96 +15,129 @@ import java.sql.Date;
 
 
 @Entity(tableName = "watchlist", indices = {@Index(value = "symbol")}, primaryKeys = {"symbol", "watchlist"})
-    public class Stock {
-        public int getPositionID() {
-            return positionID;
-        }
+public class Stock {
+    public int getPositionID() {
+        return positionID;
+    }
 
-        public void setPositionID(int positionID) {
-            this.positionID = positionID;
-        }
+    public void setPositionID(int positionID) {
+        this.positionID = positionID;
+    }
 
-        public String getSymbol() {
-            return symbol;
-        }
+    public String getSymbol() {
+        return symbol;
+    }
 
-        public void setSymbol(String symbol) {
-            this.symbol = symbol;
-        }
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
 
-        public String getPrice() {
-            return price;
-        }
+    public String getPrice() {
+        return price;
+    }
 
-        public void setPrice(String price) {
-            this.price = price;
-        }
+    public void setPrice(String price) {
+        this.price = price;
+    }
 
-        public String getVolume() {
-            return volume;
-        }
+    public String getVolume() {
+        return volume;
+    }
 
-        public void setVolume(String volume) {
-            this.volume = volume;
-        }
+    public void setVolume(String volume) {
+        this.volume = volume;
+    }
 
-        public String getChange() {
-            return change;
-        }
+    public String getChange() {
+        return change;
+    }
 
-        public void setChange(String change) {
-            this.change = change;
-        }
+    public void setChange(String change) {
+        this.change = change;
+    }
 
-        public String getChangePercent() {
-            return changePercent;
-        }
+    public String getChangePercent() {
+        return changePercent;
+    }
 
-        public void setChangePercent(String changePercent) {
-            this.changePercent = changePercent;
-        }
+    public void setChangePercent(String changePercent) {
+        this.changePercent = changePercent;
+    }
 
-        public String getWatchlist() {
-            return watchlist;
-        }
+    public String getWatchlist() {
+        return watchlist;
+    }
 
-        public void setWatchlist(String watchlist) {
-            this.watchlist = watchlist;
-        }
+    public void setWatchlist(String watchlist) {
+        this.watchlist = watchlist;
+    }
 
-        public Date getDateToRemove() {
-            return dateToRemove;
-        }
+    public Date getDateToRemove() {
+        return dateToRemove;
+    }
 
-        public void setDateToRemove(Date dateToRemove) {
-            this.dateToRemove = dateToRemove;
-        }
+    public void setDateToRemove(Date dateToRemove) {
+        this.dateToRemove = dateToRemove;
+    }
 
-        @NonNull
-        private String symbol;
+    public String getRecordHigh() {
+        return recordHigh;
+    }
 
-        @ColumnInfo(name = "positionID")
-        private int positionID;
+    public void setRecordHigh(String recordHigh) {
+        this.recordHigh = recordHigh;
+    }
 
-        @ColumnInfo(name = "price")
-        private String price;
+    public String getRecordLow() {
+        return recordLow;
+    }
 
-        @ColumnInfo(name = "volume")
-        private String volume;
+    public void setRecordLow(String recordLow) {
+        this.recordLow = recordLow;
+    }
 
-        @ColumnInfo(name = "change")
-        private String change;
+    public String getAverageVolume() {
+        return averageVolume;
+    }
 
-        @ColumnInfo(name = "changePercent")
-        private String changePercent;
+    public void setAverageVolume(String averageVolume) {
+        this.averageVolume = averageVolume;
+    }
 
-        @NonNull
-        @ColumnInfo(name = "watchlist")
-        private String watchlist;
+    @NonNull
+    private String symbol;
 
-        @ColumnInfo
-        @TypeConverters(DateConverter.class)
-        private Date dateToRemove;
+    @ColumnInfo(name = "positionID")
+    private int positionID;
+
+    @ColumnInfo(name = "price")
+    private String price;
+
+    @ColumnInfo(name = "volume")
+    private String volume;
+
+    @ColumnInfo(name = "change")
+    private String change;
+
+    @ColumnInfo(name = "changePercent")
+    private String changePercent;
+
+    @NonNull
+    @ColumnInfo(name = "watchlist")
+    private String watchlist;
+
+    @ColumnInfo
+    @TypeConverters(DateConverter.class)
+    private Date dateToRemove;
+
+    @ColumnInfo(name = "recordHigh")
+    private String recordHigh;
+
+    @ColumnInfo(name = "recordLow")
+    private String recordLow;
+
+    @ColumnInfo(name = "averageVolume")
+    private String averageVolume;
 
 }
 

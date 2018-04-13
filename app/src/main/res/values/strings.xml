@@ -33,4 +33,30 @@
 
     <!-- JSON IEX keys -->
     <string name="company_name_key">companyName</string>
+
+    <string-array name="price_change_alert_types_array">
+        <item>Price</item>
+        <item>Percent</item>
+    </string-array>
+
+    <string-array name="price_quick_alerts_array">
+        <item>+/- 1%</item>
+        <item>+/- 2.5%</item>
+        <item>+/- 5%</item>
+        <item>+/- 10%</item>
+    </string-array>
+
+    <string-array name="record_high_low_price_alerts_array">
+        <item>New 52 Wk Low</item>
+        <item>New 52 Wk High</item>
+    </string-array>
+
+    <string-array name="volume_exceeds_percentage">
+        <item>25%</item>
+        <item>50%</item>
+        <item>100%</item>
+        <item>150%</item>
+        <item>200%</item>
+    </string-array>
+
 </resources>

@@ -75,7 +75,6 @@ public class UrlUtil{
         String replacedString = null;
         switch (lengthOfTime) {
             case ONE_DAY_CHART:
-                // Check whether today is
                 replacedString = ONE_DAY_CHART_URL.replace("REPLACE", symbol);
                 break;
             case FIVE_DAY_CHART:

@@ -1,4 +1,4 @@
-package collin.mayti.notifications;
+package collin.mayti.alerts;
 
 import android.support.v4.app.Fragment;
 

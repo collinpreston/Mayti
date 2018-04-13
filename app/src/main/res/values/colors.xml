@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="darkBlue">#15283B</color>
+    <color name="darkBlue">#15283b</color>
     <color name="lightBlue">#b1d9d3</color>
     <color name="redHighlight">#F2937E</color>
     <color name="darkRed">#d95b5b</color>
-    <color name="background">#F9F7EA</color>
-    <color name="cardViewBackground">#F7F9E9</color>
+    <color name="background">#f9f7ea</color>
+    <color name="cardViewBackground">#f7f9e9</color>
     <color name="blue">#35505e</color>
     <color name="green">#37CC70</color>
 </resources>

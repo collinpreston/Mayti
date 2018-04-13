@@ -2,6 +2,7 @@ package collin.mayti.watchlist;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -35,6 +37,7 @@ import java.util.concurrent.ExecutionException;
 
 import collin.mayti.R;
 import collin.mayti.datacapture.GetJSONData;
+import collin.mayti.alerts.AlertTypeDialog;
 import collin.mayti.stockDetails.LineChartData;
 import collin.mayti.stockDetails.StockFullDetailsDialog;
 import collin.mayti.urlUtil.UrlUtil;
@@ -68,6 +71,8 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
         private final TextView priceChangePercentageTextView;
         private final Button removeBtn;
         private final FrameLayout deleteOverlay;
+        private final Button newAlertBtn;
+        private final LinearLayout layoutStockItem;
 
         public ViewHolder(View v, final FragmentActivity activity) {
             super(v);
@@ -94,6 +99,7 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
                 }
             });
 
+            layoutStockItem = v.findViewById(R.id.linearLayout_Stock);
             symbolTextView = v.findViewById(R.id.symbol);
             priceTextView = v.findViewById(R.id.price);
             volumeTextView = v.findViewById(R.id.volume);
@@ -103,6 +109,8 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
             priceChangePercentageTextView = v.findViewById(R.id.percentChange);
             deleteOverlay = v.findViewById(R.id.deleteOverlay);
             removeBtn = v.findViewById(R.id.deleteBtn);
+            newAlertBtn = v.findViewById(R.id.newAlertBtn);
+
         }
 
         TextView getVolumeTextView() {
@@ -129,7 +137,9 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
         FrameLayout getDeleteOverlay() {
             return deleteOverlay;
         }
-
+        Button getNewAlertBtn() {
+            return newAlertBtn;
+        }
     }
 
     /**
@@ -212,6 +222,13 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
                 }
             });
 
+            viewHolder.newAlertBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertTypeDialog dialogFrag = AlertTypeDialog.newInstance(watchlistItems.get(position).getSymbol());
+                    dialogFrag.show(mActivity.getFragmentManager(), "");
+                }
+            });
 
             getChartData(watchlistItems.get(position).getSymbol(), viewHolder.getLineChartView());
 
@@ -235,13 +252,15 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
         for (int i=0; i < stockList.size(); i++) {
             // Check whether the volume or price changed from the previous values.
             if (oldWatchlistItems.size() != 0) {
-                if (!oldWatchlistItems.get(i).getPrice().equals("") && !oldWatchlistItems.get(i).getVolume().equals("")) {
-                    if (!(oldWatchlistItems.get(i).getPrice().equals(this.watchlistItems.get(i).getPrice())) &&
-                            !(oldWatchlistItems.get(i).getVolume().equals(this.watchlistItems.get(i).getVolume()))) {
+                if (oldWatchlistItems.size() == watchlistItems.size()) {
+                    if (!oldWatchlistItems.get(i).getPrice().equals("") && !oldWatchlistItems.get(i).getVolume().equals("")) {
+                        if (!(oldWatchlistItems.get(i).getPrice().equals(this.watchlistItems.get(i).getPrice())) &&
+                                !(oldWatchlistItems.get(i).getVolume().equals(this.watchlistItems.get(i).getVolume()))) {
+                            notifyItemChanged(i);
+                        }
+                    } else {
                         notifyItemChanged(i);
                     }
-                } else {
-                    notifyItemChanged(i);
                 }
             } else {
                 notifyItemChanged(i);
@@ -321,6 +340,7 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
                     }
                     Collections.sort(entryList, new EntryXComparator());
                     LineDataSet dataSet = new LineDataSet(entryList, "");
+                    dataSet.setColor(mContext.getResources().getColor(R.color.blue));
                     dataSet.setDrawCircles(false);
                     LineData lineData = new LineData(dataSet);
                     lineData.setDrawValues(false);
@@ -337,6 +357,18 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
                 lineChart.setDrawGridBackground(false);
                 lineChart.setAutoScaleMinMaxEnabled(true);
                 lineChart.setDescription(null);
+                lineChart.setClickable(false);
+                lineChart.setDragEnabled(false);
+                lineChart.setDragEnabled(false);
+                lineChart.setPinchZoom(false);
+                lineChart.setDoubleTapToZoomEnabled(false);
+                lineChart.setHighlightPerTapEnabled(false);
+                lineChart.setHighlightPerDragEnabled(false);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    lineChart.setDefaultFocusHighlightEnabled(false);
+                }
+                lineChart.setTouchEnabled(false);
+                //lineChart.setKeepPositionOnRotation(true);
                 lineChart.invalidate();
             }
         }, new GetJSONData.AsyncPreExecute() {

@@ -13,7 +13,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 
 import collin.mayti.addRemoveStock.AddStockPage;
 import collin.mayti.applicationSettingsDB.SettingDatabase;
-import collin.mayti.notifications.NotificationsPage;
+import collin.mayti.alerts.NotificationsPage;
 import collin.mayti.stockSymbolDB.SymbolDatabase;
 import collin.mayti.watchlist.WatchlistPage;
 import collin.mayti.watchlistDB.AppDatabase;

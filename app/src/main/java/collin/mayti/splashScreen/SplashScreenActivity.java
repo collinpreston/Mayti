@@ -37,6 +37,10 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private static final String SYMBOL_DATABASE_LAST_UPDATE = "SYMBOL_DATABASE_LAST_UPDATE";
 
+    // TODO: Need to clean the alert database once a day.  Store the date last cleaned in the settings
+    // database.  Each time the app is opened, check this setting to see if the alerts database
+    // was cleaned already.
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

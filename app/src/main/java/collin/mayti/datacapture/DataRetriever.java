@@ -66,7 +66,10 @@ public class DataRetriever extends Service {
                     jsonQuote.getString("latestPrice"),
                     jsonQuote.getString("latestVolume"),
                     jsonQuote.getString("change"),
-                    jsonQuote.getString("changePercent")
+                    jsonQuote.getString("changePercent"),
+                    jsonQuote.getString("week52High"),
+                    jsonQuote.getString("week52Low"),
+                    jsonQuote.getString("avgTotalVolume")
                     );
             watchlistData.add(stockItem);
         }
@@ -76,7 +79,8 @@ public class DataRetriever extends Service {
     private void updateDatabaseWithData(List <StockContent.StockItem> stockDataList) {
         AppDatabase db = MainActivity.db;
         for (StockContent.StockItem item : stockDataList) {
-            db.watchlistDao().updateBySymbol(item.price, item.volume, item.symbol, item.change, item.changePercent);
+            db.watchlistDao().updateBySymbol(item.price, item.volume, item.symbol, item.change, item.changePercent,
+                    item.recordHigh, item.recordLow, item.averageVolume);
         }
 
     }
