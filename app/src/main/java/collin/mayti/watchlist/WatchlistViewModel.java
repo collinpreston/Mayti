@@ -99,7 +99,6 @@ public class WatchlistViewModel extends AndroidViewModel {
 
         @Override
         protected Void doInBackground(final Stock... params) {
-            // TODO: Need to specify watchlist names and dates.
             Date dateToRemove;
             switch (params[0].getWatchlist()) {
                 case DAILY_WATCHLIST_NAME:
@@ -226,6 +225,32 @@ public class WatchlistViewModel extends AndroidViewModel {
         protected Void doInBackground(String... watchlistName) {
             try {
                 stockItem = db.watchlistDao().findBySymbolAndWatchlist(symbolID, watchlistID);
+            } catch (Exception e) {
+            }
+            return null;
+        }
+    }
+
+    public Stock findStockItemBySymbold(String symbol) throws ExecutionException, InterruptedException {
+        stockItem = null;
+        new findStockItemBySymbolAsyncTask(appDatabase, symbol).execute().get();
+        return stockItem;
+    }
+
+    private static class findStockItemBySymbolAsyncTask extends AsyncTask<String, Void, Void> {
+
+        private AppDatabase db;
+        private String symbolID;
+
+        findStockItemBySymbolAsyncTask(AppDatabase appDatabase, String symbol) {
+            db = appDatabase;
+            symbolID = symbol;
+        }
+
+        @Override
+        protected Void doInBackground(String... watchlistName) {
+            try {
+                stockItem = db.watchlistDao().findStockItemBySymbol(symbolID);
             } catch (Exception e) {
             }
             return null;

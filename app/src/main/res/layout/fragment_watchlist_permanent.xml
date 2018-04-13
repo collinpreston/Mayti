@@ -12,9 +12,10 @@
         android:name="collin.mayti.WatchlistFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        app:layoutManager="LinearLayoutManager"
+        app:layoutManager="android.support.v7.widget.GridLayoutManager"
         tools:context="collin.mayti.watchlist.watchlistFragments.WatchlistFragment"
         tools:listitem="@layout/fragment_watchlist_stock" />
 </LinearLayout>

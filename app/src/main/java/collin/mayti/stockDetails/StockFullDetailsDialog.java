@@ -54,7 +54,7 @@ public class StockFullDetailsDialog extends DialogFragment{
     public static StockFullDetailsDialog newInstance(String symbol) {
         StockFullDetailsDialog f = new StockFullDetailsDialog();
 
-        // Supply num input as an argument.
+        // Supply symbol input as an argument.
         Bundle args = new Bundle();
         args.putString("symbol", symbol);
         f.setArguments(args);
@@ -346,6 +346,7 @@ public class StockFullDetailsDialog extends DialogFragment{
                 dataSet.setDrawCircles(false);
                 LineData lineData = new LineData(dataSet);
                 lineData.setDrawValues(false);
+                dataSet.setColor(rootView.getContext().getResources().getColor(R.color.ic_launcher_background));
                 lineChart.setData(lineData);
                 XAxis xAxis = lineChart.getXAxis();
                 xAxis.setEnabled(false);
@@ -357,6 +358,9 @@ public class StockFullDetailsDialog extends DialogFragment{
                 legend.setEnabled(false);
                 lineChart.setDrawGridBackground(false);
                 lineChart.setAutoScaleMinMaxEnabled(true);
+                Description chartDescription = new Description();
+                chartDescription.setText("");
+                lineChart.setDescription(chartDescription);
                 lineChart.invalidate();
 
                 rootView.findViewById(R.id.dialogChartProgressBar).setVisibility(View.GONE);
