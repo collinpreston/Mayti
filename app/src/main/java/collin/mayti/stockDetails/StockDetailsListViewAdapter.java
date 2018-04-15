@@ -38,6 +38,9 @@ import collin.mayti.urlUtil.UrlUtil;
  * Created by chpreston on 3/23/18.
  */
 
+/**
+ * This listview adapter is used when viewing stock details from the add stock page.
+ */
 public class StockDetailsListViewAdapter extends BaseAdapter {
 
     @SuppressLint("UseSparseArrays")

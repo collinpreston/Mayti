@@ -1,6 +1,9 @@
 package collin.mayti.stockDetails;
 
+import android.app.Dialog;
 import android.app.DialogFragment;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -329,7 +332,7 @@ public class StockFullDetailsDialog extends DialogFragment{
                 // zero values will distort the chart.  TODO: This can become a method.
                 List<Entry> noZeroEntryList = new ArrayList<>();
                 for (int i=0; i < entryList.size(); i++) {
-                    if (entryList.get(i).getY() != 0.0) {
+                    if (entryList.get(i).getY() != 0.0 && entryList.get(i).getY() != -1.0) {
                         noZeroEntryList.add(entryList.get(i));
                     }
                 }
@@ -407,5 +410,16 @@ public class StockFullDetailsDialog extends DialogFragment{
         }
 
         return lineChartDataList;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
     }
 }

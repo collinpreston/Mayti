@@ -36,6 +36,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import collin.mayti.R;
+import collin.mayti.alerts.alertSubscriptionDatabase.Alert;
+import collin.mayti.alerts.alertSubscriptionDatabase.AlertSubscriptionViewModel;
+import collin.mayti.alerts.viewAlerts.ViewCurrentAlertsDialog;
 import collin.mayti.datacapture.GetJSONData;
 import collin.mayti.alerts.AlertTypeDialog;
 import collin.mayti.stockDetails.LineChartData;
@@ -73,6 +76,7 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
         private final FrameLayout deleteOverlay;
         private final Button newAlertBtn;
         private final LinearLayout layoutStockItem;
+        private final Button viewCurrentAlertsBtn;
 
         public ViewHolder(View v, final FragmentActivity activity) {
             super(v);
@@ -110,6 +114,7 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
             deleteOverlay = v.findViewById(R.id.deleteOverlay);
             removeBtn = v.findViewById(R.id.deleteBtn);
             newAlertBtn = v.findViewById(R.id.newAlertBtn);
+            viewCurrentAlertsBtn = v.findViewById(R.id.viewAlertsBtn);
 
         }
 
@@ -139,6 +144,9 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
         }
         Button getNewAlertBtn() {
             return newAlertBtn;
+        }
+        Button getViewCurrentAlertsBtn() {
+            return viewCurrentAlertsBtn;
         }
     }
 
@@ -232,12 +240,21 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
 
             getChartData(watchlistItems.get(position).getSymbol(), viewHolder.getLineChartView());
 
+            viewHolder.getViewCurrentAlertsBtn().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ViewCurrentAlertsDialog dialogFrag = ViewCurrentAlertsDialog.newInstance(watchlistItems.get(position).getSymbol());
+                    dialogFrag.show(mActivity.getFragmentManager(), "");
+                }
+            });
+
         } catch (Exception e) {
             // Otherwise the data hasn't been collected and we need to display hashmarks indicating
             // the data isn't here.
             viewHolder.getPriceTextView().setText("--");
             viewHolder.getVolumeTextView().setText("--");
         }
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -327,7 +344,7 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
                     // zero values will distort the chart.  TODO: This can become a method.
                     List<Entry> noZeroEntryList = new ArrayList<>();
                     for (int i=0; i < entryList.size(); i++) {
-                        if (entryList.get(i).getY() != 0.0) {
+                        if (entryList.get(i).getY() != 0.0 && entryList.get(i).getY() != -1.0) {
                             noZeroEntryList.add(entryList.get(i));
                         }
                     }
@@ -378,5 +395,10 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
             }
         });
         getJSONData.execute(requestURL);
+    }
+
+    private List<Alert> getAlertsForSymbol(String symbol) throws ExecutionException, InterruptedException {
+        AlertSubscriptionViewModel alertViewModel = ViewModelProviders.of( mActivity).get(AlertSubscriptionViewModel.class);
+        return alertViewModel.getAllAlertsForSymbol(symbol);
     }
 }

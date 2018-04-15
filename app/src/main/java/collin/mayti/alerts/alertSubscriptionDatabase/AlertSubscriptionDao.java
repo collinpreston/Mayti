@@ -19,7 +19,7 @@ public interface AlertSubscriptionDao {
     @Query("SELECT COUNT(*) FROM alerts")
     int getTotalNumberOfAlerts();
 
-    @Query("SELECT COUNT(*) FROM alerts WHERE symbol = :symbol AND alertType = :type AND alertTriggerValue = :trigger LIMIT 1")
+    @Query("SELECT COUNT(*) FROM alerts WHERE symbol = :symbol AND alertType = :type AND alertTriggerValue = :trigger")
     int getNumberAlertBySymbolTypeTrigger(String symbol, String type, String trigger);
 
     @Insert
