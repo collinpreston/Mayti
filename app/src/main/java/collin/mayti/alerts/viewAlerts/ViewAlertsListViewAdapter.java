@@ -1,7 +1,6 @@
 package collin.mayti.alerts.viewAlerts;
 
 import android.app.Activity;
-import android.app.Application;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import collin.mayti.R;
-import collin.mayti.Util.FormatLargeDouble;
+import collin.mayti.util.FormatLargeDouble;
 import collin.mayti.alerts.alertSubscriptionDatabase.Alert;
 import collin.mayti.alerts.alertSubscriptionDatabase.AlertSubscriptionViewModel;
 

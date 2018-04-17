@@ -1,4 +1,4 @@
-package collin.mayti.Util;
+package collin.mayti.util;
 
 import java.util.Map;
 import java.util.NavigableMap;
