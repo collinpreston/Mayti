@@ -29,21 +29,27 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import collin.mayti.R;
 import collin.mayti.alerts.alertSubscriptionDatabase.Alert;
 import collin.mayti.alerts.alertSubscriptionDatabase.AlertSubscriptionViewModel;
-import collin.mayti.alerts.viewAlerts.ViewCurrentAlertsDialog;
+import collin.mayti.alerts.viewCurrentAlerts.ViewCurrentAlertsDialog;
 import collin.mayti.datacapture.GetJSONData;
 import collin.mayti.alerts.AlertTypeDialog;
 import collin.mayti.stockDetails.LineChartData;
 import collin.mayti.stockDetails.StockFullDetailsDialog;
+import collin.mayti.stockDetails.stockNews.ViewStockNewsDialog;
 import collin.mayti.urlUtil.UrlUtil;
+import collin.mayti.util.FormatLargeDouble;
 import collin.mayti.watchlistDB.Stock;
 
 
@@ -77,6 +83,8 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
         private final Button newAlertBtn;
         private final LinearLayout layoutStockItem;
         private final Button viewCurrentAlertsBtn;
+        private final Button viewStockNewsBtn;
+        private final TextView lastUpdateTimeTxt;
 
         public ViewHolder(View v, final FragmentActivity activity) {
             super(v);
@@ -115,6 +123,8 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
             removeBtn = v.findViewById(R.id.deleteBtn);
             newAlertBtn = v.findViewById(R.id.newAlertBtn);
             viewCurrentAlertsBtn = v.findViewById(R.id.viewAlertsBtn);
+            viewStockNewsBtn = v.findViewById(R.id.viewStockNewsBtn);
+            lastUpdateTimeTxt = v.findViewById(R.id.updateTimeTxt);
 
         }
 
@@ -147,6 +157,12 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
         }
         Button getViewCurrentAlertsBtn() {
             return viewCurrentAlertsBtn;
+        }
+        Button getViewStockNewsBtn() {
+            return viewStockNewsBtn;
+        }
+        TextView getLastUpdateTimeTxt() {
+            return lastUpdateTimeTxt;
         }
     }
 
@@ -193,9 +209,14 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
             }
 
             viewHolder.getPriceTextView().setText(price);
-            viewHolder.getVolumeTextView().setText("Volume " + watchlistItems.get(position).getVolume());
+            String formattedVolume = FormatLargeDouble.format(Double.parseDouble(watchlistItems.get(position).getVolume()));
+            viewHolder.getVolumeTextView().setText("Volume: " + formattedVolume);
             viewHolder.getPriceChangeTextView().setText(watchlistItems.get(position).getChange());
+
+            viewHolder.getLastUpdateTimeTxt().setText(getLatestUpdateHoursAndMinutes(watchlistItems.get(position).getLatestUpdate()));
             double percentageChange = Double.parseDouble(watchlistItems.get(position).getChangePercent()) * 100;
+
+            // Add two decimal places while setting textview text.
             viewHolder.getPriceChangePercentageTextView().setText("(" + new DecimalFormat("##.##").format(percentageChange) + "%)");
 
             // Set the text colors for the percentChange and priceChange textviews.
@@ -230,7 +251,7 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
                 }
             });
 
-            viewHolder.newAlertBtn.setOnClickListener(new View.OnClickListener() {
+            viewHolder.getNewAlertBtn().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     AlertTypeDialog dialogFrag = AlertTypeDialog.newInstance(watchlistItems.get(position).getSymbol());
@@ -244,6 +265,14 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
                 @Override
                 public void onClick(View v) {
                     ViewCurrentAlertsDialog dialogFrag = ViewCurrentAlertsDialog.newInstance(watchlistItems.get(position).getSymbol());
+                    dialogFrag.show(mActivity.getFragmentManager(), "");
+                }
+            });
+
+            viewHolder.getViewStockNewsBtn().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ViewStockNewsDialog dialogFrag = ViewStockNewsDialog.newInstance(watchlistItems.get(position).getSymbol());
                     dialogFrag.show(mActivity.getFragmentManager(), "");
                 }
             });
@@ -400,5 +429,17 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
     private List<Alert> getAlertsForSymbol(String symbol) throws ExecutionException, InterruptedException {
         AlertSubscriptionViewModel alertViewModel = ViewModelProviders.of( mActivity).get(AlertSubscriptionViewModel.class);
         return alertViewModel.getAllAlertsForSymbol(symbol);
+    }
+
+    private String getLatestUpdateHoursAndMinutes(String milliseconds) {
+        // Refers to the update time of latestPrice in milliseconds since midnight Jan 1, 1970.
+        Date latestUpdateDate = new Date(Long.parseLong(milliseconds));
+        DateFormat format = new SimpleDateFormat("HH:mm");
+        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        String formattedDate = format.format(latestUpdateDate).toString();
+        if (formattedDate.equals("00:00")) {
+            formattedDate = "Previous Close";
+        }
+        return formattedDate;
     }
 }

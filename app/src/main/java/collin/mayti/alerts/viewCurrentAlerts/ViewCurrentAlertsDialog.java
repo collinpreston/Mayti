@@ -1,4 +1,4 @@
-package collin.mayti.alerts.viewAlerts;
+package collin.mayti.alerts.viewCurrentAlerts;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -14,10 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
-import java.util.concurrent.ExecutionException;
-
 import collin.mayti.R;
-import collin.mayti.stockDetails.StockDetailsListViewAdapter;
 
 public class ViewCurrentAlertsDialog extends DialogFragment {
 

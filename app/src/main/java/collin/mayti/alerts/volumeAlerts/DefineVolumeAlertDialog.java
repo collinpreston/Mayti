@@ -54,6 +54,8 @@ public class DefineVolumeAlertDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.dialog_define_volume_alert, container, false);
 
+        // TODO: Display the current volume average to the user.
+
         MultiStateToggleButton volumeAlertMtb = rootView.findViewById(R.id.volumeNewAlertMtb);
         volumeAlertMtb.enableMultipleChoice(true);
 
@@ -165,8 +167,6 @@ public class DefineVolumeAlertDialog extends DialogFragment {
         super.onCreate(savedInstances);
         MultiDex.install(getContext());
         symbol = getArguments().getString("symbol");
-
-
 
     }
 }
