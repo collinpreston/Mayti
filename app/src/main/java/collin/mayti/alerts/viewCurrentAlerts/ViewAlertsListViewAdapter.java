@@ -1,4 +1,4 @@
-package collin.mayti.alerts.viewAlerts;
+package collin.mayti.alerts.viewCurrentAlerts;
 
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
@@ -68,7 +68,7 @@ public class ViewAlertsListViewAdapter extends BaseAdapter {
                 alertValueTxt.setText("$" + alertsForSymbol.get(position).getAlertTriggerValue());
                 break;
             case "PRICE_CHANGE_PERCENT":
-                alertTypeTxt.setText("Price Change:");
+                alertTypeTxt.setText("Percent Change:");
                 alertValueTxt.setText(alertsForSymbol.get(position).getAlertTriggerValue() + "%");
                 break;
             case "PRICE_TARGET":
@@ -79,6 +79,10 @@ public class ViewAlertsListViewAdapter extends BaseAdapter {
                 alertTypeTxt.setText("Volume Surpasses:");
                 String triggerDisplayValue = FormatLargeDouble.format(Double.parseDouble(alertsForSymbol.get(position).getAlertTriggerValue()));
                 alertValueTxt.setText(triggerDisplayValue);
+                break;
+            case "STOCK_ARTICLES_PUBLISHED":
+                alertTypeTxt.setText("Articles Published (In 1 Day):");
+                alertValueTxt.setText(alertsForSymbol.get(position).getAlertTriggerValue());
                 break;
             default:
                 alertTypeTxt.setText(alertType);

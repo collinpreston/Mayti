@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import collin.mayti.R;
+import collin.mayti.alerts.newsAlerts.DefineNewsAlertDialog;
 import collin.mayti.alerts.priceAlerts.DefinePriceAlertDialog;
 import collin.mayti.alerts.volumeAlerts.DefineVolumeAlertDialog;
 
@@ -41,6 +42,7 @@ public class AlertTypeDialog extends DialogFragment{
             public void onClick(View v) {
                 DefinePriceAlertDialog dialogFrag = DefinePriceAlertDialog.newInstance(symbol);
                 dialogFrag.show(getActivity().getFragmentManager(), "");
+                dismiss();
 
                 // TODO: Open the new price alert dialog which will allow the user to create an alert
                 // for price changes.  This can be specified as a percent change -/+/+-, price change
@@ -72,6 +74,17 @@ public class AlertTypeDialog extends DialogFragment{
             public void onClick(View v) {
                 DefineVolumeAlertDialog dialogFrag = DefineVolumeAlertDialog.newInstance(symbol);
                 dialogFrag.show(getActivity().getFragmentManager(), "");
+                dismiss();
+            }
+        });
+
+        Button newStockNewsAlert = rootView.findViewById(R.id.newNewsAlertBtn);
+        newStockNewsAlert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DefineNewsAlertDialog dialogFrag = DefineNewsAlertDialog.newInstance(symbol);
+                dialogFrag.show(getActivity().getFragmentManager(), "");
+                dismiss();
             }
         });
 

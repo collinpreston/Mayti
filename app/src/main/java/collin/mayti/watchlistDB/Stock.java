@@ -104,6 +104,14 @@ public class Stock {
         this.averageVolume = averageVolume;
     }
 
+    public String getLatestUpdate() {
+        return latestUpdate;
+    }
+
+    public void setLatestUpdate(String latestUpdate) {
+        this.latestUpdate = latestUpdate;
+    }
+
     @NonNull
     private String symbol;
 
@@ -138,6 +146,9 @@ public class Stock {
 
     @ColumnInfo(name = "averageVolume")
     private String averageVolume;
+
+    @ColumnInfo(name = "latestUpdate")
+    private String latestUpdate;
 
 }
 

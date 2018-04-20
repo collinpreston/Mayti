@@ -49,32 +49,38 @@
             android:layout_height="match_parent">
 
             <Button
+                android:id="@+id/viewStockNewsBtn"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/ic_import_contacts_black_24dp"
+                android:backgroundTint="@color/blue"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintRight_toLeftOf="@+id/newAlertBtn" />
+
+            <Button
                 android:id="@+id/newAlertBtn"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginBottom="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginRight="16dp"
                 android:background="@drawable/ic_add_alert_black_24dp"
                 android:backgroundTint="@color/blue"
                 card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintHorizontal_bias=".85"
-                card_view:layout_constraintStart_toStartOf="parent" />
+                card_view:layout_constraintRight_toLeftOf="@+id/viewAlertsBtn" />
 
             <Button
                 android:id="@+id/viewAlertsBtn"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
+                android:layout_marginBottom="16dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
                 android:background="@drawable/ic_notifications_black_24dp"
                 android:backgroundTint="@color/blue"
-                card_view:layout_constraintBaseline_toBaselineOf="@+id/newAlertBtn"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintStart_toEndOf="@+id/newAlertBtn" />
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintEnd_toEndOf="parent" />
 
             <TextView
                 android:id="@+id/symbol"
@@ -117,7 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
-                android:text="(TextView)"
+                android:text="$1.50"
                 card_view:layout_constraintBottom_toBottomOf="@+id/price"
                 card_view:layout_constraintLeft_toRightOf="@+id/percentChange"
                 card_view:layout_constraintTop_toTopOf="@+id/price" />
@@ -130,19 +136,19 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="3dp"
                 android:textAppearance="?attr/textAppearanceListItem"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/price" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/updateTimeTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="3dp"
-                android:text="TextView"
+                android:text="Updated Time"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/volume" />

@@ -2,6 +2,6 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="@string/account" />
+    <item android:title="@string/alert_profile" />
     <item android:title="@string/settings" />
 </menu>

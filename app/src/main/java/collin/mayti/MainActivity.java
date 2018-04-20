@@ -14,6 +14,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import collin.mayti.addRemoveStock.AddStockPage;
 import collin.mayti.applicationSettingsDB.SettingDatabase;
 import collin.mayti.alerts.NotificationsPage;
+import collin.mayti.stockNewsDB.StockNewsDatabase;
 import collin.mayti.stockSymbolDB.SymbolDatabase;
 import collin.mayti.watchlist.WatchlistPage;
 import collin.mayti.watchlistDB.AppDatabase;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     public static AppDatabase db;
     public static SymbolDatabase symbolDb;
     public static SettingDatabase settingDatabase;
+    public static StockNewsDatabase stockNewsDatabase;
 
 
     @SuppressLint("ResourceAsColor")
@@ -45,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize setting database
         settingDatabase = SettingDatabase.getDatabase(getApplicationContext());
+
+        // Initialize news database
+        stockNewsDatabase = StockNewsDatabase.getDatabase(getApplicationContext());
 
         // Setup the viewpager used for the bottom navigation
         setupViewPager();

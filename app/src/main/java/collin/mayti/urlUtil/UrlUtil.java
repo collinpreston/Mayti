@@ -16,6 +16,9 @@ import collin.mayti.datacapture.GetJSONData;
 public class UrlUtil{
     protected String BATCH_QUOTE_URL = "https://api.iextrading.com/1.0/stock/market/batch?symbols=REPLACE&types=quote&range=1m";
     protected String FULL_DATA_URL = "https://api.iextrading.com/1.0/stock/REPLACE/quote";
+
+    protected String NEWS_URL = "https://api.iextrading.com/1.0/stock/REPLACE/news/last/50";
+
     protected String ONE_DAY_CHART_URL = "https://api.iextrading.com/1.0/stock/REPLACE/chart/1d";
     protected String FIVE_DAY_CHART_URL = "https://api.iextrading.com/1.0/stock/REPLACE/chart/5d";
     protected String ONE_MONTH_CHART_URL = "https://api.iextrading.com/1.0/stock/REPLACE/chart/1m";
@@ -93,6 +96,11 @@ public class UrlUtil{
                 replacedString = FIVE_YEAR_CHART_URL.replace("REPLACE", symbol);
                 break;
         }
+        return new URL(replacedString);
+    }
+
+    public URL buildURLForNewsData(String symbol) throws MalformedURLException {
+        String replacedString = NEWS_URL.replace("REPLACE", symbol);
         return new URL(replacedString);
     }
 

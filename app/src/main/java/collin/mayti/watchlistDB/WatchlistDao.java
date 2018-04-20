@@ -39,8 +39,8 @@ public interface WatchlistDao {
     void delete(Stock stock);
 
     @Query("UPDATE watchlist SET price = :price, volume = :volume, change = :change, changePercent = :changePercent, " +
-            "recordHigh = :recordHigh, recordLow = :recordLow, averageVolume = :avgVolume WHERE symbol = :symbol")
-    void updateBySymbol(String price, String volume, String symbol, String change, String changePercent, String recordHigh, String recordLow, String avgVolume);
+            "recordHigh = :recordHigh, recordLow = :recordLow, averageVolume = :avgVolume, latestUpdate = :latestUpdate WHERE symbol = :symbol")
+    void updateBySymbol(String price, String volume, String symbol, String change, String changePercent, String recordHigh, String recordLow, String avgVolume, String latestUpdate);
 
     @Query("SELECT COUNT(*) FROM watchlist")
     int getTotalNumberOfRows();

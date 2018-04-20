@@ -19,10 +19,11 @@ public class StockContent extends LiveData{
         public final String recordHigh;
         public final String recordLow;
         public final String averageVolume;
+        public final String latestUpdate;
 
 
         public StockItem(String symbol, String price, String volume, String change, String changePercent,
-                         String recordHigh, String recordLow, String averageVolume) {
+                         String recordHigh, String recordLow, String averageVolume, String latestUpdate) {
             this.position = -1;
             this.symbol = symbol;
             this.price = price;
@@ -32,6 +33,7 @@ public class StockContent extends LiveData{
             this.recordHigh = recordHigh;
             this.recordLow = recordLow;
             this.averageVolume = averageVolume;
+            this.latestUpdate = latestUpdate;
 
         }
 
