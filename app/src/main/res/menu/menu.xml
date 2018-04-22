@@ -2,6 +2,10 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="@string/alert_profile" />
-    <item android:title="@string/settings" />
+    <item
+        android:id="@+id/alertProfileMenuOption"
+        android:title="@string/alert_profile" />
+    <item
+        android:id="@+id/settingsMenuOption"
+        android:title="@string/settings" />
 </menu>

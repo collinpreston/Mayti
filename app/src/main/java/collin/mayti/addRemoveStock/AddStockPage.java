@@ -35,6 +35,7 @@ import collin.mayti.applicationSettingsDB.SettingViewModel;
 import collin.mayti.datacapture.DailyUpdateDataRetriever;
 import collin.mayti.datacapture.DataRetriever;
 import collin.mayti.datacapture.GetJSONData;
+import collin.mayti.notifications.NotificationsService;
 import collin.mayti.stockDetails.StockDetailsListViewAdapter;
 import collin.mayti.stockSymbolDB.SymbolViewModel;
 import collin.mayti.urlUtil.UrlUtil;
@@ -276,7 +277,7 @@ public class AddStockPage extends Fragment {
 
         // If the stock is not already in the database for that watchlist, add to the database.
         if (!isStockAlreadyInDatabaseOnWatchlist(stock)) {
-            // Adding the stock to the watchlist database
+            // Adding the stock to the watchlist database.
             watchlistDBViewModel.addItem(stock);
 
             // Here we check the above boolean to see if this is the first stock being added to the DB.
@@ -286,6 +287,10 @@ public class AddStockPage extends Fragment {
                 myStocks[0] = stock.getSymbol();
                 dataRetrieverIntent.putExtra("symbols", myStocks);
                 getActivity().startService(dataRetrieverIntent);
+
+                // Start the notifications service since this is the first stock being added.
+                Intent notificationsServiceIntent = new Intent(getContext(), NotificationsService.class);
+                getActivity().startService(notificationsServiceIntent);
             }
         }
         else {

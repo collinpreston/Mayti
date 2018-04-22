@@ -172,12 +172,22 @@ public class DefinePriceAlertDialog extends DialogFragment {
                                 priceChangeAlert.setAlertTriggerValue("1");
                                 priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
                                 alertViewModel.addAlert(priceChangeAlert);
+
+                                priceChangeAlert.setSymbol(symbol);
+                                priceChangeAlert.setAlertTriggerValue("-1");
+                                priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
+                                alertViewModel.addAlert(priceChangeAlert);
                                 break;
                             case 1:
                                 // Create +/- 2.5 percent change alert.
                                 priceChangeAlert = new Alert();
                                 priceChangeAlert.setSymbol(symbol);
                                 priceChangeAlert.setAlertTriggerValue("2.5");
+                                priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
+                                alertViewModel.addAlert(priceChangeAlert);
+
+                                priceChangeAlert.setSymbol(symbol);
+                                priceChangeAlert.setAlertTriggerValue("-2.5");
                                 priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
                                 alertViewModel.addAlert(priceChangeAlert);
                                 break;
@@ -188,12 +198,22 @@ public class DefinePriceAlertDialog extends DialogFragment {
                                 priceChangeAlert.setAlertTriggerValue("5");
                                 priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
                                 alertViewModel.addAlert(priceChangeAlert);
+
+                                priceChangeAlert.setSymbol(symbol);
+                                priceChangeAlert.setAlertTriggerValue("-5");
+                                priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
+                                alertViewModel.addAlert(priceChangeAlert);
                                 break;
                             case 3:
                                 // Create +/- 10 percent change alert.
                                 priceChangeAlert = new Alert();
                                 priceChangeAlert.setSymbol(symbol);
                                 priceChangeAlert.setAlertTriggerValue("10");
+                                priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
+                                alertViewModel.addAlert(priceChangeAlert);
+
+                                priceChangeAlert.setSymbol(symbol);
+                                priceChangeAlert.setAlertTriggerValue("-10");
                                 priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
                                 alertViewModel.addAlert(priceChangeAlert);
                                 break;

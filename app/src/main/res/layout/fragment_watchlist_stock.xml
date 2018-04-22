@@ -90,7 +90,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:textAppearance="?attr/textAppearanceListItem"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent"
                 tools:text="" />
@@ -114,6 +114,7 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginStart="4dp"
                 android:text="-.04"
+                android:textSize="16sp"
                 card_view:layout_constraintBottom_toBottomOf="@+id/price"
                 card_view:layout_constraintStart_toEndOf="@+id/price"
                 card_view:layout_constraintTop_toTopOf="@+id/price" />
@@ -124,6 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:text="$1.50"
+                android:textSize="16sp"
                 card_view:layout_constraintBottom_toBottomOf="@+id/price"
                 card_view:layout_constraintLeft_toRightOf="@+id/percentChange"
                 card_view:layout_constraintTop_toTopOf="@+id/price" />
@@ -136,7 +138,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="3dp"
                 android:textAppearance="?attr/textAppearanceListItem"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/price" />
 

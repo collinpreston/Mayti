@@ -2,13 +2,26 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="40dp">
+
+    <View
+        android:id="@+id/divider12"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/darkBlue"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingLeft="8dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="10dp"
         android:weightSum="2">
 
         <TextView
@@ -17,7 +30,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="TextView"
-            android:textColor="@color/darkBlue" />
+            android:textColor="@color/darkBlue"
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/stockDetailRowValueTxt"
@@ -26,6 +40,7 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text="TextView"
-            android:textColor="@color/darkBlue" />
+            android:textColor="@color/darkBlue"
+            android:textSize="13sp" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

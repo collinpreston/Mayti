@@ -218,7 +218,8 @@ public class DataRetriever extends Service {
             stockSymbols = Arrays.asList(intent.getStringArrayExtra("symbols"));
         } catch (Exception e) {
         }
-        timer.schedule(new DelayedTask(), 300, 5000);
+        // Runs every 30 seconds.
+        timer.schedule(new DelayedTask(), 300, 30000);
         // Setting the flag below will keep the service running after the app is closed.
         //flags = START_STICKY;
         return super.onStartCommand(intent, flags, startId);

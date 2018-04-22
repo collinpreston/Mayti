@@ -33,7 +33,6 @@ public class WatchlistPage extends Fragment {
         tabLayout.addTab(tabLayout.newTab().setText("Day"));
         tabLayout.addTab(tabLayout.newTab().setText("Week"));
 
-        //viewPager = rootView.findViewById(R.id.pager);
         pagerAdapter =
                 new Fragment_Pager(
                         getChildFragmentManager());

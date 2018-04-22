@@ -35,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 
 import collin.mayti.R;
 import collin.mayti.datacapture.DataRetriever;
+import collin.mayti.notifications.NotificationsService;
 import collin.mayti.watchlist.MyWatchlistRecyclerViewAdapter;
 import collin.mayti.watchlist.WatchlistViewModel;
 import collin.mayti.watchlistDB.Stock;
@@ -94,6 +95,10 @@ public class WatchlistFragment extends Fragment {
                 Intent dataRetrieverIntent = new Intent(getContext(), DataRetriever.class);
                 dataRetrieverIntent.putExtra("symbols", myStocks);
                 getActivity().startService(dataRetrieverIntent);
+
+                // Start the notifications service.
+                Intent notificationsServiceIntent = new Intent(getContext(), NotificationsService.class);
+                getActivity().startService(notificationsServiceIntent);
             }
         } catch (ExecutionException e) {
             e.printStackTrace();

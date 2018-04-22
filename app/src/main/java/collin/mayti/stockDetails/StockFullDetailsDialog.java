@@ -100,7 +100,6 @@ public class StockFullDetailsDialog extends DialogFragment{
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (progress < 20) {
-                    System.out.println("1d");
                     chartLengthTxt.setText("One Day");
                     try {
                         getChartData(symbol, ONE_DAY_CHART, lineChart);
@@ -113,7 +112,6 @@ public class StockFullDetailsDialog extends DialogFragment{
                     }
                 } else {
                     if (progress < 40) {
-                        System.out.println("5d");
                         chartLengthTxt.setText("Five Day");
                         try {
                             getChartData(symbol, FIVE_DAY_CHART, lineChart);
@@ -126,7 +124,6 @@ public class StockFullDetailsDialog extends DialogFragment{
                         }
                     } else {
                         if (progress < 60) {
-                            System.out.println("1m");
                             chartLengthTxt.setText("One Month");
                             try {
                                 getChartData(symbol, ONE_MONTH_CHART, lineChart);
@@ -139,7 +136,6 @@ public class StockFullDetailsDialog extends DialogFragment{
                             }
                         } else {
                             if (progress < 80) {
-                                System.out.println("3m");
                                 chartLengthTxt.setText("Three Month");
                                 try {
                                     getChartData(symbol, THREE_MONTH_CHART, lineChart);
@@ -152,7 +148,6 @@ public class StockFullDetailsDialog extends DialogFragment{
                                 }
                             } else {
                                 if (progress < 100) {
-                                    System.out.println("1y");
                                     chartLengthTxt.setText("One Year");
                                     try {
                                         getChartData(symbol, ONE_YEAR_CHART, lineChart);
@@ -164,7 +159,6 @@ public class StockFullDetailsDialog extends DialogFragment{
                                         e.printStackTrace();
                                     }
                                 } else {
-                                    System.out.println("5y");
                                     chartLengthTxt.setText("Five Year");
                                     try {
                                         getChartData(symbol, FIVE_YEAR_CHART, lineChart);
@@ -349,7 +343,8 @@ public class StockFullDetailsDialog extends DialogFragment{
                 dataSet.setDrawCircles(false);
                 LineData lineData = new LineData(dataSet);
                 lineData.setDrawValues(false);
-                dataSet.setColor(rootView.getContext().getResources().getColor(R.color.ic_launcher_background));
+                // TODO: Change this to a lighter color.
+                dataSet.setColor(rootView.getContext().getResources().getColor(R.color.blue));
                 lineChart.setData(lineData);
                 XAxis xAxis = lineChart.getXAxis();
                 xAxis.setEnabled(false);

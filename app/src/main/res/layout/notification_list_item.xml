@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/cardview_light_background">
+    android:background="@color/cardViewBackground">
 
     <LinearLayout
-        android:id="@+id/articleListItemLayout"
+        android:id="@+id/notificationListItemLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingLeft="16dp">
 
         <TextView
-            android:id="@+id/articleHeadlineTxt"
+            android:id="@+id/notificationTitleTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingTop="16dp"
-            android:text="Article Headline"
+            android:text="Notification Title"
             android:textColor="@color/cardview_dark_background"
             android:textSize="16sp" />
 
@@ -31,26 +30,26 @@
             android:paddingBottom="16dp">
 
             <TextView
-                android:id="@+id/articleSourceTxt"
+                android:id="@+id/notificationTextTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Article Source" />
+                android:text="Notificaiton Text" />
 
             <TextView
-                android:id="@+id/articleDateTxt"
+                android:id="@+id/notificationDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
                 android:paddingRight="10dp"
-                android:text="Article Date" />
+                android:text="Notification Date" />
         </LinearLayout>
 
     </LinearLayout>
 
     <View
-        android:id="@+id/divider9"
+        android:id="@+id/divider14"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/darkBlue"

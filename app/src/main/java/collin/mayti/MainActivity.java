@@ -2,18 +2,21 @@ package collin.mayti;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 
 import collin.mayti.addRemoveStock.AddStockPage;
 import collin.mayti.applicationSettingsDB.SettingDatabase;
-import collin.mayti.alerts.NotificationsPage;
+import collin.mayti.notifications.NotificationProfileActivity;
+import collin.mayti.notifications.NotificationsPage;
 import collin.mayti.stockNewsDB.StockNewsDatabase;
 import collin.mayti.stockSymbolDB.SymbolDatabase;
 import collin.mayti.watchlist.WatchlistPage;
@@ -85,6 +88,17 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.alertProfileMenuOption:
+                Intent intent = new Intent(this, NotificationProfileActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void setupViewPager() {

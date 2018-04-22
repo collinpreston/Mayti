@@ -4,9 +4,11 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -99,6 +101,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             }
         }
         else {
+            // If we get here, the app is being opened for the first time.
             populateSettingDatabase(viewModel);
             updateSymbolDatabaseAndSetting(currentDateString, viewModel, symbolViewModel);
         }
@@ -167,13 +170,18 @@ public class SplashScreenActivity extends AppCompatActivity {
      */
     private void cleanWatchlistDatabase() throws ExecutionException, InterruptedException {
         WatchlistViewModel viewModel = ViewModelProviders.of(this).get(WatchlistViewModel.class);
-        java.sql.Date currentDate = new java.sql.Date(new java.util.Date().getTime());
-
+        Date currentDate = new Date(System.currentTimeMillis());
+        Calendar currentCal = Calendar.getInstance();
+        currentCal.setTime(currentDate);
+        int dayCurrent = currentCal.get(Calendar.DAY_OF_YEAR);
         // First check the daily stocks.
         List<Stock> stockList = viewModel.getAllStocksForWatchlist(DAILY_WATCHLIST_NAME);
         if (stockList != null && stockList.size() > 0) {
             for (Stock stockItem : stockList) {
-                if (stockItem.getDateToRemove().before(currentDate)) {
+                Calendar removeCal = Calendar.getInstance();
+                removeCal.setTime(stockItem.getDateToRemove());
+                int dayRemove = removeCal.get(Calendar.DAY_OF_YEAR);
+                if (dayRemove < dayCurrent) {
                     viewModel.deleteItem(stockItem);
                 }
             }
@@ -183,7 +191,10 @@ public class SplashScreenActivity extends AppCompatActivity {
         stockList = viewModel.getAllStocksForWatchlist(WEEKLY_WATCHLIST_NAME);
         if (stockList != null && stockList.size() > 0) {
             for (Stock stockItem : stockList) {
-                if (stockItem.getDateToRemove().before(currentDate)) {
+                Calendar removeCal = Calendar.getInstance();
+                removeCal.setTime(stockItem.getDateToRemove());
+                int dayRemove = removeCal.get(Calendar.DAY_OF_YEAR);
+                if (dayRemove < dayCurrent) {
                     viewModel.deleteItem(stockItem);
                 }
             }

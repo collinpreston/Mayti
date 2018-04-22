@@ -4,36 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/blue"
     android:orientation="vertical">
-
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/fullDataCompanyNameTxtView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:text="company name placeholder"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fullDataSymbolTxtView" />
+            app:layout_constraintLeft_toLeftOf="@+id/fullDataSymbolTxtView"
+            app:layout_constraintTop_toBottomOf="@+id/fullDataSymbolTxtView"
+            android:textColor="@color/cardview_light_background"/>
 
         <TextView
             android:id="@+id/fullDataSymbolTxtView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
             android:text="symbol"
             android:textAppearance="?attr/textAppearanceListItem"
-            android:textSize="20sp"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="DVAX" />
@@ -42,13 +38,23 @@
             android:id="@+id/fullDataPriceTxtView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
             android:text="TextView"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.84"
             app:layout_constraintStart_toEndOf="@+id/fullDataSymbolTxtView"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColor="@color/cardview_light_background" />
 
     </android.support.constraint.ConstraintLayout>
+
+    <View
+        android:id="@+id/divider11"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/darkBlue"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </LinearLayout>

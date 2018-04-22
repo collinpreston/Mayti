@@ -52,6 +52,9 @@ public class StockNewsListViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
+
+        // TODO: Create list headings which will separate items based on their dates.
+        // First heading will be news from yesterday, last week, last month, and old news.
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.news_article_list_item, parent, false);
 

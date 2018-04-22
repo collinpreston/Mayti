@@ -6,6 +6,8 @@ import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
 import java.sql.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -105,7 +107,6 @@ public class WatchlistViewModel extends AndroidViewModel {
                     dateToRemove = new Date(System.currentTimeMillis());
                     params[0].setDateToRemove(dateToRemove);
                     break;
-
                 case PERMANENT_WATCHLIST_NAME:
                     params[0].setDateToRemove(null);
                     break;
