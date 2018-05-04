@@ -4,8 +4,8 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "collin.mayti"
-        minSdkVersion 15
-        targetSdkVersion 26
+        minSdkVersion 26
+        targetSdkVersion 15
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -63,5 +63,11 @@ dependencies {
     // Multi toggle button
     implementation 'org.honorato.multistatetogglebutton:multistatetogglebutton:0.2.2'
 
-    implementation 'org.ta4j:ta4j-core:0.11'
+    implementation 'org.ta4j:ta4j-core:0.12-SNAPSHOT'
+
+    // Settings pages
+    implementation 'com.android.support:preference-v7:26.1.0'
+    implementation 'com.android.support:preference-v14:26.1.0'
+
+    implementation 'com.android.support:appcompat-v7:26.1.0'
 }

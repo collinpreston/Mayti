@@ -2,6 +2,7 @@ package collin.mayti;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
@@ -10,11 +11,11 @@ import android.view.ViewGroup;
  * Created by collinhpreston on 15/02/2018.
  */
 
-public abstract class SmartFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
+public abstract class SmartFragmentPagerAdapter extends FragmentPagerAdapter {
     // Sparse array to keep track of registered fragments in memory
     private SparseArray<Fragment> registeredFragments = new SparseArray<>();
 
-    public SmartFragmentStatePagerAdapter(FragmentManager fragmentManager) {
+    public SmartFragmentPagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
     }
 

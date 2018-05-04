@@ -6,21 +6,43 @@
     android:layout_height="match_parent"
     android:background="@color/cardViewBackground">
 
-    <Button
-        android:id="@+id/saveVolumeAlertBtn"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:id="@+id/btnOptionsLayoutVolumeAlert"
+        android:layout_width="wrap_content"
+        android:layout_height="52dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Save"
-        android:textColor="@color/blue"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/volumeLinearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/volumeLinearLayout">
+
+        <Button
+            android:id="@+id/cancelVolumeAlertBtn"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginRight="8dp"
+            android:text="Cancel"
+            android:textColor="@color/blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/submitNewsAlertBtn"
+            app:layout_constraintTop_toBottomOf="@+id/newsAlertLinearLayout" />
+
+        <Button
+            android:id="@+id/saveVolumeAlertBtn"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:text="Save"
+            android:textColor="@color/blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/newsAlertLinearLayout" />
+    </LinearLayout>
+
+
 
     <LinearLayout
         android:id="@+id/volumeLinearLayout"
@@ -33,6 +55,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+            android:paddingBottom="20dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="24dp"
             android:text="Volume Alert"
             android:textColor="@color/darkBlue"
             android:textSize="22sp" />
@@ -43,7 +69,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:gravity="center"
-            android:text="Percentage Volume Exceeds 30 Day Moving Avg By" />
+            android:paddingBottom="20dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:text="Select percentage that the volume exceeds 30 day moving avg by to trigger alert." />
 
         <LinearLayout
             android:id="@+id/volumeAlertLinearLayout"
@@ -51,6 +80,8 @@
             android:layout_height="match_parent"
             android:layout_marginTop="6dp"
             android:orientation="horizontal"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
             android:weightSum="2">
 
             <org.honorato.multistatetogglebutton.MultiStateToggleButton
@@ -64,12 +95,6 @@
                 app:values="@array/volume_exceeds_percentage" />
 
         </LinearLayout>
-
-        <View
-            android:id="@+id/divider3"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/blue" />
 
     </LinearLayout>
 

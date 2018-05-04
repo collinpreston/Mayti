@@ -1,17 +1,29 @@
 package collin.mayti.notifications;
 
+import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v7.preference.PreferenceManager;
 
+import org.json.JSONException;
+
+import java.net.MalformedURLException;
 import java.sql.Date;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
 import collin.mayti.R;
 import collin.mayti.alerts.AlertsUtil;
@@ -60,13 +72,17 @@ public class NotificationsService extends Service{
         // Alert checks will run every 1 minute.
         timer.schedule(new DelayedAlertTask(), 300, 60000);
 
-        // Indicator checks will run every 10 minutes.
+        // Indicator checks will run based on the setting which the user defines.  Default is 10 minutes.
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String scanFrequencyString = sharedPref.getString("pref_scanFrequency", "600000");
+        int scanFrequency = Integer.parseInt(scanFrequencyString);
+        // TODO: Setup listener for when the user changes the frequency.
         Timer timerIndicator = new Timer();
-        timerIndicator.schedule(new DelayedIndicatorTask(), 300, 600000);
+        timerIndicator.schedule(new DelayedIndicatorTask(), 300, scanFrequency);
 
         // TODO:
         // Setting the flag below will keep the service running after the app is closed.
-        //flags = START_STICKY;
+        //flags = Service.START_STICKY;
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -84,24 +100,35 @@ public class NotificationsService extends Service{
         @Override
         public void run() {
             // TODO: get all stocks in watchlist.
-            performAllIndicatorChecks();
+            try {
+                performAllIndicatorChecks();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
     }
 
 
 
-    private void performAllIndicatorChecks() {
+    private void performAllIndicatorChecks() throws InterruptedException, ExecutionException, MalformedURLException, JSONException, ParseException {
         // Create an instance of the indicator engine and supply the indicator sensitivity level.
-        IndicatorEngine indicatorEngine = new IndicatorEngine(getUserIndicatorProfileSensitivity());
+        IndicatorEngine indicatorEngine = new IndicatorEngine(getUserIndicatorProfileSensitivity(), this.getApplicationContext());
         // Perform all of the indicator checks.
         indicatorEngine.performIndicatorChecks();
     }
 
     private IndicatorProfileSensitivity getUserIndicatorProfileSensitivity() {
-        // TODO: Use this method to access the settings database and retrieve the indicator profile sensitivity value.
-        SettingDatabase settingDatabase = SettingDatabase.getDatabase(this.getApplication());
-        SettingObject settingObject = settingDatabase.settingDbDao().findBySettingID("INDICATOR_SENSITIVITY_LEVEL");
-        switch (settingObject.getSettingValue()) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String sensitivityLevel = sharedPref.getString("pref_sensitivityLevel", "MEDIUM");
+        switch (sensitivityLevel) {
             case "LOW":
                 return IndicatorProfileSensitivity.LOW;
             case "MEDIUM":
@@ -160,7 +187,7 @@ public class NotificationsService extends Service{
         switch (alert.getAlertType()) {
             case "PRICE_CHANGE_PRICE":
                 notificationTitle = alert.getSymbol() + " Price Change Alert";
-                if (Integer.parseInt(alert.getAlertTriggerValue()) > 0) {
+                if (Double.parseDouble(alert.getAlertTriggerValue()) > 0.0) {
                     notificationText = alert.getSymbol() + " has gone up $" + alert.getAlertTriggerValue();
                 } else {
                     notificationText = alert.getSymbol() + " has gone down $" + alert.getAlertTriggerValue();
@@ -168,7 +195,7 @@ public class NotificationsService extends Service{
                 break;
             case "PRICE_CHANGE_PERCENT":
                 notificationTitle = alert.getSymbol() + " Percent Change Alert";
-                if (Integer.parseInt(alert.getAlertTriggerValue()) > 0) {
+                if (Double.parseDouble(alert.getAlertTriggerValue()) > 0.0) {
                     notificationText = alert.getSymbol() + " has gone up " + alert.getAlertTriggerValue() + "%";
                 } else {
                     notificationText = alert.getSymbol() + " has gone down " + alert.getAlertTriggerValue() + "%";
@@ -190,23 +217,6 @@ public class NotificationsService extends Service{
 
         removeAlertAndCreateNotification(notificationTitle, notificationText, alert);
 
-
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            // Create the NotificationChannel, but only on API 26+ because
-//            // the NotificationChannel class is new and not in the support library
-//            CharSequence name = getString(R.string.channel_name);
-//            String description = getString(R.string.channel_description);
-//            int importance = NotificationManagerCompat.IMPORTANCE_DEFAULT;
-//            @SuppressLint("WrongConstant") NotificationChannel channel = new NotificationChannel(CUSTOM_NOTIFICATION_CHANNEL_ID, name, importance);
-//            channel.setDescription(description);
-//            // Register the channel with the system
-//            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-//            notificationManager.createNotificationChannel(channel);
-//        }
-
-        // TODO: Create switch statement for generating the notification for different triggers (indicator, volume alert, news alert).
-
     }
     private void removeAlertAndCreateNotification(String notificationTitle, String notificationText, Alert alert) {
         // Remove the alert from the alert subscription database.
@@ -226,17 +236,29 @@ public class NotificationsService extends Service{
         // Insert the alert into the alerts database and save the notificationID.
         long notificationID = notificationsDatabase.notificationsDbDao().insert(notification);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CUSTOM_NOTIFICATION_CHANNEL_ID)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "notify_001")
                 .setSmallIcon(R.drawable.propeller_layer)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationText)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) this.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("notify_001",
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            mNotificationManager.createNotificationChannel(channel);
+        }
+
+        //mNotificationManager.notify(0, mBuilder.build());
 
         // notificationId is a unique number that is used as the primary key for the notification DB.
         // It is returned by the insert of a new notification.
-        notificationManager.notify((int) notificationID, mBuilder.build());
+        mNotificationManager.notify((int) notificationID, mBuilder.build());
 
     }
 }

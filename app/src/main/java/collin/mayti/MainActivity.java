@@ -15,7 +15,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 
 import collin.mayti.addRemoveStock.AddStockPage;
 import collin.mayti.applicationSettingsDB.SettingDatabase;
-import collin.mayti.notifications.NotificationProfileActivity;
+import collin.mayti.notifications.NotificationSettingsActivity;
 import collin.mayti.notifications.NotificationsPage;
 import collin.mayti.stockNewsDB.StockNewsDatabase;
 import collin.mayti.stockSymbolDB.SymbolDatabase;
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.alertProfileMenuOption:
-                Intent intent = new Intent(this, NotificationProfileActivity.class);
+                Intent intent = new Intent(this, NotificationSettingsActivity.class);
                 startActivity(intent);
                 return true;
             default:

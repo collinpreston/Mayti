@@ -29,8 +29,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".notifications.NotificationProfileActivity"
-            android:theme="@style/AppTheme"
+        <activity android:name=".notifications.NotificationSettingsActivity"
+            android:theme="@style/SettingsTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +39,7 @@
             </intent-filter>
         </activity>
         <service android:name=".datacapture.DataRetriever" />
+        <service android:name=".notifications.NotificationsService" />
     </application>
 
 </manifest>

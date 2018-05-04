@@ -35,16 +35,26 @@
         <item name="contentPadding">-3dp</item>
     </style>
 
-    <!-- Splash Screen style -->
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/darkBlue</item>
         <item name="colorPrimaryDark">@color/darkBlue</item>
         <item name="colorAccent">@color/redHighlight</item>
+
     </style>
 
+    <!-- Settings Screen theme. -->
+    <style name="SettingsTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/darkBlue</item>
+        <item name="colorPrimaryDark">@color/darkBlue</item>
+        <item name="colorAccent">@color/redHighlight</item>
+        <item name="android:colorBackground">@color/cardViewBackground</item>
+
+    </style>
+
+    <!-- Splash Screen style -->
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>

@@ -9,6 +9,42 @@
     app:layout_constraintStart_toStartOf="parent">
 
     <LinearLayout
+        android:id="@+id/btnOptionsLayoutVolumeAlert"
+        android:layout_width="wrap_content"
+        android:layout_height="52dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recordHighAndLowLayout">
+
+        <Button
+            android:id="@+id/cancelPriceAlertBtn"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginRight="8dp"
+            android:text="Cancel"
+            android:textColor="@color/blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/submitNewsAlertBtn"
+            app:layout_constraintTop_toBottomOf="@+id/newsAlertLinearLayout" />
+
+        <Button
+            android:id="@+id/submitNewPriceAlertBtn"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:text="Save"
+            android:textColor="@color/blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/newsAlertLinearLayout" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/priceOrPercentLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,6 +55,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+            android:paddingBottom="20dp"
+            android:paddingTop="24dp"
             android:text="Price Change Alert"
             android:textColor="@color/darkBlue"
             android:textSize="22sp" />
@@ -27,16 +65,18 @@
             android:id="@+id/priceOrPercentLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
             android:orientation="horizontal"
+            android:paddingBottom="6dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
             android:weightSum="2">
 
             <org.honorato.multistatetogglebutton.MultiStateToggleButton
                 android:id="@+id/priceNewAlertTypeMtb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dip"
                 android:gravity="center"
+                android:paddingBottom="16dp"
                 app:mstbPrimaryColor="@color/blue"
                 app:mstbSecondaryColor="@color/cardViewBackground"
                 app:values="@array/price_change_alert_types_array" />
@@ -47,17 +87,16 @@
             android:id="@+id/changeAmountLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="4dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="30dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingBottom="24dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp">
 
             <TextView
                 android:id="@+id/amountChangeLbl"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
-                android:gravity="center_horizontal"
                 android:text="Change Amount"
                 android:textColor="@color/blue" />
 
@@ -98,20 +137,12 @@
             android:layout_height="1dp"
             android:background="@color/blue" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-        </LinearLayout>
-
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/priceTargetLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/priceOrPercentLinearLayout">
 
@@ -120,15 +151,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+            android:paddingBottom="18dp"
+            android:paddingTop="18dp"
             android:text="Price Target Alert"
             android:textColor="@color/darkBlue"
-            android:textSize="22sp" />
+            android:textSize="16sp" />
 
         <LinearLayout
             android:id="@+id/targetPr"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -138,17 +170,16 @@
             android:id="@+id/targetPriceLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="4dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingBottom="24dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp">
 
             <TextView
                 android:id="@+id/priceTargetLbl"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
-                android:gravity="center_horizontal"
                 android:text="Alert Price"
                 android:textColor="@color/blue" />
 
@@ -165,7 +196,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|center"
                 android:inputType="numberDecimal"
@@ -186,7 +216,6 @@
         android:id="@+id/quickPriceAlertsLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/priceTargetLinearLayout">
 
@@ -195,16 +224,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+            android:paddingBottom="18dp"
+            android:paddingTop="18dp"
             android:text="Quick Alerts"
             android:textColor="@color/darkBlue"
-            android:textSize="22sp" />
+            android:textSize="16sp" />
 
         <org.honorato.multistatetogglebutton.MultiStateToggleButton
             android:id="@+id/priceQuickAlertsMtb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dip"
             android:gravity="center"
+            android:paddingBottom="24dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
             app:mstbPrimaryColor="@color/blue"
             app:mstbSecondaryColor="@color/cardViewBackground"
             app:values="@array/price_quick_alerts_array" />
@@ -217,27 +250,10 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/submitNewPriceAlertBtn"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Save"
-        android:textColor="@color/blue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recordHighAndLowLayout" />
-
     <LinearLayout
         android:id="@+id/recordHighAndLowLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/quickPriceAlertsLinearLayout">
 
@@ -246,16 +262,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+            android:paddingBottom="18dp"
+            android:paddingTop="18dp"
             android:text="52-Week High/Low"
             android:textColor="@color/darkBlue"
-            android:textSize="22sp" />
+            android:textSize="16sp" />
 
         <org.honorato.multistatetogglebutton.MultiStateToggleButton
             android:id="@+id/recordHighLowPriceAlertsMtb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingBottom="6dp"
+            android:paddingBottom="24dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
             app:mstbPrimaryColor="@color/blue"
             app:mstbSecondaryColor="@color/cardViewBackground"
             app:values="@array/record_high_low_price_alerts_array" />
@@ -264,7 +284,6 @@
             android:id="@+id/divider5"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="6dp"
             android:background="@color/blue" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

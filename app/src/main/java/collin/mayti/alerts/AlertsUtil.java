@@ -17,7 +17,7 @@ public class AlertsUtil {
         if (alert.getAlertType().equals("PRICE_CHANGE_PERCENT")) {
             AppDatabase stockDB = AppDatabase.getDatabase(this.application);
             String changePercent = stockDB.watchlistDao().findStockItemBySymbol(alert.getSymbol()).getChangePercent();
-            double changePercentCurrent = Double.parseDouble(changePercent);
+            double changePercentCurrent = Double.parseDouble(changePercent) * 100;
             double changePercentAlert = Double.parseDouble(alert.getAlertTriggerValue());
             if (changePercentAlert < 0) {
                 if (changePercentAlert > changePercentCurrent) {

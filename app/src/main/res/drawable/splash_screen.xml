@@ -10,4 +10,10 @@
         android:width="@dimen/propeller_width"
         android:gravity="center" />
 
+    <item
+        android:drawable="@drawable/title"
+        android:height="@dimen/propeller_height"
+        android:width="@dimen/propeller_width"
+        android:gravity="top" />
+
 </layer-list>

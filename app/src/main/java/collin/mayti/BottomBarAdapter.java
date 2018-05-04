@@ -12,7 +12,7 @@ import java.util.List;
  * Created by collinhpreston on 15/02/2018.
  */
 
-public class BottomBarAdapter extends SmartFragmentStatePagerAdapter {
+public class BottomBarAdapter extends SmartFragmentPagerAdapter {
     private final List<Fragment> fragments = new ArrayList<>();
 
     public BottomBarAdapter(FragmentManager fragmentManager) {

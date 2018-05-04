@@ -4,7 +4,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.format.DateUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -38,6 +37,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     private static final String WEEKLY_WATCHLIST_NAME = "weekly_watchlist";
 
     private static final String SYMBOL_DATABASE_LAST_UPDATE = "SYMBOL_DATABASE_LAST_UPDATE";
+    private String ALERT_SENSITIVITY_SETTING_ID = "INDICATOR_SENSITIVITY_LEVEL";
+    private String DEFAULT_SENSITIVITY_LEVEL = "MEDIUM";
 
     // TODO: Need to clean the alert database once a day.  Store the date last cleaned in the settings
     // database.  Each time the app is opened, check this setting to see if the alerts database
@@ -149,6 +150,7 @@ public class SplashScreenActivity extends AppCompatActivity {
      */
     private void populateSettingDatabase(SettingViewModel viewModel) {
         addSettingToSettingDatabase(viewModel, SYMBOL_DATABASE_LAST_UPDATE);
+        addSettingToSettingDatabase(viewModel, ALERT_SENSITIVITY_SETTING_ID, DEFAULT_SENSITIVITY_LEVEL);
     }
 
     /**
@@ -160,6 +162,20 @@ public class SplashScreenActivity extends AppCompatActivity {
         SettingObject settingObject = new SettingObject();
         settingObject.setSettingID(settingID);
         settingObject.setSettingValue("");
+        viewModel.addItem(settingObject);
+    }
+
+    /**
+     * This method is used to add new, settings to the settings database during initialization.  This
+     * overloads the other addSettingToSettingDatabase method by allowing the user to add a
+     * setting value.
+     * @param viewModel
+     * @param settingID
+     */
+    private void addSettingToSettingDatabase(SettingViewModel viewModel, String settingID, String settingValue) {
+        SettingObject settingObject = new SettingObject();
+        settingObject.setSettingID(settingID);
+        settingObject.setSettingValue(settingValue);
         viewModel.addItem(settingObject);
     }
 

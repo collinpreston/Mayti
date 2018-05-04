@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Indicator Scanner"
+        android:key="pref_key_indicator_settings">
+        <ListPreference
+            android:key="pref_sensitivityLevel"
+            android:title="Indicator sensitivity"
+            android:dialogTitle="Sensitivity Level"
+            android:entries="@array/pref_sensitivityLevel_key_list"
+            android:entryValues="@array/pref_sensitivityLevel_value_list"
+            android:defaultValue="MEDIUM" />
+
+        <ListPreference
+            android:key="pref_scanFrequency"
+            android:title="Scan frequency"
+            android:summary="Scan every 10 minutes"
+            android:dialogTitle="Scan Frequency"
+            android:entries="@array/pref_scan_freq_key_list"
+            android:entryValues="@array/pref_scan_freq_value_list"
+            android:defaultValue="600000" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Notifications"
+        android:key="pref_key_indicator_settings">
+        <CheckBoxPreference
+            android:key="pref_push_notifications"
+            android:title="Receive push notifications"
+            android:defaultValue="Enabled"
+            android:summaryOn="Enabled"
+            android:summaryOff="Disable"/>
+    </PreferenceCategory>
+</PreferenceScreen>

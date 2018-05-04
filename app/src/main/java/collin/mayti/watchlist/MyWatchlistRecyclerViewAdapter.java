@@ -192,6 +192,8 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
     public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
         Log.d(TAG, "Element " + position + " set.");
 
+        viewHolder.setIsRecyclable(false);
+
         // Get element from your dataset at this position and replace the contents of the view
         // with that element.
         viewHolder.getSymbolTextView().setText(watchlistItems.get(position).getSymbol());
@@ -223,8 +225,7 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
             if (percentageChange < 0) {
                 viewHolder.getPriceChangePercentageTextView().setTextColor(mContext.getResources().getColor(R.color.darkRed));
                 viewHolder.getPriceChangeTextView().setTextColor(mContext.getResources().getColor(R.color.darkRed));
-            }
-            else {
+            } else {
                 viewHolder.getPriceChangePercentageTextView().setTextColor(mContext.getResources().getColor(R.color.green));
                 viewHolder.getPriceChangeTextView().setTextColor(mContext.getResources().getColor(R.color.green));
             }
@@ -358,65 +359,63 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
         // or we'll get the most recent date the market was opened.
 
         URL requestURL = urlUtil.buildURLForChartData(symbol, "ONE_DAY_CHART");
-        final GetJSONData getJSONData = new GetJSONData(new GetJSONData.AsyncResponse() {
-            @Override
-            public void processFinish(String output) throws InterruptedException, ExecutionException, MalformedURLException, JSONException {
-                // At this point I also want to display the chart
-                List<LineChartData> lineChartDataList = getChartAsLineChartData(output);
-                if (!lineChartDataList.isEmpty()) {
-                    // Don't process data if nothing retrieved.  But we still want to show the graph text.
-                    entryList.clear();
-                    for (LineChartData chartData : lineChartDataList) {
-                        entryList.add(new Entry(chartData.getxCoordinate().floatValue(), chartData.getyCoordinate().floatValue()));
-                    }
-                    // Sort through all of the chart values and remove any value of 0.  If left in,
-                    // zero values will distort the chart.  TODO: This can become a method.
-                    List<Entry> noZeroEntryList = new ArrayList<>();
-                    for (int i=0; i < entryList.size(); i++) {
-                        if (entryList.get(i).getY() != 0.0 && entryList.get(i).getY() != -1.0) {
-                            noZeroEntryList.add(entryList.get(i));
-                        }
-                    }
-                    entryList = noZeroEntryList;
-                    // If the entryList is empty after removing all the zeros, we will display a straight
-                    // line instead of showing an empty graph.  This assures the user that their connections
-                    // are working, but the market data isn't available (usually pre market).
-                    if (entryList.isEmpty()) {
-                        entryList.add(new Entry(0.0f, 0.0f));
-                    }
-                    Collections.sort(entryList, new EntryXComparator());
-                    LineDataSet dataSet = new LineDataSet(entryList, "");
-                    dataSet.setColor(mContext.getResources().getColor(R.color.blue));
-                    dataSet.setDrawCircles(false);
-                    LineData lineData = new LineData(dataSet);
-                    lineData.setDrawValues(false);
-                    lineChart.setData(lineData);
-                    XAxis xAxis = lineChart.getXAxis();
-                    xAxis.setEnabled(false);
-                    YAxis yAxisLeft = lineChart.getAxisLeft();
-                    YAxis yAxisRight = lineChart.getAxisRight();
-                    yAxisLeft.setEnabled(false);
-                    yAxisRight.setEnabled(false);
-                    Legend legend = lineChart.getLegend();
-                    legend.setEnabled(false);
+        final GetJSONData getJSONData = new GetJSONData(output -> {
+            // At this point I also want to display the chart
+            List<LineChartData> lineChartDataList = getChartAsLineChartData(output);
+            if (!lineChartDataList.isEmpty()) {
+                // Don't process data if nothing retrieved.  But we still want to show the graph text.
+                entryList.clear();
+                for (LineChartData chartData : lineChartDataList) {
+                    entryList.add(new Entry(chartData.getxCoordinate().floatValue(), chartData.getyCoordinate().floatValue()));
                 }
-                lineChart.setDrawGridBackground(false);
-                lineChart.setAutoScaleMinMaxEnabled(true);
-                lineChart.setDescription(null);
-                lineChart.setClickable(false);
-                lineChart.setDragEnabled(false);
-                lineChart.setDragEnabled(false);
-                lineChart.setPinchZoom(false);
-                lineChart.setDoubleTapToZoomEnabled(false);
-                lineChart.setHighlightPerTapEnabled(false);
-                lineChart.setHighlightPerDragEnabled(false);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    lineChart.setDefaultFocusHighlightEnabled(false);
+                // Sort through all of the chart values and remove any value of 0.  If left in,
+                // zero values will distort the chart.  TODO: This can become a method.
+                List<Entry> noZeroEntryList = new ArrayList<>();
+                for (int i=0; i < entryList.size(); i++) {
+                    if (entryList.get(i).getY() != 0.0 && entryList.get(i).getY() != -1.0) {
+                        noZeroEntryList.add(entryList.get(i));
+                    }
                 }
-                lineChart.setTouchEnabled(false);
-                //lineChart.setKeepPositionOnRotation(true);
-                lineChart.invalidate();
+                entryList = noZeroEntryList;
+                // If the entryList is empty after removing all the zeros, we will display a straight
+                // line instead of showing an empty graph.  This assures the user that their connections
+                // are working, but the market data isn't available (usually pre market).
+                if (entryList.isEmpty()) {
+                    entryList.add(new Entry(0.0f, 0.0f));
+                }
+                Collections.sort(entryList, new EntryXComparator());
+                LineDataSet dataSet = new LineDataSet(entryList, "");
+                dataSet.setColor(mContext.getResources().getColor(R.color.blue));
+                dataSet.setDrawCircles(false);
+                LineData lineData = new LineData(dataSet);
+                lineData.setDrawValues(false);
+                lineChart.setData(lineData);
+                XAxis xAxis = lineChart.getXAxis();
+                xAxis.setEnabled(false);
+                YAxis yAxisLeft = lineChart.getAxisLeft();
+                YAxis yAxisRight = lineChart.getAxisRight();
+                yAxisLeft.setEnabled(false);
+                yAxisRight.setEnabled(false);
+                Legend legend = lineChart.getLegend();
+                legend.setEnabled(false);
             }
+            lineChart.setDrawGridBackground(false);
+            lineChart.setAutoScaleMinMaxEnabled(true);
+            lineChart.setDescription(null);
+            lineChart.setClickable(false);
+            lineChart.setDragEnabled(false);
+            lineChart.setDragEnabled(false);
+            lineChart.setPinchZoom(false);
+            lineChart.setDoubleTapToZoomEnabled(false);
+            lineChart.setHighlightPerTapEnabled(false);
+            lineChart.setHighlightPerDragEnabled(false);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                lineChart.setDefaultFocusHighlightEnabled(false);
+            }
+            lineChart.setTouchEnabled(false);
+            //lineChart.notifyDataSetChanged();
+            lineChart.invalidate();
+            //lineChart.setKeepPositionOnRotation(true);
         }, new GetJSONData.AsyncPreExecute() {
             @Override
             public void preExecute() {

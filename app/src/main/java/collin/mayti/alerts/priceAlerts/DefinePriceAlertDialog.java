@@ -173,6 +173,7 @@ public class DefinePriceAlertDialog extends DialogFragment {
                                 priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
                                 alertViewModel.addAlert(priceChangeAlert);
 
+                                priceChangeAlert = new Alert();
                                 priceChangeAlert.setSymbol(symbol);
                                 priceChangeAlert.setAlertTriggerValue("-1");
                                 priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
@@ -186,6 +187,7 @@ public class DefinePriceAlertDialog extends DialogFragment {
                                 priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
                                 alertViewModel.addAlert(priceChangeAlert);
 
+                                priceChangeAlert = new Alert();
                                 priceChangeAlert.setSymbol(symbol);
                                 priceChangeAlert.setAlertTriggerValue("-2.5");
                                 priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
@@ -199,6 +201,7 @@ public class DefinePriceAlertDialog extends DialogFragment {
                                 priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
                                 alertViewModel.addAlert(priceChangeAlert);
 
+                                priceChangeAlert = new Alert();
                                 priceChangeAlert.setSymbol(symbol);
                                 priceChangeAlert.setAlertTriggerValue("-5");
                                 priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
@@ -212,6 +215,7 @@ public class DefinePriceAlertDialog extends DialogFragment {
                                 priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");
                                 alertViewModel.addAlert(priceChangeAlert);
 
+                                priceChangeAlert = new Alert();
                                 priceChangeAlert.setSymbol(symbol);
                                 priceChangeAlert.setAlertTriggerValue("-10");
                                 priceChangeAlert.setAlertType("PRICE_CHANGE_PERCENT");

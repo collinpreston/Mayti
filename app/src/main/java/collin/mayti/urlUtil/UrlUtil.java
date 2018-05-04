@@ -53,6 +53,7 @@ public class UrlUtil{
         }
         return dataStream;
     }
+
     private URL buildURLForStockPrice(List<String> symbols) throws MalformedURLException {
         String insertString = "";
         try {
