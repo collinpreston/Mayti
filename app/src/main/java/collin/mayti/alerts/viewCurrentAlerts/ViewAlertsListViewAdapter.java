@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import collin.mayti.R;
-import collin.mayti.util.FormatLargeDouble;
+import collin.mayti.util.FormatValues;
 import collin.mayti.alerts.alertSubscriptionDatabase.Alert;
 import collin.mayti.alerts.alertSubscriptionDatabase.AlertSubscriptionViewModel;
 
@@ -77,7 +77,7 @@ public class ViewAlertsListViewAdapter extends BaseAdapter {
                 break;
             case "VOLUME_EXCEEDS_PERCENTAGE":
                 alertTypeTxt.setText("Volume Surpasses:");
-                String triggerDisplayValue = FormatLargeDouble.format(Double.parseDouble(alertsForSymbol.get(position).getAlertTriggerValue()));
+                String triggerDisplayValue = FormatValues.format(Double.parseDouble(alertsForSymbol.get(position).getAlertTriggerValue()));
                 alertValueTxt.setText(triggerDisplayValue);
                 break;
             case "STOCK_ARTICLES_PUBLISHED":

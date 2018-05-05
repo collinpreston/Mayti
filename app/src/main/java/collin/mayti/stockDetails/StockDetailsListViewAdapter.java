@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ import java.util.concurrent.ExecutionException;
 import collin.mayti.R;
 import collin.mayti.datacapture.GetJSONData;
 import collin.mayti.urlUtil.UrlUtil;
+import collin.mayti.util.FormatValues;
 
 /**
  * Created by chpreston on 3/23/18.
@@ -57,10 +59,8 @@ public class StockDetailsListViewAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        // TODO: Adjust this to only show the number of fields we're actually using. Since we use
-        // some more than 1 the array's items in the header, we need to adjust this.  That will remove
-        // the extra blank list items at the bottom of the list.
-        return titleValueMap.size();
+        // Need to add two since we have the chart and header that we need to account for.
+        return detailsListOrder.size() + 2;
     }
 
     @Override
@@ -89,7 +89,11 @@ public class StockDetailsListViewAdapter extends BaseAdapter {
 
                 symbolTxtView.setText(titleValueMap.get(myContext.getString(R.string.symbol)));
                 companyNameTxtView.setText(titleValueMap.get(myContext.getString(R.string.company_name)));
-                priceTxtView.setText(titleValueMap.get(myContext.getString(R.string.latest_price)));
+
+
+                String price = titleValueMap.get(myContext.getString(R.string.latest_price));
+                priceTxtView.setText(FormatValues.formatPrice(price));
+
                 break;
             case 1:
                 // Set the row view equal to the chart.
@@ -113,25 +117,79 @@ public class StockDetailsListViewAdapter extends BaseAdapter {
                 row = inflater.inflate(R.layout.fragment_single_stock_details_row, viewGroup, false);
                 TextView titleTxtView = row.findViewById(R.id.stockDetailRowTitleTxt);
                 TextView valueTxtView = row.findViewById(R.id.stockDetailRowValueTxt);
-                titleTxtView.setText(detailsListOrder.get(i));
-                valueTxtView.setText(titleValueMap.get(detailsListOrder.get(i)));
+
+                // Subtract 2 since this will actually be position i, but in our detailsListOrder
+                // it will be index i+1 since the first list element is the chart (case 0) and the
+                // second element is the header (case 1).  Thus, when we finally get to the default
+                // case, i will be 2 and if we don't subtract 2 from i, we'll be getting the third element
+                // from the list.
+                titleTxtView.setText(detailsListOrder.get(i-2));
+
+                // Check if it's the high/low price, since that gets displayed specially.
+                if (titleTxtView.getText().equals(myContext.getString(R.string.high_low))) {
+                    // Get the high value.
+                    String highValue = titleValueMap.get(myContext.getString(R.string.high));
+                    // Get the low value.
+                    String lowValue = titleValueMap.get(myContext.getString(R.string.low));
+                    valueTxtView.setText(lowValue + " / " + highValue);
+                } else {
+                    // Check it it's the volume or market cap list item since we'll need to format these
+                    // large numbers.
+                    if (titleTxtView.getText().equals(myContext.getString(R.string.latest_volume)) ||
+                            titleTxtView.getText().equals(myContext.getString(R.string.market_cap))) {
+                        String formattedValue = FormatValues.format(Double.parseDouble(titleValueMap.get(detailsListOrder.get(i-2))));
+                        valueTxtView.setText(formattedValue);
+                    } else {
+                        // Check if it's the change or YTD change, then the percentage needs to be
+                        // formatted.
+                        if (titleTxtView.getText().equals(myContext.getString(R.string.change)) ||
+                                titleTxtView.getText().equals(myContext.getString(R.string.ytd_change))) {
+                            double unformattedValue = Double.parseDouble(titleValueMap.get(detailsListOrder.get(i-2)));
+
+                            // Multiply the current number by 100 to get the percentage.
+                            String formattedValue = String.valueOf(new DecimalFormat("##.##").format((unformattedValue * 100)));
+                            valueTxtView.setText(formattedValue + "%");
+                        } else {
+                            // Check if it's the latest update list item.
+                            if (titleTxtView.getText().equals(myContext.getString(R.string.latest_update))) {
+                                String unformatted = titleValueMap.get(detailsListOrder.get(i-2));
+                                String formattedTime = FormatValues.getLatestUpdateHoursAndMinutes(unformatted);
+                                valueTxtView.setText(formattedTime);
+                            } else {
+                                // Handle any other type of list item. (default case).
+                                valueTxtView.setText(titleValueMap.get(detailsListOrder.get(i - 2)));
+                            }
+                        }
+                    }
+                }
                 break;
         }
         return row;
 
     }
 
+    /**
+     * This method initialized the global detailsListOrder list which defines the order in which
+     * each details list item is shown.
+     */
     private void initializeDetailsListOrder() {
         // TODO: There will be more of these once I finish importing all of the strings into the
         // strings.xml file.  There is a TODO tag somewhere else.
         String[] fullDetailTitles = {
-                myContext.getString(R.string.primary_exchange), myContext.getString(R.string.open),
-                myContext.getString(R.string.open_time), myContext.getString(R.string.close), myContext.getString(R.string.close_time),
-                myContext.getString(R.string.high), myContext.getString(R.string.low),
-                myContext.getString(R.string.latest_source), myContext.getString(R.string.latest_time), myContext.getString(R.string.latest_update),
-                myContext.getString(R.string.latest_volume), myContext.getString(R.string.previous_close), myContext.getString(R.string.change),
-                myContext.getString(R.string.market_cap), myContext.getString(R.string.pe_ratio), myContext.getString(R.string.week_52_high),
-                myContext.getString(R.string.week_52_low), myContext.getString(R.string.ytd_change)};
+                myContext.getString(R.string.high_low), myContext.getString(R.string.change),
+                myContext.getString(R.string.latest_volume),
+                myContext.getString(R.string.open),
+                myContext.getString(R.string.close),
+                myContext.getString(R.string.previous_close),
+                myContext.getString(R.string.market_cap),
+                myContext.getString(R.string.pe_ratio),
+                myContext.getString(R.string.week_52_high),
+                myContext.getString(R.string.week_52_low),
+                myContext.getString(R.string.ytd_change),
+                myContext.getString(R.string.primary_exchange),
+                myContext.getString(R.string.latest_update)};
+
+
         for (int i = 0; i < fullDetailTitles.length; i++) {
             detailsListOrder.put(i, fullDetailTitles[i]);
         }

@@ -1,6 +1,5 @@
 package collin.mayti.notifications;
 
-import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -10,8 +9,8 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.preference.PreferenceManager;
 
 import org.json.JSONException;
@@ -25,18 +24,18 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
+import collin.mayti.BottomBarAdapter;
+import collin.mayti.MainActivity;
 import collin.mayti.R;
 import collin.mayti.alerts.AlertsUtil;
 import collin.mayti.alerts.alertSubscriptionDatabase.Alert;
 import collin.mayti.alerts.alertSubscriptionDatabase.AlertSubscriptionDatabase;
-import collin.mayti.applicationSettingsDB.SettingDatabase;
-import collin.mayti.applicationSettingsDB.SettingObject;
 import collin.mayti.notifications.NotificationsDatabase.Notification;
 import collin.mayti.notifications.NotificationsDatabase.NotificationsDatabase;
 import collin.mayti.stockIndicators.IndicatorEngine;
 import collin.mayti.stockIndicators.IndicatorProfileSensitivity;
 
-public class NotificationsService extends Service{
+public class NotificationsService extends Service {
 
     private String CUSTOM_NOTIFICATION_CHANNEL_ID = "CUSTOM_NOTIFICATION_CHANNEL_ID";
 
@@ -86,6 +85,9 @@ public class NotificationsService extends Service{
         return super.onStartCommand(intent, flags, startId);
     }
 
+    /**
+     * This timer class checks all the alerts set by the user to see if any are satisfied.
+     */
     private class DelayedAlertTask extends TimerTask {
 
         @Override
@@ -95,8 +97,13 @@ public class NotificationsService extends Service{
         }
     }
 
+    /**
+     * This timer class kicks off the indicator service which runs the indidcator engine to check
+     * for new indicators.
+     */
     private class DelayedIndicatorTask extends TimerTask {
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void run() {
             // TODO: get all stocks in watchlist.
@@ -118,6 +125,7 @@ public class NotificationsService extends Service{
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void performAllIndicatorChecks() throws InterruptedException, ExecutionException, MalformedURLException, JSONException, ParseException {
         // Create an instance of the indicator engine and supply the indicator sensitivity level.
         IndicatorEngine indicatorEngine = new IndicatorEngine(getUserIndicatorProfileSensitivity(), this.getApplicationContext());
@@ -181,6 +189,12 @@ public class NotificationsService extends Service{
             }
         }
     }
+
+    /**
+     * Method that triggers tests whether a user-set alert is satisfied.  If so, it calls
+     * removeAlertAndCreateNotification and passes the notification title and text.
+     * @param alert
+     */
     private void triggerNotification(Alert alert) {
         String notificationTitle = "Mayti Alert";
         String notificationText = "Mayti has detected an alert on a stock in your watchlist!";
@@ -218,6 +232,14 @@ public class NotificationsService extends Service{
         removeAlertAndCreateNotification(notificationTitle, notificationText, alert);
 
     }
+
+    /**
+     * Method that removes the triggered alert from the alert subscription database, creates a push
+     * notification and adds an entry to the notification database.
+     * @param notificationTitle
+     * @param notificationText
+     * @param alert
+     */
     private void removeAlertAndCreateNotification(String notificationTitle, String notificationText, Alert alert) {
         // Remove the alert from the alert subscription database.
         AlertSubscriptionDatabase alertSubscriptionDatabase = AlertSubscriptionDatabase.getDatabase(getApplication());
@@ -237,7 +259,7 @@ public class NotificationsService extends Service{
         long notificationID = notificationsDatabase.notificationsDbDao().insert(notification);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "notify_001")
-                .setSmallIcon(R.drawable.propeller_layer)
+                .setSmallIcon(R.drawable.ic_propeller)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationText)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
@@ -254,11 +276,11 @@ public class NotificationsService extends Service{
             mNotificationManager.createNotificationChannel(channel);
         }
 
-        //mNotificationManager.notify(0, mBuilder.build());
 
         // notificationId is a unique number that is used as the primary key for the notification DB.
         // It is returned by the insert of a new notification.
         mNotificationManager.notify((int) notificationID, mBuilder.build());
+
 
     }
 }

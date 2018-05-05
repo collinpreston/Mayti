@@ -265,14 +265,10 @@ public class StockFullDetailsDialog extends DialogFragment{
             fullDataMap.put(rootView.getContext().getString(R.string.primary_exchange), dataObj.getString("primaryExchange"));
             fullDataMap.put(rootView.getContext().getString(R.string.calculation_price), dataObj.getString("calculationPrice"));
             fullDataMap.put(rootView.getContext().getString(R.string.open), dataObj.getString("open"));
-            fullDataMap.put(rootView.getContext().getString(R.string.open_time), dataObj.getString("openTime"));
             fullDataMap.put(rootView.getContext().getString(R.string.close), dataObj.getString("close"));
-            fullDataMap.put(rootView.getContext().getString(R.string.close_time), dataObj.getString("closeTime"));
             fullDataMap.put(rootView.getContext().getString(R.string.high), dataObj.getString("high"));
             fullDataMap.put(rootView.getContext().getString(R.string.low), dataObj.getString("low"));
             fullDataMap.put(rootView.getContext().getString(R.string.latest_price), dataObj.getString("latestPrice"));
-            fullDataMap.put(rootView.getContext().getString(R.string.latest_source), dataObj.getString("latestSource"));
-            fullDataMap.put(rootView.getContext().getString(R.string.latest_time), dataObj.getString("latestTime"));
             fullDataMap.put(rootView.getContext().getString(R.string.latest_update), dataObj.getString("latestUpdate"));
             fullDataMap.put(rootView.getContext().getString(R.string.latest_volume), dataObj.getString("latestVolume"));
             fullDataMap.put(rootView.getContext().getString(R.string.previous_close), dataObj.getString("previousClose"));
@@ -386,10 +382,6 @@ public class StockFullDetailsDialog extends DialogFragment{
                 // Check if the lengthOfTime specified is for a day, or more. If it's just a day, then
                 // the JSON keys will be "average" for the chart data.  Otherwise the key is "close".
                 if (lengthOfTime == "ONE_DAY_CHART") {
-                    // TODO: For day, we need to get the data and fill in blank data for the rest of the day.
-                    // This will ensure that the graph doesn't look like it's a full size line, but only
-                    // displaying a line for part of the graph length.  Thus showing, there's more to the
-                    // day.
                     String closeString = dataObj.getString("average");
                     Double closeDouble = Double.parseDouble(closeString);
                     LineChartData lineChartData = new LineChartData((double) i, closeDouble);

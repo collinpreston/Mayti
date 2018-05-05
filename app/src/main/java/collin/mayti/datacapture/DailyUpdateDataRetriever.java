@@ -9,6 +9,10 @@ package collin.mayti.datacapture;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -39,30 +43,34 @@ public class DailyUpdateDataRetriever extends AsyncTask {
         List<Symbol> symbolsList = new ArrayList<>();
         SymbolDatabase symbolDb = SymbolDatabase.getDatabase(mContext);
 
+        // This will be used for holding the string returned by the server.
+        StringBuilder buffer = new StringBuilder();
         try {
 
-            String SYMBOL_URL_PATH = "ftp://ftp.nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt";
+            String SYMBOL_URL_PATH = "https://api.iextrading.com/1.0/ref-data/symbols";
             URL symbolUrl = new URL(SYMBOL_URL_PATH);
             // Read all the text returned by the server
             BufferedReader in = new BufferedReader(new InputStreamReader(symbolUrl.openStream()));
-            String str;
-            int i = 0;
-            // Read in each line into the str variable.  Skip the first line, and read only the
-            // first characters up to the delimiter '|'.  Save that to the list.
-            while ((str = in.readLine()) != null) {
-                // Test to see if this is the first line.  We don't want to read the headings.
-                if (i != 0) {
-                    // Find out the index of the first occurring delimiter and read the characters
-                    // up to that index.  This is the symbol.
-                    String symbol = str.substring(0, str.indexOf('|'));
+            String line;
+            while ((line = in.readLine()) != null) {
+                buffer.append(line).append('\n');
+            }
+
+            JSONArray jsonArray = new JSONArray(buffer.toString());
+            // Check to make sure the array is not empty.
+            if (jsonArray.length() != 0) {
+
+                // Loop through each array item to get the symbol.
+                for (int i=0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String symbol = jsonObject.getString("symbol");
                     Symbol symbolItem = new Symbol();
                     symbolItem.setSymbol(symbol);
+
+                    // Add the symbol item to the symbolsList.
                     symbolsList.add(symbolItem);
-                    System.out.println(symbol);
                 }
-                i++;
             }
-            in.close();
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -71,6 +79,8 @@ public class DailyUpdateDataRetriever extends AsyncTask {
             // on the first attempt.
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         // As long as the symbols list is not empty, we will update the database.
@@ -78,10 +88,11 @@ public class DailyUpdateDataRetriever extends AsyncTask {
             symbolDb.symbolDbDao().insertAll(symbolsList);
         }
 
-        // Check if today is a
+        // TODO: Check if today is a trading day.
         String OPEN_MARKET_DAY_URL = "https://api.iextrading.com/1.0/stats/recent";
         try {
             URL openMarketDayUrl = new URL(OPEN_MARKET_DAY_URL);
+
 
         } catch (MalformedURLException e) {
             e.printStackTrace();

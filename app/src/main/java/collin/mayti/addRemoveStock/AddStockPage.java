@@ -230,6 +230,13 @@ public class AddStockPage extends Fragment {
 
             } else {
                 materialSheetFab.hideSheetThenFab();
+                ListView fullDetailsListView = rootView.findViewById(R.id.stockDetailsList);
+
+                // Set the visibility of the listview to invisible since the current text in the search bar doesn't
+                // match up to any symbol and we don't want to keep showing the previously displayed symbol
+                // details.
+                fullDetailsListView.setVisibility(View.INVISIBLE);
+
             }
         }
 
@@ -335,14 +342,10 @@ public class AddStockPage extends Fragment {
             fullDataMap.put(getContext().getString(R.string.company_name), dataObj.getString("companyName"));
             fullDataMap.put(getContext().getString(R.string.primary_exchange), dataObj.getString("primaryExchange"));
             fullDataMap.put(getContext().getString(R.string.open), dataObj.getString("open"));
-            fullDataMap.put(getContext().getString(R.string.open_time), dataObj.getString("openTime"));
             fullDataMap.put(getContext().getString(R.string.close), dataObj.getString("close"));
-            fullDataMap.put(getContext().getString(R.string.close_time), dataObj.getString("closeTime"));
             fullDataMap.put(getContext().getString(R.string.high), dataObj.getString("high"));
             fullDataMap.put(getContext().getString(R.string.low), dataObj.getString("low"));
             fullDataMap.put(getContext().getString(R.string.latest_price), dataObj.getString("latestPrice"));
-            fullDataMap.put(getContext().getString(R.string.latest_source), dataObj.getString("latestSource"));
-            fullDataMap.put(getContext().getString(R.string.latest_time), dataObj.getString("latestTime"));
             fullDataMap.put(getContext().getString(R.string.latest_update), dataObj.getString("latestUpdate"));
             fullDataMap.put(getContext().getString(R.string.latest_volume), dataObj.getString("latestVolume"));
             fullDataMap.put(getContext().getString(R.string.previous_close), dataObj.getString("previousClose"));
@@ -375,7 +378,11 @@ public class AddStockPage extends Fragment {
                 rootView.findViewById(R.id.progressBar).setVisibility(View.GONE);
                 // At this point I also want to display the listview.
                 HashMap<String, String> fullDataMap = getFullDataAsHashMap(output);
+
                 ListView fullDetailsListView = rootView.findViewById(R.id.stockDetailsList);
+                // Set the visibility to visible since it could've been invisible if the user was
+                // previously looking at a stock and then cleared out the search bar.
+                fullDetailsListView.setVisibility(View.VISIBLE);
                 StockDetailsListViewAdapter stockDetailsListViewAdapter = new StockDetailsListViewAdapter(getContext(), fullDataMap);
                 fullDetailsListView.setAdapter(stockDetailsListViewAdapter);
             }

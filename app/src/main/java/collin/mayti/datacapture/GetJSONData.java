@@ -38,11 +38,6 @@ public class GetJSONData extends AsyncTask <URL, Integer, String> {
 
         StringBuilder buffer = new StringBuilder();
         try {
-//            URLConnection connection = urls[0].openConnection();
-//            connection.setConnectTimeout(3000);
-//            connection.setReadTimeout(6000);
-//            connection.connect();
-//            InputStream stream = connection.getInputStream();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(urls[0].openStream()));
 

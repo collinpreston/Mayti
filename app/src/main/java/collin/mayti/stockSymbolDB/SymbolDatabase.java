@@ -9,7 +9,7 @@ import android.content.Context;
  * Created by chpreston on 3/7/18.
  */
 
-@Database(entities = {Symbol.class}, version = 1)
+@Database(entities = {Symbol.class}, version = 3)
 public abstract class SymbolDatabase extends RoomDatabase {
 
     private static collin.mayti.stockSymbolDB.SymbolDatabase INSTANCE;

@@ -268,6 +268,15 @@ public class DefinePriceAlertDialog extends DialogFragment {
                 dismiss();
             }
         });
+
+        // Cancel button.
+        Button cancelBtn = rootView.findViewById(R.id.cancelPriceAlertBtn);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
         return rootView;
     }
 

@@ -77,17 +77,17 @@
         <LinearLayout
             android:id="@+id/volumeAlertLinearLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:orientation="horizontal"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
             android:weightSum="2">
 
             <org.honorato.multistatetogglebutton.MultiStateToggleButton
                 android:id="@+id/volumeNewAlertMtb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
                 app:mstbPrimaryColor="@color/blue"

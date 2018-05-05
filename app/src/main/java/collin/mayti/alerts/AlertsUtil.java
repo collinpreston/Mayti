@@ -91,7 +91,7 @@ public class AlertsUtil {
         AppDatabase stockDB = AppDatabase.getDatabase(this.application);
         String currentVolumeString = stockDB.watchlistDao().findStockItemBySymbol(alert.getSymbol()).getVolume();
         int currentVolumeValue = Integer.parseInt(currentVolumeString);
-        int alertTriggerValue = Integer.parseInt(alert.getAlertTriggerValue());
+        int alertTriggerValue = (int) Math.floor(Double.parseDouble(alert.getAlertTriggerValue()));
         if (currentVolumeValue >= alertTriggerValue) {
             return true;
         }

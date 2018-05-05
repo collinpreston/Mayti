@@ -19,6 +19,8 @@ public class UrlUtil{
 
     protected String NEWS_URL = "https://api.iextrading.com/1.0/stock/REPLACE/news/last/50";
 
+    protected String KEY_STATS_URL = "https://api.iextrading.com/1.0/stock/REPLACE/stats";
+
     protected String ONE_DAY_CHART_URL = "https://api.iextrading.com/1.0/stock/REPLACE/chart/1d";
     protected String FIVE_DAY_CHART_URL = "https://api.iextrading.com/1.0/stock/REPLACE/chart/5d";
     protected String ONE_MONTH_CHART_URL = "https://api.iextrading.com/1.0/stock/REPLACE/chart/1m";
@@ -102,6 +104,11 @@ public class UrlUtil{
 
     public URL buildURLForNewsData(String symbol) throws MalformedURLException {
         String replacedString = NEWS_URL.replace("REPLACE", symbol);
+        return new URL(replacedString);
+    }
+
+    public URL buildURLForKeyStats(String symbol) throws MalformedURLException {
+        String replacedString = KEY_STATS_URL.replace("REPLACE", symbol);
         return new URL(replacedString);
     }
 

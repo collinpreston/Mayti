@@ -119,6 +119,15 @@ public class DefineNewsAlertDialog extends DialogFragment{
             }
         });
 
+        // Close button.
+        Button cancelBtn = rootView.findViewById(R.id.cancelNewsAlertBtn);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
+
 
         return rootView;
     }

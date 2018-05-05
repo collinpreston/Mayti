@@ -11,7 +11,7 @@ import collin.mayti.stockSymbolDB.SymbolDbDao;
  * Created by chpreston on 3/10/18.
  */
 
-@Database(entities = {SettingObject.class}, version = 1)
+@Database(entities = {SettingObject.class}, version = 2)
 public abstract class SettingDatabase extends RoomDatabase {
 
     private static collin.mayti.applicationSettingsDB.SettingDatabase INSTANCE;

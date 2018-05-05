@@ -2,6 +2,7 @@ package collin.mayti.watchlist;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.icu.text.TimeZoneNames;
 import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
@@ -31,11 +32,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
@@ -49,7 +53,7 @@ import collin.mayti.stockDetails.LineChartData;
 import collin.mayti.stockDetails.StockFullDetailsDialog;
 import collin.mayti.stockDetails.stockNews.ViewStockNewsDialog;
 import collin.mayti.urlUtil.UrlUtil;
-import collin.mayti.util.FormatLargeDouble;
+import collin.mayti.util.FormatValues;
 import collin.mayti.watchlistDB.Stock;
 
 
@@ -211,11 +215,18 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
             }
 
             viewHolder.getPriceTextView().setText(price);
-            String formattedVolume = FormatLargeDouble.format(Double.parseDouble(watchlistItems.get(position).getVolume()));
+            String formattedVolume = FormatValues.format(Double.parseDouble(watchlistItems.get(position).getVolume()));
             viewHolder.getVolumeTextView().setText("Volume: " + formattedVolume);
             viewHolder.getPriceChangeTextView().setText(watchlistItems.get(position).getChange());
 
-            viewHolder.getLastUpdateTimeTxt().setText(getLatestUpdateHoursAndMinutes(watchlistItems.get(position).getLatestUpdate()));
+            // Set the last update time text.
+            String formattedTime = FormatValues.getLatestUpdateHoursAndMinutes(watchlistItems.get(position).getLatestUpdate());
+            if (formattedTime.equals("00:00")) {
+                formattedTime = "Previous Close";
+            }
+            viewHolder.getLastUpdateTimeTxt().setText(formattedTime);
+
+
             double percentageChange = Double.parseDouble(watchlistItems.get(position).getChangePercent()) * 100;
 
             // Add two decimal places while setting textview text.
@@ -430,15 +441,4 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
         return alertViewModel.getAllAlertsForSymbol(symbol);
     }
 
-    private String getLatestUpdateHoursAndMinutes(String milliseconds) {
-        // Refers to the update time of latestPrice in milliseconds since midnight Jan 1, 1970.
-        Date latestUpdateDate = new Date(Long.parseLong(milliseconds));
-        DateFormat format = new SimpleDateFormat("HH:mm");
-        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
-        String formattedDate = format.format(latestUpdateDate).toString();
-        if (formattedDate.equals("00:00")) {
-            formattedDate = "Previous Close";
-        }
-        return formattedDate;
-    }
 }
