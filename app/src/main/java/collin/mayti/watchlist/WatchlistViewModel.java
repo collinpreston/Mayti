@@ -232,7 +232,7 @@ public class WatchlistViewModel extends AndroidViewModel {
         }
     }
 
-    public Stock findStockItemBySymbold(String symbol) throws ExecutionException, InterruptedException {
+    public Stock findStockItemBySymbol(String symbol) throws ExecutionException, InterruptedException {
         stockItem = null;
         new findStockItemBySymbolAsyncTask(appDatabase, symbol).execute().get();
         return stockItem;

@@ -36,6 +36,8 @@ public class GetJSONData extends AsyncTask <URL, Integer, String> {
     @Override
     protected String doInBackground(URL... urls) {
 
+        // TODO: Shorten the timeout.
+
         StringBuilder buffer = new StringBuilder();
         try {
 
@@ -46,7 +48,7 @@ public class GetJSONData extends AsyncTask <URL, Integer, String> {
             while ((line = reader.readLine()) != null) {
                 buffer.append(line).append('\n');
             }
-           // stream.close();
+           reader.close();
 
 
         } catch (IOException ignored) {

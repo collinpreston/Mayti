@@ -7,7 +7,12 @@ import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
+import com.github.mikephil.charting.charts.LineChart;
+
 import java.sql.Date;
+import java.util.List;
+
+import collin.mayti.stockDetails.LineChartData;
 
 /**
  * Created by Collin on 1/14/2018.
@@ -16,6 +21,9 @@ import java.sql.Date;
 
 @Entity(tableName = "watchlist", indices = {@Index(value = "symbol")}, primaryKeys = {"symbol", "watchlist"})
 public class Stock {
+    public Stock() {
+    }
+
     public int getPositionID() {
         return positionID;
     }
@@ -112,6 +120,15 @@ public class Stock {
         this.latestUpdate = latestUpdate;
     }
 
+
+    public String getOneDayChartData() {
+        return oneDayChartData;
+    }
+
+    public void setOneDayChartData(String oneDayChartData) {
+        this.oneDayChartData = oneDayChartData;
+    }
+
     @NonNull
     private String symbol;
 
@@ -150,6 +167,8 @@ public class Stock {
     @ColumnInfo(name = "latestUpdate")
     private String latestUpdate;
 
+    @ColumnInfo(name = "oneDayChartData")
+    private String oneDayChartData;
 }
 
 

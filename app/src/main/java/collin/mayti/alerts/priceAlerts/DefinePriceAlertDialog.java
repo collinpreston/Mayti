@@ -60,8 +60,8 @@ public class DefinePriceAlertDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.dialog_define_price_alert, container, false);
 
-        TextView priceTargetTxtView = rootView.findViewById(R.id.priceTarget);
-        TextView priceChangeTxtView = rootView.findViewById(R.id.changeAmountTxt);
+        final TextView priceTargetTxtView = rootView.findViewById(R.id.priceTarget);
+        final TextView priceChangeTxtView = rootView.findViewById(R.id.changeAmountTxt);
 
         dollarIndTxt = rootView.findViewById(R.id.dollarIndTxt);
         percentIndTxt = rootView.findViewById(R.id.percentIndTxt);
@@ -123,7 +123,7 @@ public class DefinePriceAlertDialog extends DialogFragment {
         // Populate the price target entry field with the current price of the stock from the watchlist database.
         watchlistViewModel = ViewModelProviders.of((FragmentActivity) activity).get(WatchlistViewModel.class);
         try {
-            stockPrice = watchlistViewModel.findStockItemBySymbold(symbol).getPrice();
+            stockPrice = watchlistViewModel.findStockItemBySymbol(symbol).getPrice();
             priceTargetTxtView.setText(stockPrice);
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -233,7 +233,7 @@ public class DefinePriceAlertDialog extends DialogFragment {
                                 // Create 52-wk low alert.
                                 String recordLowValue = "";
                                 try {
-                                    recordLowValue = watchlistViewModel.findStockItemBySymbold(symbol).getRecordLow();
+                                    recordLowValue = watchlistViewModel.findStockItemBySymbol(symbol).getRecordLow();
                                 } catch (ExecutionException e) {
                                     e.printStackTrace();
                                 } catch (InterruptedException e) {
@@ -248,7 +248,7 @@ public class DefinePriceAlertDialog extends DialogFragment {
                             case 1:
                                 String recordHighValue = "";
                                 try {
-                                    recordHighValue = watchlistViewModel.findStockItemBySymbold(symbol).getRecordHigh();
+                                    recordHighValue = watchlistViewModel.findStockItemBySymbol(symbol).getRecordHigh();
                                 } catch (ExecutionException e) {
                                     e.printStackTrace();
                                 } catch (InterruptedException e) {

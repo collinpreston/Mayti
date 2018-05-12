@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/recyclerViewWeekly"
-        android:name="collin.mayti.WeeklyWatchlistFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        app:layoutManager="android.support.v7.widget.GridLayoutManager"
-        tools:context="collin.mayti.watchlist.watchlistFragments.WeeklyWatchlistFragment"
-        tools:listitem="@layout/fragment_watchlist_stock" />
-</android.support.constraint.ConstraintLayout>
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recyclerViewWeekly"
+    android:name="collin.mayti.WeeklyWatchlistFragment"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="70dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    app:layoutManager="android.support.v7.widget.GridLayoutManager"
+    tools:context="collin.mayti.watchlist.watchlistFragments.WeeklyWatchlistFragment"
+    tools:listitem="@layout/fragment_watchlist_stock" />
+</LinearLayout>

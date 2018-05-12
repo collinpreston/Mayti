@@ -24,8 +24,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
-import collin.mayti.BottomBarAdapter;
-import collin.mayti.MainActivity;
 import collin.mayti.R;
 import collin.mayti.alerts.AlertsUtil;
 import collin.mayti.alerts.alertSubscriptionDatabase.Alert;
@@ -79,9 +77,9 @@ public class NotificationsService extends Service {
         Timer timerIndicator = new Timer();
         timerIndicator.schedule(new DelayedIndicatorTask(), 300, scanFrequency);
 
-        // TODO:
+
         // Setting the flag below will keep the service running after the app is closed.
-        //flags = Service.START_STICKY;
+        flags = START_STICKY;
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -94,6 +92,7 @@ public class NotificationsService extends Service {
         public void run() {
             alertList = retrieveAlertsSetByUser();
             performAllAlertChecks(alertList);
+            System.out.println("Alert Checks Performed");
         }
     }
 
@@ -130,7 +129,7 @@ public class NotificationsService extends Service {
         // Create an instance of the indicator engine and supply the indicator sensitivity level.
         IndicatorEngine indicatorEngine = new IndicatorEngine(getUserIndicatorProfileSensitivity(), this.getApplicationContext());
         // Perform all of the indicator checks.
-        indicatorEngine.performIndicatorChecks();
+        //indicatorEngine.performIndicatorChecks();
     }
 
     private IndicatorProfileSensitivity getUserIndicatorProfileSensitivity() {

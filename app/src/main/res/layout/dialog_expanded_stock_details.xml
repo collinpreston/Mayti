@@ -22,11 +22,10 @@
         android:id="@+id/layoutExpandedDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:orientation="vertical"
-        android:weightSum="6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -34,8 +33,7 @@
         <LinearLayout
             android:id="@+id/chartLinearLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingTop="16dp"
             app:layout_constraintStart_toStartOf="parent">
@@ -44,10 +42,10 @@
                 android:id="@+id/dialogChart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="parent">
@@ -60,48 +58,29 @@
             </com.github.mikephil.charting.charts.LineChart>
 
             <TextView
-                android:id="@+id/chartTimeLbl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:gravity="center_horizontal"
-                android:text="Chart Length"
-                android:textColor="@color/darkBlue"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dialogChart" />
-
-            <TextView
                 android:id="@+id/chartLengthTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="6dp"
                 android:gravity="center_horizontal"
                 android:text="One Day"
                 android:textColor="@color/blue"
                 app:layout_constraintBottom_toTopOf="@+id/chartLengthBar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/chartTimeLbl" />
+                app:layout_constraintTop_toBottomOf="@+id/dialogChart" />
 
             <SeekBar
                 android:id="@+id/chartLengthBar"
                 android:layout_width="match_parent"
-                android:layout_height="16dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="24dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
                 android:progressTint="@color/blue"
                 android:thumbTint="@color/lightBlue"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -123,8 +102,7 @@
         <ListView
             android:id="@+id/stockDetailsExpandedList"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4" />
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
