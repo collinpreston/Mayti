@@ -8,6 +8,8 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
+import collin.mayti.stockDetails.LineChartData;
+
 /**
  * Created by Collin on 1/15/2018.
  */
@@ -39,8 +41,8 @@ public interface WatchlistDao {
     void delete(Stock stock);
 
     @Query("UPDATE watchlist SET price = :price, volume = :volume, change = :change, changePercent = :changePercent, " +
-            "recordHigh = :recordHigh, recordLow = :recordLow, averageVolume = :avgVolume, latestUpdate = :latestUpdate WHERE symbol = :symbol")
-    void updateBySymbol(String price, String volume, String symbol, String change, String changePercent, String recordHigh, String recordLow, String avgVolume, String latestUpdate);
+            "recordHigh = :recordHigh, recordLow = :recordLow, averageVolume = :avgVolume, latestUpdate = :latestUpdate, oneDayChartData =:oneDayChartData  WHERE symbol = :symbol")
+    void updateBySymbol(String price, String volume, String symbol, String change, String changePercent, String recordHigh, String recordLow, String avgVolume, String latestUpdate, String oneDayChartData);
 
     @Query("SELECT COUNT(*) FROM watchlist")
     int getTotalNumberOfRows();
@@ -59,4 +61,7 @@ public interface WatchlistDao {
 
     @Query("DELETE FROM watchlist WHERE dateToRemove < date('now')")
     void cleanWatchlistDatabase();
+
+    @Query("SELECT oneDayChartData FROM watchlist WHERE symbol LIKE :symbol LIMIT 1")
+    String getOneDayChartDataForSymbol(String symbol);
 }

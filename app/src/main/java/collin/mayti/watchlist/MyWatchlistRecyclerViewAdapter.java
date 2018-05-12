@@ -53,6 +53,7 @@ import collin.mayti.stockDetails.LineChartData;
 import collin.mayti.stockDetails.StockFullDetailsDialog;
 import collin.mayti.stockDetails.stockNews.ViewStockNewsDialog;
 import collin.mayti.urlUtil.UrlUtil;
+import collin.mayti.util.FormatChartData;
 import collin.mayti.util.FormatValues;
 import collin.mayti.watchlistDB.Stock;
 
@@ -85,7 +86,6 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
         private final Button removeBtn;
         private final FrameLayout deleteOverlay;
         private final Button newAlertBtn;
-        private final LinearLayout layoutStockItem;
         private final Button viewCurrentAlertsBtn;
         private final Button viewStockNewsBtn;
         private final TextView lastUpdateTimeTxt;
@@ -115,7 +115,6 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
                 }
             });
 
-            layoutStockItem = v.findViewById(R.id.linearLayout_Stock);
             symbolTextView = v.findViewById(R.id.symbol);
             priceTextView = v.findViewById(R.id.price);
             volumeTextView = v.findViewById(R.id.volume);
@@ -241,6 +240,16 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
                 viewHolder.getPriceChangeTextView().setTextColor(mContext.getResources().getColor(R.color.green));
             }
 
+            // Configure the linechart
+            configureLineChart(viewHolder.getLineChartView());
+
+            // Add data to the linechart.
+            FormatChartData formatChartData = new FormatChartData(mContext);
+            List<LineChartData> lineChartDataList = formatChartData.getLineChartDataFromJsonString(watchlistItems.get(position).getOneDayChartData());
+            LineData lineData = formatChartData.convertLineChartDataListToLineData(lineChartDataList);
+            viewHolder.getLineChartView().setData(lineData);
+
+
             viewHolder.getDeleteOverlay().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -270,8 +279,6 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
                     dialogFrag.show(mActivity.getFragmentManager(), "");
                 }
             });
-
-            getChartData(watchlistItems.get(position).getSymbol(), viewHolder.getLineChartView());
 
             viewHolder.getViewCurrentAlertsBtn().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -326,119 +333,36 @@ public class MyWatchlistRecyclerViewAdapter extends RecyclerView.Adapter<MyWatch
         }
     }
 
-    private boolean isJSONDataValid(String dataFromConnection, JSONArray jsonArray) {
-        return dataFromConnection != null && !dataFromConnection.isEmpty() && jsonArray.length()!=0;
-    }
-
-    private List<LineChartData> getChartAsLineChartData(String dataRetrievedString) throws InterruptedException, ExecutionException, MalformedURLException, JSONException {
-        // Call to private method to get the JSON string of data.
-
-        JSONArray jsonArray = new JSONArray(dataRetrievedString);
-        List<LineChartData> lineChartDataList = new ArrayList<>();
-
-        if (isJSONDataValid(dataRetrievedString, jsonArray)) {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject dataObj = jsonArray.getJSONObject(i);
-
-                String closeString = dataObj.getString("marketAverage");
-                Double closeDouble = Double.parseDouble(closeString);
-                LineChartData lineChartData = new LineChartData((double) i, closeDouble);
-                lineChartDataList.add(lineChartData);
-            }
-        } else {
-            // If we get here, then the market must be closed today.  We will go back to get the
-            // chart data from most recent day the stock was updated.
-        }
-
-        return lineChartDataList;
-    }
-
-    /**
-     * This method retrieves the chart data and updates a LineChart given a symbol,
-     * length of time, and the LineChart handle.  This method will get the chart data from IEX for
-     * a length of 1d.
-     * @param symbol
-     * @param lineChart
-     * @throws MalformedURLException
-     * @throws ExecutionException
-     * @throws InterruptedException
-     */
-    private void getChartData (String symbol, final LineChart lineChart) throws MalformedURLException, ExecutionException, InterruptedException {
-        UrlUtil urlUtil = new UrlUtil();
-
-        // Check the current date.  We'll either get the ONE_DAY_CHART if the market is open today,
-        // or we'll get the most recent date the market was opened.
-
-        URL requestURL = urlUtil.buildURLForChartData(symbol, "ONE_DAY_CHART");
-        final GetJSONData getJSONData = new GetJSONData(output -> {
-            // At this point I also want to display the chart
-            List<LineChartData> lineChartDataList = getChartAsLineChartData(output);
-            if (!lineChartDataList.isEmpty()) {
-                // Don't process data if nothing retrieved.  But we still want to show the graph text.
-                entryList.clear();
-                for (LineChartData chartData : lineChartDataList) {
-                    entryList.add(new Entry(chartData.getxCoordinate().floatValue(), chartData.getyCoordinate().floatValue()));
-                }
-                // Sort through all of the chart values and remove any value of 0.  If left in,
-                // zero values will distort the chart.  TODO: This can become a method.
-                List<Entry> noZeroEntryList = new ArrayList<>();
-                for (int i=0; i < entryList.size(); i++) {
-                    if (entryList.get(i).getY() != 0.0 && entryList.get(i).getY() != -1.0) {
-                        noZeroEntryList.add(entryList.get(i));
-                    }
-                }
-                entryList = noZeroEntryList;
-                // If the entryList is empty after removing all the zeros, we will display a straight
-                // line instead of showing an empty graph.  This assures the user that their connections
-                // are working, but the market data isn't available (usually pre market).
-                if (entryList.isEmpty()) {
-                    entryList.add(new Entry(0.0f, 0.0f));
-                }
-                Collections.sort(entryList, new EntryXComparator());
-                LineDataSet dataSet = new LineDataSet(entryList, "");
-                dataSet.setColor(mContext.getResources().getColor(R.color.blue));
-                dataSet.setDrawCircles(false);
-                LineData lineData = new LineData(dataSet);
-                lineData.setDrawValues(false);
-                lineChart.setData(lineData);
-                XAxis xAxis = lineChart.getXAxis();
-                xAxis.setEnabled(false);
-                YAxis yAxisLeft = lineChart.getAxisLeft();
-                YAxis yAxisRight = lineChart.getAxisRight();
-                yAxisLeft.setEnabled(false);
-                yAxisRight.setEnabled(false);
-                Legend legend = lineChart.getLegend();
-                legend.setEnabled(false);
-            }
-            lineChart.setDrawGridBackground(false);
-            lineChart.setAutoScaleMinMaxEnabled(true);
-            lineChart.setDescription(null);
-            lineChart.setClickable(false);
-            lineChart.setDragEnabled(false);
-            lineChart.setDragEnabled(false);
-            lineChart.setPinchZoom(false);
-            lineChart.setDoubleTapToZoomEnabled(false);
-            lineChart.setHighlightPerTapEnabled(false);
-            lineChart.setHighlightPerDragEnabled(false);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                lineChart.setDefaultFocusHighlightEnabled(false);
-            }
-            lineChart.setTouchEnabled(false);
-            //lineChart.notifyDataSetChanged();
-            lineChart.invalidate();
-            //lineChart.setKeepPositionOnRotation(true);
-        }, new GetJSONData.AsyncPreExecute() {
-            @Override
-            public void preExecute() {
-                // TODO: Display progress circle on top of chart while download is happening
-            }
-        });
-        getJSONData.execute(requestURL);
-    }
-
     private List<Alert> getAlertsForSymbol(String symbol) throws ExecutionException, InterruptedException {
         AlertSubscriptionViewModel alertViewModel = ViewModelProviders.of( mActivity).get(AlertSubscriptionViewModel.class);
         return alertViewModel.getAllAlertsForSymbol(symbol);
     }
 
+    private void configureLineChart(LineChart lineChart) {
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setEnabled(false);
+        YAxis yAxisLeft = lineChart.getAxisLeft();
+        YAxis yAxisRight = lineChart.getAxisRight();
+        yAxisLeft.setEnabled(false);
+        yAxisRight.setEnabled(false);
+        Legend legend = lineChart.getLegend();
+        legend.setEnabled(false);
+        lineChart.setDrawGridBackground(false);
+        lineChart.setAutoScaleMinMaxEnabled(true);
+        lineChart.setDescription(null);
+        lineChart.setClickable(false);
+        lineChart.setDragEnabled(false);
+        lineChart.setDragEnabled(false);
+        lineChart.setPinchZoom(false);
+        lineChart.setDoubleTapToZoomEnabled(false);
+        lineChart.setHighlightPerTapEnabled(false);
+        lineChart.setHighlightPerDragEnabled(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            lineChart.setDefaultFocusHighlightEnabled(false);
+        }
+        lineChart.setTouchEnabled(false);
+        //lineChart.notifyDataSetChanged();
+        lineChart.invalidate();
+        //lineChart.setKeepPositionOnRotation(true);
+    }
 }

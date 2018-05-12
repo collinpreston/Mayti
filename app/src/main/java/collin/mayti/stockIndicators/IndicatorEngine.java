@@ -20,16 +20,18 @@ import org.ta4j.core.indicators.candles.ThreeBlackCrowsIndicator;
 import org.ta4j.core.indicators.helpers.CloseLocationValueIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.indicators.volume.ChaikinMoneyFlowIndicator;
+import org.threeten.bp.DateTimeUtils;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -557,12 +559,15 @@ public class IndicatorEngine {
         return stockList;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     private TimeSeries buildTimeSeriesForSymbol(String symbol, String lengthTime) throws JSONException, InterruptedException, ExecutionException, MalformedURLException, ParseException {
 
         TimeSeries series = new BaseTimeSeries(symbol + "_symbol");
 
-        JSONArray jsonArray = getChartDataForSymbol(symbol, lengthTime);
+        JSONArray jsonArray;
+        do {
+            jsonArray = getChartDataForSymbol(symbol, lengthTime);
+        } while (jsonArray.length() == 0);
 
         for (int i=0; i < jsonArray.length(); i++) {
             JSONObject jsonBar = jsonArray.getJSONObject(i);
@@ -581,7 +586,7 @@ public class IndicatorEngine {
                     low = (long) (jsonBar.getDouble("marketLow"));
                     close = (long) (jsonBar.getDouble("marketClose"));
 
-                    ZonedDateTime zonedDateTime = getZonedDateTimeLabelFromChartData(jsonBar.getString("label"));
+                     ZonedDateTime zonedDateTime = getZonedDateTimeLabelFromChartData(jsonBar.getString("label"));
 
                     // Add the bar to the series.
                     series.addBar(zonedDateTime, open, high, low, close, volume);
@@ -601,7 +606,6 @@ public class IndicatorEngine {
         return series;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private ZonedDateTime getZonedDateTimeLabelFromChartData(String label) throws ParseException {
         // Convert the time.
         Date endTime;
@@ -623,7 +627,7 @@ public class IndicatorEngine {
                 endTime = dateFormat.parse(label);
             }
         }
-        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(endTime.toInstant(), ZoneId.of("UTC"));
+        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(DateTimeUtils.toInstant(endTime), ZoneId.of("UTC"));
         return zonedDateTime;
     }
 

@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
-
-import collin.mayti.MainActivity;
 import collin.mayti.stock.StockContent;
 import collin.mayti.stockNewsDB.Article;
 import collin.mayti.stockNewsDB.StockNewsDatabase;
@@ -31,7 +29,13 @@ import collin.mayti.watchlistDB.AppDatabase;
  */
 
 public class DataRetriever extends Service {
+
+    private static String ONE_DAY_CHART = "ONE_DAY_CHART";
+
+
     public List<String> stockSymbols = new ArrayList<>();
+
+    private AppDatabase db;
 
     public DataRetriever() {
 
@@ -47,23 +51,40 @@ public class DataRetriever extends Service {
         return dataFromConnection != null && !dataFromConnection.isEmpty() && !dataFromConnection.equals("");
     }
 
+    private boolean isJSONDataValid(List<String> dataFromConnection) {
+        return dataFromConnection.size() != 0;
+    }
+
+
+
     private JSONObject getQuotesAsJSON(List<String> symbols) throws MalformedURLException, JSONException, ExecutionException, InterruptedException {
 
         String dataRetrievedString;
         do {
-                // TODO: Test for internet connection instead of spamming the server with requests.
-                dataRetrievedString = new UrlUtil().getStockData(symbols);
-                System.out.println("CP: " + dataRetrievedString);
-            } while (!isJSONDataValid(dataRetrievedString));
+            // TODO: Test for internet connection instead of spamming the server with requests.
+            dataRetrievedString = new UrlUtil().getStockData(symbols);
+            System.out.println("CP: " + dataRetrievedString);
+        } while (!isJSONDataValid(dataRetrievedString));
 
-            JSONObject dataObj = new JSONObject(dataRetrievedString);
-            return dataObj;
+        JSONObject dataObj = new JSONObject(dataRetrievedString);
+        return dataObj;
+    }
+
+    private HashMap<String, String> getChartData(List<String> symbols) throws MalformedURLException, ExecutionException, InterruptedException, JSONException {
+
+        HashMap<String, String> lineChartDataMap= new HashMap<>();
+        lineChartDataMap.putAll(new UrlUtil().getChartData(symbols, ONE_DAY_CHART));
+        return lineChartDataMap;
     }
 
     private List<StockContent.StockItem> getQuotesAsList(List<String> symbols)
             throws MalformedURLException, JSONException, ExecutionException, InterruptedException {
         JSONObject quotesJSON = getQuotesAsJSON(symbols);
         List <StockContent.StockItem> watchlistData = new ArrayList<>();
+
+        // Get chart data.
+        HashMap<String, String> chartData = new HashMap<>();
+        chartData = getChartData(symbols);
         for (String symbol : symbols) {
             JSONObject jsonStock = quotesJSON.getJSONObject(symbol);
             JSONObject jsonQuote = jsonStock.getJSONObject("quote");
@@ -76,7 +97,8 @@ public class DataRetriever extends Service {
                     jsonQuote.getString("week52High"),
                     jsonQuote.getString("week52Low"),
                     jsonQuote.getString("avgTotalVolume"),
-                    jsonQuote.getString("latestUpdate")
+                    jsonQuote.getString("latestUpdate"),
+                    chartData.get(symbol)
                     );
             watchlistData.add(stockItem);
         }
@@ -84,44 +106,37 @@ public class DataRetriever extends Service {
     }
 
     private void updateDatabaseWithData(List <StockContent.StockItem> stockDataList) {
-        AppDatabase db = MainActivity.db;
+        AppDatabase db = AppDatabase.getDatabase(this.getApplication());
         for (StockContent.StockItem item : stockDataList) {
             db.watchlistDao().updateBySymbol(item.price, item.volume, item.symbol, item.change, item.changePercent,
-                    item.recordHigh, item.recordLow, item.averageVolume, item.latestUpdate);
+                    item.recordHigh, item.recordLow, item.averageVolume, item.latestUpdate, item.lineChartData);
         }
 
     }
 
     private void updateListOfStocksInDB() {
-        AppDatabase db = MainActivity.db;
         stockSymbols = db.watchlistDao().getAllSymbols();
     }
 
     private HashMap<String, JSONArray> getNewsDataAsJSON(List<String> symbols) throws MalformedURLException, JSONException, ExecutionException, InterruptedException {
 
         // Used to store the data after the asynctask is completed.
-        HashMap<String, JSONArray> newsJSONObjectMap = new HashMap<>();
+        final HashMap<String, JSONArray> newsJSONObjectMap = new HashMap<>();
 
 
         // Loop through each symbols.
-        for (String symbol : symbols) {
+        for (final String symbol : symbols) {
             do {
                 // TODO: Test for internet connection instead of spamming the server with requests.
                 URL newsURL = new UrlUtil().buildURLForNewsData(symbol);
 
                 // Check to make sure that the URL was built correctly.
                 if (!newsURL.equals("")) {
-                    GetJSONData getJSONData = new GetJSONData(new GetJSONData.AsyncResponse() {
-                        @Override
-                        public void processFinish(String output) throws JSONException {
-                            JSONArray dataObj = new JSONArray(output);
-                            newsJSONObjectMap.put(symbol, dataObj);
-                        }
-                    }, new GetJSONData.AsyncPreExecute() {
-                        @Override
-                        public void preExecute() {
-                            // Intentionally left empty.
-                        }
+                    GetJSONData getJSONData = new GetJSONData(output -> {
+                        JSONArray dataObj = new JSONArray(output);
+                        newsJSONObjectMap.put(symbol, dataObj);
+                    }, () -> {
+                        // Intentionally left empty.
                     });
                     // Execute the asynctask.
                     getJSONData.execute(newsURL).get();
@@ -167,7 +182,7 @@ public class DataRetriever extends Service {
     private void updateNewsDB() throws InterruptedException, MalformedURLException, JSONException, ExecutionException {
         HashMap<String, List<Article>> symbolArticleMap;
         symbolArticleMap = getArticlesAsMap(stockSymbols);
-        StockNewsDatabase stockNewsDatabase = MainActivity.stockNewsDatabase;
+        StockNewsDatabase stockNewsDatabase = StockNewsDatabase.getDatabase(this.getApplication());
         for (String symbol : stockSymbols) {
             List<Article> articleList;
             articleList = symbolArticleMap.get(symbol);
@@ -182,6 +197,8 @@ public class DataRetriever extends Service {
         @Override
         public void run() {
             try {
+                stockSymbols = db.watchlistDao().getAllSymbols();
+
                 updateDatabaseWithData(getQuotesAsList(stockSymbols));
                 updateListOfStocksInDB();
 
@@ -209,6 +226,7 @@ public class DataRetriever extends Service {
     public void onCreate()
     {
         super.onCreate();
+        db = AppDatabase.getDatabase(this.getApplication());
     }
 
     @Override
@@ -220,8 +238,9 @@ public class DataRetriever extends Service {
         }
         // Runs every 30 seconds.
         timer.schedule(new DelayedTask(), 300, 30000);
+
         // Setting the flag below will keep the service running after the app is closed.
-        //flags = START_STICKY;
+        flags = START_STICKY;
         return super.onStartCommand(intent, flags, startId);
     }
 }

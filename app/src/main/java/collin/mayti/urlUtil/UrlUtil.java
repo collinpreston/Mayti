@@ -3,6 +3,8 @@ package collin.mayti.urlUtil;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -54,6 +56,29 @@ public class UrlUtil{
             getJSONData.execute(requestURL).get();
         }
         return dataStream;
+    }
+
+    public HashMap<String, String> getChartData(List<String> symbols, String lengthOfTime) throws MalformedURLException, ExecutionException, InterruptedException {
+        HashMap<String, String> chartData = new HashMap<>();
+        for (String symbol : symbols) {
+            URL requestURL = buildURLForChartData(symbol, lengthOfTime);
+            if (!requestURL.equals("")) {
+                GetJSONData getJSONData = new GetJSONData(new GetJSONData.AsyncResponse() {
+                    @Override
+                    public void processFinish(String output) {
+                        dataStream = output;
+                    }
+                }, new GetJSONData.AsyncPreExecute() {
+                    @Override
+                    public void preExecute() {
+                        // Intentionally left empty.
+                    }
+                });
+                getJSONData.execute(requestURL).get();
+            }
+            chartData.put(symbol, dataStream);
+        }
+        return chartData;
     }
 
     private URL buildURLForStockPrice(List<String> symbols) throws MalformedURLException {

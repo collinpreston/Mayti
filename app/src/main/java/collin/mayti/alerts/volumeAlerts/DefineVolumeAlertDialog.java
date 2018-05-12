@@ -76,7 +76,7 @@ public class DefineVolumeAlertDialog extends DialogFragment {
         alertViewModel = ViewModelProviders.of((FragmentActivity) activity).get(AlertSubscriptionViewModel.class);
 
         try {
-            avgVolume = watchlistViewModel.findStockItemBySymbold(symbol).getAverageVolume();
+            avgVolume = watchlistViewModel.findStockItemBySymbol(symbol).getAverageVolume();
             avgVolumeNum = Double.parseDouble(avgVolume);
         } catch (ExecutionException e) {
             e.printStackTrace();

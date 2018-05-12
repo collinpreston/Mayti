@@ -38,6 +38,7 @@ public class WatchlistPage extends Fragment {
                         getChildFragmentManager());
         viewPager = rootView.findViewById(R.id.watchlistPager);
         viewPager.setAdapter(pagerAdapter);
+        viewPager.setOffscreenPageLimit(2);
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -58,6 +59,12 @@ public class WatchlistPage extends Fragment {
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        pagerAdapter.notifyDataSetChanged();
     }
 
 }

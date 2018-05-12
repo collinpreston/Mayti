@@ -1,6 +1,9 @@
 package collin.mayti.stockDetails.stockNews;
 
+import android.app.Dialog;
 import android.app.DialogFragment;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -33,7 +36,7 @@ public class ViewStockNewsDialog extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getDialog().setTitle("New Alert Type");
+        getDialog().setTitle("View Stock News");
         rootView = inflater.inflate(R.layout.dialog_view_stock_news, container, false);
 
         Button closeButton = rootView.findViewById(R.id.closeViewStockNewsDialogBtn);
@@ -66,5 +69,16 @@ public class ViewStockNewsDialog extends DialogFragment {
         symbol = getArguments().getString("symbol");
 
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
     }
 }

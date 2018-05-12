@@ -16,11 +16,9 @@
 
 package collin.mayti.watchlist.watchlistFragments;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -106,12 +104,7 @@ public class WatchlistFragment extends Fragment {
             e.printStackTrace();
         }
 
-        viewModel.getStockListForWatchlist(PERMANENT_WATCHLIST_NAME).observe(WatchlistFragment.this, new Observer<List<Stock>>() {
-            @Override
-            public void onChanged(@Nullable List<Stock> stocks) {
-                mAdapter.updateItems(stocks);
-            }
-        });
+        viewModel.getStockListForWatchlist(PERMANENT_WATCHLIST_NAME).observe(WatchlistFragment.this, stocks -> mAdapter.updateItems(stocks));
     }
 
     @Override
